@@ -38,6 +38,29 @@ AppAssistant.prototype.launchFirstScene = function(controller)
 
 AppAssistant.prototype.cleanup = function() {};
 
+AppAssistant.prototype.updateIcon = function(status)
+{
+	try
+	{
+		var r = new Mojo.Service.Request
+		(
+			'palm://com.palm.applicationManager',
+			{
+				method: 'updateLaunchPointIcon',
+				parameters:
+				{
+					launchPointId:	Mojo.appInfo.id + '_default',
+					icon:			Mojo.appPath + 'images/icon-' + status + '.png'
+				}
+			}
+		);
+	}
+	catch (e)
+	{
+		Mojo.Log.logException(e, "AppAssistant#updateIcon");
+	}
+}
+
 // Local Variables:
 // tab-width: 4
 // End:
