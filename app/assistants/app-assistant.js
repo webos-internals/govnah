@@ -1,13 +1,8 @@
-// global packages object
-var packages = new packagesModel();
-
 // get the cookies
 var prefs = new preferenceCookie();
-var vers =  new versionCookie();
 
 // stage names
-var mainStageName = 'preware-main';
-var dashStageName = 'preware-dash';
+var mainStageName = 'govnah-main';
 
 function AppAssistant() {}
 
@@ -38,15 +33,7 @@ AppAssistant.prototype.handleLaunch = function(params)
 
 AppAssistant.prototype.launchFirstScene = function(controller)
 {
-	vers.init();
-	if (vers.showStartupScene()) 
-	{
-		controller.pushScene('startup');
-	}
-	else
-	{
-		controller.pushScene('update', 'main', false);
-	}
+	controller.pushScene('main');
 };
 
 AppAssistant.prototype.cleanup = function() {};

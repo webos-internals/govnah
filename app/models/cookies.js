@@ -16,6 +16,7 @@ preferenceCookie.prototype.get = function(reload)
 				// Global Group
 				theme: 'palm-default',
 				
+				/*
 				// Startup Group
 				updateInterval: 'launch',
 				lastUpdate: 0, // will be updated every time update is successful
@@ -42,6 +43,7 @@ preferenceCookie.prototype.get = function(reload)
 				// Hidden Advanced Group
 				//allowServiceUpdates: false
 				//allowFlagSkip: false
+				*/
 			};
 			
 			// uncomment to delete cookie for testing
@@ -52,24 +54,6 @@ preferenceCookie.prototype.get = function(reload)
 				for (i in cookieData) 
 				{
 					this.prefs[i] = cookieData[i];
-					
-					// temporarily fix the old way the second row setting was stored
-					// this should be removed after a while.
-					if (i == 'secondRow')
-					{
-						switch (cookieData[i])
-						{
-							case 'v&i':   this.prefs['secondRow'] = 'version,id';			break;
-							case 'v&m':   this.prefs['secondRow'] = 'version,maint';		break;
-							case 'v&d':   this.prefs['secondRow'] = 'version,date';			break;
-							case 'p&f':   this.prefs['secondRow'] = 'price,feed';			break;
-							case 'p&c':   this.prefs['secondRow'] = 'price,country';		break;
-							case 'p&l':   this.prefs['secondRow'] = 'price,license';		break;
-							case 'p&v&m': this.prefs['secondRow'] = 'price,version,maint';	break;
-							case 'p&v&d': this.prefs['secondRow'] = 'price,version,date';	break;
-							case 'p&v&f': this.prefs['secondRow'] = 'price,version,feed';	break;
-						}
-					} 
 				}
 			}
 			else 

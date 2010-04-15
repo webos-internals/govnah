@@ -20,7 +20,7 @@ HelpAssistant.prototype.setup = function()
 	
 	this.supportModel.items.push({
 		text: $L('Wiki Page'),
-		detail: 'http://www.webos-internals.org/wiki/Application:Preware',
+		detail: 'http://www.webos-internals.org/wiki/Application:Govnah',
 		Class: 'img_web',
 		type: 'web'
 	});
