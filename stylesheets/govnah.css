@@ -1,0 +1,82 @@
+/*
+ * Global Styles
+ */
+.scene-fade-top
+{
+	position: fixed; 
+	top: 0; 
+	z-index: 11000;
+	height: 30px; 
+	width: 100%;
+	background: url(../images/scrollFade-top.png) top center repeat-x;
+	-webkit-palm-mouse-target: ignore;
+}
+.scene-fade-bottom
+{
+	position: fixed; 
+	bottom: 0; 
+	z-index: 11000;
+	height: 30px; 
+	width: 100%;
+	background: url(../images/scrollFade-bottom.png) bottom center repeat-x;
+	-webkit-palm-mouse-target: ignore;
+}
+
+/*
+ * Generic Form Styles
+ */
+.form .palm-row-wrapper .label.left
+{
+	padding-left: 6px;
+	-webkit-palm-mouse-target: ignore;
+}
+.form .palm-list-selector .label
+{
+	float: left;
+}
+.form .palm-list-selector .title
+{
+	text-align: right;
+}
+.form .palm-group.disabled
+{
+	opacity: 0.35;
+}
+
+/*
+ * Help Scene Styles
+ */
+.help .list_scene
+{
+	position:relative;
+	left:48px;
+	top:10px;
+	width:32px; 
+	height:32px;
+	vertical-align:bottom;
+	padding: 0px 0px 0px 5px;
+	float:left;
+}
+.help .img_web
+{
+	position:relative;
+	left:8px;
+	top:10px;
+	width:32px; 
+	height:32px;
+	background: url(../images/help/application-web.png) no-repeat  bottom;
+	padding: 0px 0px 0px 5px;
+	float:left;
+}
+.help .img_email
+{
+	position:relative;
+	left:8px;
+	top:10px;
+	width:32px; 
+	height:32px;
+	background: url(../images/help/application-email.png) no-repeat bottom;
+	vertical-align:bottom;
+	padding: 0px 0px 0px 5px;
+	float:left;
+}
