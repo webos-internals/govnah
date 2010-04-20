@@ -320,11 +320,34 @@ bool get_proc_cpuinfo_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 }
 
 //
+// Read /proc/cpuinfo
+//
+bool get_omap34xx_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message, "/bin/cat /sys/devices/platform/omap34xx_temp/temp1_input 2>&1");
+}
+
+//
 // Read scaling_available_governors
 //
 bool get_scaling_available_governors_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   return simple_command(lshandle, message,
 			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors 2>&1");
+}
+
+//
+// Read scaling_available_frequencies
+//
+bool get_scaling_available_frequencies_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies 2>&1");
+}
+
+//
+// Read scaling_available_governors
+//
+bool get_scaling_governor_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor 2>&1");
 }
 
 //
@@ -351,17 +374,115 @@ bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *c
 			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq 2>&1");
 }
 
+//
+// Read scaling_cur_freq
+//
+bool get_scaling_setspeed_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed 2>&1");
+}
+
+//
+// Read time_in_state
+//
+bool get_time_in_state_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state 2>&1");
+}
+
+//
+// Read total_trans
+//
+bool get_total_trans_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/total_trans 2>&1");
+}
+
+//
+// Read trans_table
+//
+bool get_trans_table_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/trans_table 2>&1");
+}
+
+//
+// Read ignore_nice_load
+//
+bool get_ignore_nice_load_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/ignore_nice_load 2>&1");
+}
+
+//
+// Read powersave_bias
+//
+bool get_powersave_bias_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/powersave_bias 2>&1");
+}
+
+//
+// Read sampling_rate
+//
+bool get_sampling_rate_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_rate 2>&1");
+}
+
+//
+// Read sampling_rate_min
+//
+bool get_sampling_rate_min_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_rate_min 2>&1");
+}
+
+//
+// Read sampling_rate_max
+//
+bool get_sampling_rate_max_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_rate_max 2>&1");
+}
+
+//
+// Read up_threshold
+//
+bool get_up_threshold_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/up_threshold 2>&1");
+}
+
 LSMethod luna_methods[] = {
-  { "status",				dummy_method },
-  { "get_proc_cpuinfo",			get_proc_cpuinfo_method },
-  { "get_scaling_available_governors",	get_scaling_available_governors_method },
-  { "set_scaling_governor",		dummy_method },
-  { "get_scaling_max_freq",		get_scaling_max_freq_method },
-  { "set_scaling_max_freq",		dummy_method },
-  { "get_scaling_min_freq",		get_scaling_min_freq_method },
-  { "set_scaling_min_freq",		dummy_method },
-  { "get_scaling_cur_freq",		get_scaling_cur_freq_method },
-  { "set_scaling_cur_freq",		dummy_method },
+  { "status",					dummy_method },
+  { "get_proc_cpuinfo",				get_proc_cpuinfo_method },
+  { "get_omap34xx_temp",			get_omap34xx_temp_method },
+  { "get_scaling_available_governors",		get_scaling_available_governors_method },
+  { "get_scaling_available_frequencies",	get_scaling_available_frequencies_method },
+  { "get_scaling_governor",			get_scaling_governor_method },
+  { "set_scaling_governor",			dummy_method },
+  { "get_scaling_max_freq",			get_scaling_max_freq_method },
+  { "set_scaling_max_freq",			dummy_method },
+  { "get_scaling_min_freq",			get_scaling_min_freq_method },
+  { "set_scaling_min_freq",			dummy_method },
+  { "get_scaling_cur_freq",			get_scaling_cur_freq_method },
+  { "set_scaling_cur_freq",			dummy_method },
+  { "get_scaling_setspeed",			get_scaling_setspeed_method },
+  { "set_scaling_setspeed",			dummy_method },
+  { "get_time_in_state",			get_time_in_state_method },
+  { "get_total_trans",				get_total_trans_method },
+  { "get_trans_table",				get_trans_table_method },
+  { "get_ignore_nice_load",			get_ignore_nice_load_method },
+  { "set_ignore_nice_load",			dummy_method },
+  { "get_powersave_bias",			get_powersave_bias_method },
+  { "set_powersave_bias",			dummy_method },
+  { "get_sampling_rate",			get_sampling_rate_method },
+  { "set_sampling_rate",			dummy_method },
+  { "get_sampling_rate_max",			get_sampling_rate_max_method },
+  { "get_sampling_rate_min",			get_sampling_rate_min_method },
+  { "get_up_threshold",				get_up_threshold_method },
+  { "set_up_threshold",				dummy_method },
   { 0, 0 }
 };
 
