@@ -454,6 +454,30 @@ bool get_up_threshold_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/up_threshold 2>&1");
 }
 
+//
+// Read down_threshold
+//
+bool get_down_threshold_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/down_threshold 2>&1");
+}
+
+//
+// Read freq_step
+//
+bool get_freq_step_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/freq_step 2>&1");
+}
+
+//
+// Read sampling_down_factor
+//
+bool get_sampling_down_factor_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_down_factor 2>&1");
+}
+
 LSMethod luna_methods[] = {
   { "status",					dummy_method },
   { "get_proc_cpuinfo",				get_proc_cpuinfo_method },
@@ -483,6 +507,12 @@ LSMethod luna_methods[] = {
   { "get_sampling_rate_min",			get_sampling_rate_min_method },
   { "get_up_threshold",				get_up_threshold_method },
   { "set_up_threshold",				dummy_method },
+  { "get_down_threshold",			get_down_threshold_method },
+  { "set_down_threshold",			dummy_method },
+  { "get_freq_step",				get_freq_step_method },
+  { "set_freq_step",				dummy_method },
+  { "get_sampling_down_factor",			get_sampling_down_factor_method },
+  { "set_sampling_down_factor",			dummy_method },
   { 0, 0 }
 };
 
