@@ -1,19 +1,17 @@
-service.identifier = 'palm://org.webosinternals.servicename';
+service.identifier = 'palm://org.webosinternals.govnah';
 
 function service(){};
 
-/*
-service.version = function(callback)
+service.get_omap34xx_temp = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
-		method: 'version',
+		method: 'get_omap34xx_temp',
 		onSuccess: callback,
 		onFailure: callback
 	});
 	return request;
 };
-*/
 
 // Local Variables:
 // tab-width: 4

@@ -42,7 +42,17 @@ MainAssistant.prototype.setup = function()
 	// setup menu
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 	
+	
+	service.get_omap34xx_temp(this.onTemp.bindAsEventListener(this));
+	
 };
+
+MainAssistant.prototype.onTemp = function(payload)
+{
+	alert(payload.stdOut);
+	AppAssistant.updateIcon(payload.stdOut);
+}
+
 MainAssistant.prototype.activate = function(event)
 {
 	if (this.firstActivate)

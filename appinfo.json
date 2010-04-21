@@ -1,7 +1,7 @@
 {
 	"title": "Govnah",
 	"id": "org.webosinternals.govnah",
-	"version": "0.0.1",
+	"version": "0.0.5",
 	"vendor": "WebOS Internals",
 	"vendor_email":	"support@webos-internals.org",
 	"vendor_url": "http://www.webos-internals.org/wiki/Application:Govnah",
@@ -11,5 +11,5 @@
 	"miniicon": "miniicon.png",
 	"removable": "true",
 	"noWindow": true,
-	"noDeprecatedStyles" : true 
+	"noDeprecatedStyles": true 
 }

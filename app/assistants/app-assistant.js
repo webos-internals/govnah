@@ -38,7 +38,7 @@ AppAssistant.prototype.launchFirstScene = function(controller)
 
 AppAssistant.prototype.cleanup = function() {};
 
-AppAssistant.prototype.updateIcon = function(status)
+AppAssistant.updateIcon = function(temp)
 {
 	try
 	{
@@ -50,7 +50,7 @@ AppAssistant.prototype.updateIcon = function(status)
 				parameters:
 				{
 					launchPointId:	Mojo.appInfo.id + '_default',
-					icon:			Mojo.appPath + 'images/icon-' + status + '.png'
+					icon:			Mojo.appPath + 'images/icons/icon-' + temp + '.png'
 				}
 			}
 		);
