@@ -54,6 +54,8 @@ MainAssistant.prototype.setup = function()
 	this.scaleElement.hide();
 	this.vertTop = this.controller.get('vertTop');
 	this.vertBot = this.controller.get('vertBot');
+	this.vertTopCount = this.controller.get('vertTopCount');
+	this.vertBotCount = this.controller.get('vertBotCount');
 	
 	this.tempGraph = new lineGraph
 	(
@@ -190,8 +192,8 @@ MainAssistant.prototype.renderGraph = function()
 	
 	this.tempGraph.render();
 	
-	this.vertTop.innerHTML = Math.round(this.tempGraph.lines[0].vertical.top) + '&deg;';
-	this.vertBot.innerHTML = Math.round(this.tempGraph.lines[0].vertical.bottom) + '&deg;';
+	this.vertTopCount.innerHTML = Math.round(this.tempGraph.lines[0].vertical.top) + '&deg;';
+	this.vertBotCount.innerHTML = Math.round(this.tempGraph.lines[0].vertical.bottom) + '&deg;';
 	
 }
 
