@@ -99,16 +99,19 @@ MainAssistant.prototype.timerFunction = function()
 	service.get_omap34xx_temp(this.tempHandler);
 	
 	this.timer = setTimeout(this.timerHandler, this.rate);
-}
+};
+
 MainAssistant.prototype.onTemp = function(payload)
 {
-	//alert(payload.stdOut);
-	AppAssistant.updateIcon(payload.stdOut);
-	this.iconElement.className = 'icon temp-' + payload.stdOut;
+	if (payload.returnValue) {
+		//alert(payload.value);
+		AppAssistant.updateIcon(payload.value);
+		this.iconElement.className = 'icon temp-' + payload.value;
 	
-	this.temps.push({date:new Date(), value:parseInt(payload.stdOut)})
-	this.renderGraph();
-}
+		this.temps.push({date:new Date(), value:payload.value})
+		this.renderGraph();
+	}
+};
 
 MainAssistant.prototype.renderGraph = function()
 {
@@ -197,13 +200,14 @@ MainAssistant.prototype.renderGraph = function()
 	this.vertTopCount.innerHTML = Math.round(this.tempGraph.lines[0].vertical.top) + '&deg;';
 	this.vertBotCount.innerHTML = Math.round(this.tempGraph.lines[0].vertical.bottom) + '&deg;';
 	
-}
+};
 
 MainAssistant.prototype.gestureStartHandler = function(event)
 {
 	this.scaleElement.show();
 	
-}
+};
+
 MainAssistant.prototype.gestureChangeHandler = function(event)
 {
 	this.tempGraphPinching = true;
@@ -230,7 +234,8 @@ MainAssistant.prototype.gestureChangeHandler = function(event)
 	this.scaleElement.innerHTML = this.tempGraphZoomLevels[this.tempGraphPinchingZoom];
 	
 	//this.renderGraph();
-}
+};
+
 MainAssistant.prototype.gestureEndHandler = function(event)
 {
 	this.tempGraphPinching = false;
@@ -255,20 +260,23 @@ MainAssistant.prototype.gestureEndHandler = function(event)
 	}
 	
 	this.renderGraph();
-}
+};
 
 MainAssistant.prototype.flickHandler = function(event)
 {
-}
+};
+
 MainAssistant.prototype.dragStartHandler = function(event)
 {
-}
+};
+
 MainAssistant.prototype.draggingHandler = function(event)
 {
-}
+};
+
 MainAssistant.prototype.dragEndHandler = function(event)
 {
-}
+};
 
 MainAssistant.prototype.activate = function(event)
 {
@@ -282,9 +290,10 @@ MainAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 };
+
 MainAssistant.prototype.deactivate = function(event)
 {
-}
+};
 
 MainAssistant.prototype.getRandomSubTitle = function()
 {
