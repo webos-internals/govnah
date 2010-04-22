@@ -53,7 +53,7 @@ MainAssistant.prototype.setup = function()
 	this.canvas = this.canvasElement.getContext('2d');
 	
 	this.scaleElement = this.controller.get('scale');
-	this.scaleElement.hide();
+	//this.scaleElement.hide();
 	this.vertTop = this.controller.get('vertTop');
 	this.vertBot = this.controller.get('vertBot');
 	
@@ -131,13 +131,22 @@ MainAssistant.prototype.renderGraph = function()
 	if (this.pinching)
 		curHorzScale = (curHorzScale * this.pinchingScale);
 	
+	while (curHorzScale > this.canvasWidth)
+	{
+		curHorzScale = curHorzScale - this.canvasWidth;
+		if (curHorzScale < this.horzScale) curHorzScale = this.horzScale;
+		pointAvg++;
+	}
 	
+	curHorzScale = Math.round(curHorzScale);
 	
+	//this.scaleElement.innerHTML = curHorzScale + ' : ' + pointAvg;
 	
+	var totalPoints = Math.round(this.temps.length / pointAvg);
 	
 	var segWidth = this.canvasWidth / curHorzScale;
-	var segStart = Math.round(this.temps.length < curHorzScale ? curHorzScale - this.temps.length : 0);
-	var startPoint = Math.round(this.temps.length > curHorzScale ? this.temps.length-curHorzScale : 0);
+	var segStart = Math.round(totalPoints < curHorzScale ? curHorzScale - totalPoints : 0);
+	var startPoint = Math.round(totalPoints > (curHorzScale * pointAvg) ? this.temps.length - (curHorzScale * pointAvg) : 0);
 	
 	for (var p = startPoint; p < this.temps.length; p++)
 	{
@@ -162,20 +171,28 @@ MainAssistant.prototype.renderGraph = function()
 	for (var p = startPoint; p < this.temps.length; p = p + pointAvg)
 	{
 		var crnTotal = 0;
+		var display = true;
 		for (var a = pointAvg; a >= 1; a--)
 		{
 			if (this.temps[p-a])
+			{
 				crnTotal = crnTotal + parseInt(this.temps[p-a].value);
+			}
 			else
+			{
 				crnTotal = crnTotal + parseInt(this.temps[p].value);
+				var display = false;
+			}
 		}
 		var crnt = crnTotal / pointAvg;
 		
-		this.canvas.beginPath();
-		this.canvas.moveTo(num * segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (last - vertBot));
-		this.canvas.lineTo((num * segWidth) + segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (crnt - vertBot));
-		this.canvas.stroke();
-		
+		if (display)
+		{
+			this.canvas.beginPath();
+			this.canvas.moveTo(num * segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (last - vertBot));
+			this.canvas.lineTo((num * segWidth) + segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (crnt - vertBot));
+			this.canvas.stroke();
+		}
 		var last = crnt; 
 		
 		num++;
@@ -186,7 +203,7 @@ MainAssistant.prototype.renderGraph = function()
 
 MainAssistant.prototype.gestureStartHandler = function(event)
 {
-	this.scaleElement.show();
+	//this.scaleElement.show();
 	
     this.scaleElement.style.left = (event.centerX - 50) + "px";
 	this.scaleElement.innerHTML = Math.round((1 / (1 * event.scale)) * 100) +  "%";
@@ -207,7 +224,7 @@ MainAssistant.prototype.gestureEndHandler = function(event)
 	this.pinching = false;
 	this.pinchScale = this.pinchScale * (1 / (1 * event.scale));
 	
-	this.scaleElement.hide();
+	//this.scaleElement.hide();
 	this.scaleElement.innerHTML = "100%";
 	
 	this.renderGraph();
