@@ -25,11 +25,15 @@ function MainAssistant()
 			}
 		]
 	};
+	
+	
+	this.timer = false;
 };
 
 MainAssistant.prototype.setup = function()
 {
 	// get elements
+	this.iconElement =		this.controller.get('icon');
 	this.titleElement =		this.controller.get('main-title');
 	this.versionElement =	this.controller.get('version');
 	this.subTitleElement =	this.controller.get('subTitle');
@@ -43,26 +47,116 @@ MainAssistant.prototype.setup = function()
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 	
 	
-	service.get_omap34xx_temp(this.onTemp.bindAsEventListener(this));
+	this.temps = [];
+	this.rate = 500;
 	
+	this.canvas = this.controller.get('graphCanvas').getContext('2d');
+	this.canvasWidth  = 320;
+	this.canvasHeight = 100;
+	
+	this.horzScale = 62;
+	
+	this.timerHandler = this.timerFunction.bind(this);	
+	this.tempHandler = this.onTemp.bindAsEventListener(this);
+	
+	//this.timer = setInterval(this.timerHandler, this.rate);
+	this.timer = setTimeout(this.timerHandler, this.rate);
 };
 
+MainAssistant.prototype.timerFunction = function()
+{
+	service.get_omap34xx_temp(this.tempHandler);
+	
+	this.timer = setTimeout(this.timerHandler, this.rate);
+}
 MainAssistant.prototype.onTemp = function(payload)
 {
-	alert(payload.stdOut);
+	//alert(payload.stdOut);
 	AppAssistant.updateIcon(payload.stdOut);
+	this.iconElement.className = 'icon temp-' + payload.stdOut;
+	
+	this.temps.push({date:new Date(), value:payload.stdOut})
+	this.renderGraph();
+}
+
+MainAssistant.prototype.renderGraph = function()
+{
+  	this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+	this.canvas.save();
+	
+	this.canvas.strokeStyle = "rgba(0, 0, 0, 1)";
+	this.canvas.lineWidth = 2;
+	
+	/*
+	this.canvas.beginPath();
+	this.canvas.moveTo(0, 0);
+	this.canvas.lineTo(320, 100);
+	this.canvas.stroke();
+	*/
+	
+	var vertTop = 0;
+	var vertBot = 100;
+	
+
+	var segStart = (this.temps.length < this.horzScale ? this.horzScale - this.temps.length : 0);
+	//var segWidth = this.canvasWidth / (this.temps.length > this.horzScale ? this.horzScale : this.temps.length); // auto-sizing width with 0 segStart
+	var segWidth = this.canvasWidth / this.horzScale; // fixed for graph-draw-in from side instead of sizing
+	var startPoint = (this.temps.length > this.horzScale ? this.temps.length-this.horzScale : 0);
+	
+	//alert(segWidth);
+	
+	for (p = startPoint; p < this.temps.length; p++)
+	{
+		if (vertTop < this.temps[p].value) vertTop = this.temps[p].value;
+		if (vertBot > this.temps[p].value) vertBot = this.temps[p].value;
+	}
+	
+	var vertSplit = vertTop - vertBot;
+	if (vertSplit < 5)
+	{
+		vertTop = parseInt(vertTop) + (5 - (vertSplit % 5));
+		vertSplit = vertTop - vertBot;
+	}
+	
+	//alert(vertTop + " - " + vertBot + " : " + vertSplit);
+	this.controller.get('vertTop').innerHTML = vertTop + '&deg;';
+	this.controller.get('vertBot').innerHTML = vertBot + '&deg;';
+	
+	var num = segStart;
+	
+	for (p = startPoint; p < this.temps.length; p++)
+	{
+		var last = (this.temps[p-1] ? this.temps[p-1].value : this.temps[p].value);
+		var crnt = this.temps[p].value;
+		
+		//alert((num * segWidth) + " - " + ((num * segWidth) + segWidth));
+		
+		this.canvas.beginPath();
+		this.canvas.moveTo(num * segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (last - vertBot));
+		this.canvas.lineTo((num * segWidth) + segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (crnt - vertBot));
+		this.canvas.stroke();
+		num++;
+	}
+	
+  	this.canvas.restore();
 }
 
 MainAssistant.prototype.activate = function(event)
 {
+	
 	if (this.firstActivate)
 	{
+		
 	}
 	else
 	{
+		
 	}
 	this.firstActivate = true;
 };
+MainAssistant.prototype.deactivate = function(event)
+{
+}
 
 MainAssistant.prototype.getRandomSubTitle = function()
 {

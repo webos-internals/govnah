@@ -31,6 +31,47 @@
 	height: 75px;
 	background: url(../icon.png) center center no-repeat;
 }
+.main .palm-page-header-wrapper .icon.temp-25 { background-image: url(../images/icons/icon-25.png); }
+.main .palm-page-header-wrapper .icon.temp-26 { background-image: url(../images/icons/icon-25.png); }
+.main .palm-page-header-wrapper .icon.temp-27 { background-image: url(../images/icons/icon-25.png); }
+.main .palm-page-header-wrapper .icon.temp-28 { background-image: url(../images/icons/icon-25.png); }
+.main .palm-page-header-wrapper .icon.temp-29 { background-image: url(../images/icons/icon-25.png); }
+.main .palm-page-header-wrapper .icon.temp-30 { background-image: url(../images/icons/icon-30.png); }
+.main .palm-page-header-wrapper .icon.temp-31 { background-image: url(../images/icons/icon-31.png); }
+.main .palm-page-header-wrapper .icon.temp-32 { background-image: url(../images/icons/icon-32.png); }
+.main .palm-page-header-wrapper .icon.temp-33 { background-image: url(../images/icons/icon-33.png); }
+.main .palm-page-header-wrapper .icon.temp-34 { background-image: url(../images/icons/icon-34.png); }
+.main .palm-page-header-wrapper .icon.temp-35 { background-image: url(../images/icons/icon-35.png); }
+.main .palm-page-header-wrapper .icon.temp-36 { background-image: url(../images/icons/icon-36.png); }
+.main .palm-page-header-wrapper .icon.temp-37 { background-image: url(../images/icons/icon-37.png); }
+.main .palm-page-header-wrapper .icon.temp-38 { background-image: url(../images/icons/icon-38.png); }
+.main .palm-page-header-wrapper .icon.temp-39 { background-image: url(../images/icons/icon-39.png); }
+.main .palm-page-header-wrapper .icon.temp-40 { background-image: url(../images/icons/icon-40.png); }
+.main .palm-page-header-wrapper .icon.temp-41 { background-image: url(../images/icons/icon-41.png); }
+.main .palm-page-header-wrapper .icon.temp-42 { background-image: url(../images/icons/icon-42.png); }
+.main .palm-page-header-wrapper .icon.temp-43 { background-image: url(../images/icons/icon-43.png); }
+.main .palm-page-header-wrapper .icon.temp-44 { background-image: url(../images/icons/icon-44.png); }
+.main .palm-page-header-wrapper .icon.temp-45 { background-image: url(../images/icons/icon-45.png); }
+.main .palm-page-header-wrapper .icon.temp-46 { background-image: url(../images/icons/icon-46.png); }
+.main .palm-page-header-wrapper .icon.temp-47 { background-image: url(../images/icons/icon-47.png); }
+.main .palm-page-header-wrapper .icon.temp-48 { background-image: url(../images/icons/icon-48.png); }
+.main .palm-page-header-wrapper .icon.temp-49 { background-image: url(../images/icons/icon-49.png); }
+.main .palm-page-header-wrapper .icon.temp-50 { background-image: url(../images/icons/icon-50.png); }
+.main .palm-page-header-wrapper .icon.temp-51 { background-image: url(../images/icons/icon-51.png); }
+.main .palm-page-header-wrapper .icon.temp-52 { background-image: url(../images/icons/icon-52.png); }
+.main .palm-page-header-wrapper .icon.temp-53 { background-image: url(../images/icons/icon-53.png); }
+.main .palm-page-header-wrapper .icon.temp-54 { background-image: url(../images/icons/icon-54.png); }
+.main .palm-page-header-wrapper .icon.temp-55 { background-image: url(../images/icons/icon-55.png); }
+.main .palm-page-header-wrapper .icon.temp-56 { background-image: url(../images/icons/icon-56.png); }
+.main .palm-page-header-wrapper .icon.temp-57 { background-image: url(../images/icons/icon-57.png); }
+.main .palm-page-header-wrapper .icon.temp-58 { background-image: url(../images/icons/icon-58.png); }
+.main .palm-page-header-wrapper .icon.temp-59 { background-image: url(../images/icons/icon-59.png); }
+.main .palm-page-header-wrapper .icon.temp-60 { background-image: url(../images/icons/icon-60.png); }
+.main .palm-page-header-wrapper .icon.temp-61 { background-image: url(../images/icons/icon-61.png); }
+.main .palm-page-header-wrapper .icon.temp-62 { background-image: url(../images/icons/icon-62.png); }
+.main .palm-page-header-wrapper .icon.temp-63 { background-image: url(../images/icons/icon-63.png); }
+.main .palm-page-header-wrapper .icon.temp-64 { background-image: url(../images/icons/icon-64.png); }
+.main .palm-page-header-wrapper .icon.temp-65 { background-image: url(../images/icons/icon-65.png); }
 .main .palm-page-header-wrapper .title
 {
 	padding-left: 80px;
@@ -52,6 +93,48 @@
 	font-size: 14px;
 	padding-top: 0px;
 	margin-top: 0px;
+}
+
+.main #graph
+{
+	position: relative;
+	height: 102px;
+	padding: 0px;
+}
+.main #graph .label.left
+{
+	padding: 0px;
+	padding-left: 18px;
+	margin: 0px;
+}
+.main #graph #vertTop
+{
+	position: absolute;
+	z-index: 10;
+	padding-top: 6px;
+	top: 0px;
+}
+.main #graph #vertBot
+{
+	position: absolute;
+	z-index: 10;
+	top: 75px;
+}
+.main #graph .fade-left
+{
+	position: absolute;
+	z-index: 1;
+	width: 46px;
+	height: 100px;
+	top: 0px;
+	bottom: 100px;
+	background: url(../images/graphFade-left.png) top left repeat-y;
+}
+.main #graph #graphCanvas
+{
+	position: absolute;
+	z-index: 0;
+	top: 0px;
 }
 
 /*

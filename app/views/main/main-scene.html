@@ -1,16 +1,37 @@
-<div class="main">
+<div class="main form">
 	
 	<div class="scene-fade-top" x-mojo-scroll-fade="top"></div>
 
 	<div class="palm-page-header multi-line">
 		<div class="palm-page-header-wrapper">
-			<div class="icon"></div>
+			<div class="icon" id="icon"></div>
 			<div class="title main">
 				<span id="main-title">Govnah</span>
 				<span class="version" id="version">v0.0.0</span>
 			</div>
 			<div class="title sub" id="subTitle">Insert Witty Tagline Here...</div>
 		</div>
+	</div>
+	
+	<div class="palm-list" id="list">
+		
+		<div class="palm-row">
+			<div class="palm-row-wrapper">
+				<div class="label left">Current Governor</div>
+				<div class="title right">...</div>
+			</div>
+		</div>
+		
+		<div class="palm-row">
+			<div class="palm-row-wrapper" id="graph">
+				<div class="label left" id="vertTop"></div>
+				<div class="label left" id="vertBot"></div>
+				<div class="fade-left"></div>
+				<canvas id="graphCanvas" width="320" height="100"></canvas>
+			</div>
+		</div>
+		
+		
 	</div>
 	
 	<div class="scene-fade-bottom" x-mojo-scroll-fade="bottom"></div>
