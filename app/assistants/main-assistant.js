@@ -26,7 +26,6 @@ function MainAssistant()
 		]
 	};
 	
-	
 	this.timer = false;
 };
 
@@ -50,17 +49,27 @@ MainAssistant.prototype.setup = function()
 	this.temps = [];
 	this.rate = 500;
 	
-	this.canvas = this.controller.get('graphCanvas').getContext('2d');
+	this.canvasElement = this.controller.get('graphCanvas');
+	this.canvas = this.canvasElement.getContext('2d');
 	this.canvasWidth  = 320;
 	this.canvasHeight = 100;
 	
 	this.horzScale = 62;
+	this.pinchScale = 1;
+	this.pinching = false;
+	this.pinchingScale = 1;
 	
 	this.timerHandler = this.timerFunction.bind(this);	
 	this.tempHandler = this.onTemp.bindAsEventListener(this);
 	
 	//this.timer = setInterval(this.timerHandler, this.rate);
 	this.timer = setTimeout(this.timerHandler, this.rate);
+	
+	
+	
+    this.controller.listen(this.canvasElement, 'gesturestart', this.handleGestureStart.bind(this));
+    this.controller.listen(this.canvasElement, 'gesturechange', this.handleGestureChange.bind(this));
+    this.controller.listen(this.canvasElement, 'gestureend', this.handleGestureEnd.bind(this));
 };
 
 MainAssistant.prototype.timerFunction = function()
@@ -97,13 +106,16 @@ MainAssistant.prototype.renderGraph = function()
 	var vertTop = 0;
 	var vertBot = 100;
 	
+	var curHorzScale = (this.horzScale * this.pinchScale);
+	if (this.pinching)
+		curHorzScale = (curHorzScale * this.pinchingScale);
 
-	var segStart = (this.temps.length < this.horzScale ? this.horzScale - this.temps.length : 0);
-	//var segWidth = this.canvasWidth / (this.temps.length > this.horzScale ? this.horzScale : this.temps.length); // auto-sizing width with 0 segStart
-	var segWidth = this.canvasWidth / this.horzScale; // fixed for graph-draw-in from side instead of sizing
-	var startPoint = (this.temps.length > this.horzScale ? this.temps.length-this.horzScale : 0);
+	var segStart = Math.round(this.temps.length < curHorzScale ? curHorzScale - this.temps.length : 0);
+	//var segWidth = this.canvasWidth / (this.temps.length > curHorzScale ? curHorzScale : this.temps.length); // auto-sizing width with 0 segStart
+	var segWidth = this.canvasWidth / curHorzScale; // fixed for graph-draw-in from side instead of sizing
+	var startPoint = Math.round(this.temps.length > curHorzScale ? this.temps.length-curHorzScale : 0);
 	
-	//alert(segWidth);
+	//alert(segWidth + ' : ' + segStart);
 	
 	for (p = startPoint; p < this.temps.length; p++)
 	{
@@ -139,6 +151,26 @@ MainAssistant.prototype.renderGraph = function()
 	}
 	
   	this.canvas.restore();
+}
+
+MainAssistant.prototype.handleGestureStart = function(event)
+{
+	// always 1
+	//alert(1 / (1 * event.scale));
+}
+MainAssistant.prototype.handleGestureChange = function(event)
+{
+	//alert(1 / (1 * event.scale));
+	this.pinching = true;
+	this.pinchingScale = 1 / (1 * event.scale);
+	this.renderGraph();
+}
+MainAssistant.prototype.handleGestureEnd = function(event)
+{
+	//alert(1 / (1 * event.scale));
+	this.pinching = false;
+	this.pinchScale = this.pinchScale * (1 / (1 * event.scale));
+	this.renderGraph();
 }
 
 MainAssistant.prototype.activate = function(event)
