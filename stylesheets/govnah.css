@@ -113,7 +113,7 @@
 	position: absolute;
 	color: #ccc;
 	height: 50px;
-	width: 101px;
+	width: 200px;
 	text-align: center;
 	font-weight: bold;
 	font-size: 22px;
@@ -138,7 +138,7 @@
 	position: absolute;
 	z-index: 1;
 	width: 46px;
-	height: 100px;
+	height: 101px;
 	top: 0px;
 	bottom: 100px;
 	background: url(../images/graphFade-left.png) top left repeat-y;

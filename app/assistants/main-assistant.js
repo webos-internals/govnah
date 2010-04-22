@@ -50,29 +50,30 @@ MainAssistant.prototype.setup = function()
 	this.rate = 500;
 	
 	this.canvasElement = this.controller.get('graphCanvas');
-	this.canvas = this.canvasElement.getContext('2d');
-	
 	this.scaleElement = this.controller.get('scale');
-	//this.scaleElement.hide();
+	this.scaleElement.hide();
 	this.vertTop = this.controller.get('vertTop');
 	this.vertBot = this.controller.get('vertBot');
 	
-	this.canvasWidth  = 320;
-	this.canvasHeight = 100;
+	this.tempGraph = new lineGraph
+	(
+		this.canvasElement,
+		{
+			height: 100,
+			width: 320
+		}
+	);
 	
-	this.horzScale = 64;
-	this.pinchScale = 1;
-	this.pinching = false;
-	this.pinchingScale = 1;
+	this.tempGraphZoom = 0;
+	this.tempGraphZoomLevels = ['halfsecond','second','5seconds','10seconds','30seconds','min'];
+	this.tempGraphPinching = false;
+	this.tempGraphPinchingZoom = this.tempGraphZoom;
 	
 	this.timerHandler = this.timerFunction.bind(this);	
 	this.tempHandler = this.onTemp.bindAsEventListener(this);
 	
 	//this.timer = setInterval(this.timerHandler, this.rate);
 	this.timer = setTimeout(this.timerHandler, this.rate);
-	
-	
-	
 	
     this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
     this.gestureChangeHandler =	this.gestureChangeHandler.bindAsEventListener(this);
@@ -103,129 +104,135 @@ MainAssistant.prototype.onTemp = function(payload)
 	AppAssistant.updateIcon(payload.stdOut);
 	this.iconElement.className = 'icon temp-' + payload.stdOut;
 	
-	this.temps.push({date:new Date(), value:payload.stdOut})
+	this.temps.push({date:new Date(), value:parseInt(payload.stdOut)})
 	this.renderGraph();
 }
 
 MainAssistant.prototype.renderGraph = function()
 {
-  	this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight+1);
-	this.canvas.save();
 	
-	this.canvas.strokeStyle = "rgba(0, 0, 0, 1)";
-	this.canvas.lineWidth = 2;
+	this.tempGraph.clearLines();
 	
-	/*
-	this.canvas.beginPath();
-	this.canvas.moveTo(0, 0);
-	this.canvas.lineTo(320, 100);
-	this.canvas.stroke();
-	*/
+	var tmpData = [];
 	
-	var vertTop = 0;
-	var vertBot = 100;
+	var avg = false;
+	var points = 180;
 	
-	var pointAvg = 1;
-	
-	var curHorzScale = (this.horzScale * this.pinchScale);
-	if (this.pinching)
-		curHorzScale = (curHorzScale * this.pinchingScale);
-	
-	while (curHorzScale > this.canvasWidth)
+	switch (this.tempGraphZoomLevels[this.tempGraphPinchingZoom])
 	{
-		curHorzScale = curHorzScale - this.canvasWidth;
-		if (curHorzScale < this.horzScale) curHorzScale = this.horzScale;
-		pointAvg++;
-	}
-	
-	curHorzScale = Math.round(curHorzScale);
-	
-	//this.scaleElement.innerHTML = curHorzScale + ' : ' + pointAvg;
-	
-	var totalPoints = Math.round(this.temps.length / pointAvg);
-	
-	var segWidth = this.canvasWidth / curHorzScale;
-	var segStart = Math.round(totalPoints < curHorzScale ? curHorzScale - totalPoints : 0);
-	var startPoint = Math.round(totalPoints > (curHorzScale * pointAvg) ? this.temps.length - (curHorzScale * pointAvg) : 0);
-	
-	for (var p = startPoint; p < this.temps.length; p++)
-	{
-		if (vertTop < this.temps[p].value) vertTop = this.temps[p].value;
-		if (vertBot > this.temps[p].value) vertBot = this.temps[p].value;
-	}
-	
-	var vertSplit = vertTop - vertBot;
-	if (vertSplit < 5)
-	{
-		vertTop = parseInt(vertTop) + (5 - (vertSplit % 5));
-		vertSplit = vertTop - vertBot;
-	}
-	
-	this.vertTop.innerHTML = vertTop + '&deg;';
-	this.vertBot.innerHTML = vertBot + '&deg;';
-	
-	var num = segStart;
-	
-	var last = parseInt(this.temps[startPoint].value);
-	
-	for (var p = startPoint; p < this.temps.length; p = p + pointAvg)
-	{
-		var crnTotal = 0;
-		var display = true;
-		for (var a = pointAvg; a >= 1; a--)
-		{
-			if (this.temps[p-a])
+		case 'halfsecond':
+
+			if (this.temps.length < points)
 			{
-				crnTotal = crnTotal + parseInt(this.temps[p-a].value);
+				for (var t = 0; t < points - (this.temps.length % points); t++)
+				{
+					tmpData.push(false);
+				}
 			}
-			else
+			for (var t = (this.temps.length > points ? this.temps.length - points : 0); t < this.temps.length; t++)
 			{
-				crnTotal = crnTotal + parseInt(this.temps[p].value);
-				var display = false;
+				tmpData.push(this.temps[t].value);
 			}
-		}
-		var crnt = crnTotal / pointAvg;
+			break;
 		
-		if (display)
-		{
-			this.canvas.beginPath();
-			this.canvas.moveTo(num * segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (last - vertBot));
-			this.canvas.lineTo((num * segWidth) + segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (crnt - vertBot));
-			this.canvas.stroke();
-		}
-		var last = crnt; 
-		
-		num++;
+		case 'second':
+			if (avg === false) avg = 1;
+		case '5seconds':
+			if (avg === false) avg = 5;
+		case '10seconds':
+			if (avg === false) avg = 10;
+		case '30seconds':
+			if (avg === false) avg = 30;
+		case 'min':
+			if (avg === false) avg = 60;
+			
+			var avgData = $H();
+			for (var t = 0; t < this.temps.length; t++)
+			{
+				var avgTime = Math.round(this.temps[t].date.getTime()/1000);
+				avgTime = avgTime - (avgTime % avg);
+				
+				if (tmpObj = avgData.get(avgTime))
+				{
+					tmpObj.total = tmpObj.total + this.temps[t].value;
+					tmpObj.count++;
+				}
+				else
+				{
+					var tmpObj =
+					{
+						total: this.temps[t].value,
+						count: 1
+					}
+				}
+				
+				avgData.set(avgTime, tmpObj);
+			}
+			
+			var tmpKeys = avgData.keys();
+			if (tmpKeys.length < points)
+			{
+				for (var t = 0; t < points - (tmpKeys.length % points); t++)
+				{
+					tmpData.push(false);
+				}
+			}
+			for (t = (tmpKeys.length > points ? tmpKeys.length - points : 0); t < tmpKeys.length; t++)
+			{
+				var tmpObj = avgData.get(tmpKeys[t]);
+				tmpData.push(tmpObj.total / tmpObj.count);
+			}
+			break;
 	}
 	
-  	this.canvas.restore();
+	this.tempGraph.setLine(tmpData, {});
+	
+	
+	this.tempGraph.render();
+	
+	this.vertTop.innerHTML = Math.round(this.tempGraph.lines[0].vertical.top) + '&deg;';
+	this.vertBot.innerHTML = Math.round(this.tempGraph.lines[0].vertical.bottom) + '&deg;';
+	
 }
 
 MainAssistant.prototype.gestureStartHandler = function(event)
 {
-	//this.scaleElement.show();
-	
-    this.scaleElement.style.left = (event.centerX - 50) + "px";
-	this.scaleElement.innerHTML = Math.round((1 / (1 * event.scale)) * 100) +  "%";
+	this.scaleElement.show();
 	
 }
 MainAssistant.prototype.gestureChangeHandler = function(event)
 {
-	this.pinching = true;
-	this.pinchingScale = 1 / (1 * event.scale);
+	this.tempGraphPinching = true;
+	this.tempGraphPinchingZoom = this.tempGraphZoom;
 	
-    this.scaleElement.style.left = (event.pageX - 50) + "px";
-	this.scaleElement.innerHTML = Math.round(this.pinchingScale * 100) +  "%";
+	if (event.scale > 1.4 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
+	{
+		this.tempGraphPinchingZoom++;
+	}
+	if (event.scale < .6 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
+	{
+			this.tempGraphPinchingZoom--;
+	}
 	
-	this.renderGraph();
+    this.scaleElement.style.left = (event.pageX - 100) + "px";
+	this.scaleElement.innerHTML = this.tempGraphZoomLevels[this.tempGraphPinchingZoom];
+	
+	//this.renderGraph();
 }
 MainAssistant.prototype.gestureEndHandler = function(event)
 {
-	this.pinching = false;
-	this.pinchScale = this.pinchScale * (1 / (1 * event.scale));
+	this.tempGraphPinching = false;
 	
-	//this.scaleElement.hide();
-	this.scaleElement.innerHTML = "100%";
+	this.scaleElement.hide();
+	
+	if (event.scale > 1.4 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
+	{
+		this.tempGraphZoom++;
+	}
+	if (event.scale < .6 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
+	{
+		this.tempGraphZoom--;
+	}
 	
 	this.renderGraph();
 }
