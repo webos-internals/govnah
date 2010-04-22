@@ -207,21 +207,21 @@ MainAssistant.prototype.gestureChangeHandler = function(event)
 	this.tempGraphPinching = true;
 	this.tempGraphPinchingZoom = this.tempGraphZoom;
 	
-	if (event.scale > 1.4 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
-	{
-		this.tempGraphPinchingZoom++;
-	}
-	if (event.scale > 1.9 && this.tempGraphZoomLevels[this.tempGraphZoom+2])
-	{
-		this.tempGraphPinchingZoom++;
-	}
-	if (event.scale < .6 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
+	if (event.scale > 1.4 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
 	{
 		this.tempGraphPinchingZoom--;
 	}
-	if (event.scale < .3 && this.tempGraphZoomLevels[this.tempGraphZoom-2])
+	if (event.scale > 1.9 && this.tempGraphZoomLevels[this.tempGraphZoom-2])
 	{
 		this.tempGraphPinchingZoom--;
+	}
+	if (event.scale < .6 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
+	{
+		this.tempGraphPinchingZoom++;
+	}
+	if (event.scale < .3 && this.tempGraphZoomLevels[this.tempGraphZoom+2])
+	{
+		this.tempGraphPinchingZoom++;
 	}
 	
     this.scaleElement.style.left = (event.pageX - 100) + "px";
@@ -235,21 +235,21 @@ MainAssistant.prototype.gestureEndHandler = function(event)
 	
 	this.scaleElement.hide();
 	
-	if (event.scale > 1.4 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
-	{
-		this.tempGraphZoom++;
-	}
-	if (event.scale > 1.9 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
-	{
-		this.tempGraphZoom++;
-	}
-	if (event.scale < .6 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
+	if (event.scale > 1.4 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
 	{
 		this.tempGraphZoom--;
 	}
-	if (event.scale < .3 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
+	if (event.scale > 1.9 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
 	{
 		this.tempGraphZoom--;
+	}
+	if (event.scale < .6 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
+	{
+		this.tempGraphZoom++;
+	}
+	if (event.scale < .3 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
+	{
+		this.tempGraphZoom++;
 	}
 	
 	this.renderGraph();
