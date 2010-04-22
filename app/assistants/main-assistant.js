@@ -66,7 +66,7 @@ MainAssistant.prototype.setup = function()
 		}
 	);
 	
-	this.tempGraphZoom = 0;
+	this.tempGraphZoom = 1;
 	this.tempGraphZoomLevels = ['halfsecond','second','5seconds','10seconds','30seconds','min'];
 	this.tempGraphPinching = false;
 	this.tempGraphPinchingZoom = this.tempGraphZoom;
@@ -211,9 +211,17 @@ MainAssistant.prototype.gestureChangeHandler = function(event)
 	{
 		this.tempGraphPinchingZoom++;
 	}
+	if (event.scale > 1.9 && this.tempGraphZoomLevels[this.tempGraphZoom+2])
+	{
+		this.tempGraphPinchingZoom++;
+	}
 	if (event.scale < .6 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
 	{
-			this.tempGraphPinchingZoom--;
+		this.tempGraphPinchingZoom--;
+	}
+	if (event.scale < .3 && this.tempGraphZoomLevels[this.tempGraphZoom-2])
+	{
+		this.tempGraphPinchingZoom--;
 	}
 	
     this.scaleElement.style.left = (event.pageX - 100) + "px";
@@ -231,7 +239,15 @@ MainAssistant.prototype.gestureEndHandler = function(event)
 	{
 		this.tempGraphZoom++;
 	}
+	if (event.scale > 1.9 && this.tempGraphZoomLevels[this.tempGraphZoom+1])
+	{
+		this.tempGraphZoom++;
+	}
 	if (event.scale < .6 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
+	{
+		this.tempGraphZoom--;
+	}
+	if (event.scale < .3 && this.tempGraphZoomLevels[this.tempGraphZoom-1])
 	{
 		this.tempGraphZoom--;
 	}
