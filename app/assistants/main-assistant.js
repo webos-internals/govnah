@@ -125,28 +125,19 @@ MainAssistant.prototype.renderGraph = function()
 	var vertTop = 0;
 	var vertBot = 100;
 	
-	var pointAvg = 0;
+	var pointAvg = 1;
 	
 	var curHorzScale = (this.horzScale * this.pinchScale);
 	if (this.pinching)
 		curHorzScale = (curHorzScale * this.pinchingScale);
 	
-	/*
-	while (curHorzScale > (this.canvasWidth / 2))
-	{
-		curHorzScale = curHorzScale - (this.canvasWidth / 2);
-		if (curHorzScale < this.horzScale) curHorzScale = this.horzScale;
-		pointAvg++;
-	}
-	*/
 	
-	//alert(pointAvg + " : " + curHorzScale);
-
+	
+	
+	
 	var segWidth = this.canvasWidth / curHorzScale;
 	var segStart = Math.round(this.temps.length < curHorzScale ? curHorzScale - this.temps.length : 0);
 	var startPoint = Math.round(this.temps.length > curHorzScale ? this.temps.length-curHorzScale : 0);
-	
-	//alert(segWidth + ' : ' + segStart);
 	
 	for (var p = startPoint; p < this.temps.length; p++)
 	{
@@ -161,7 +152,6 @@ MainAssistant.prototype.renderGraph = function()
 		vertSplit = vertTop - vertBot;
 	}
 	
-	//alert(vertTop + " - " + vertBot + " : " + vertSplit);
 	this.vertTop.innerHTML = vertTop + '&deg;';
 	this.vertBot.innerHTML = vertBot + '&deg;';
 	
@@ -169,23 +159,17 @@ MainAssistant.prototype.renderGraph = function()
 	
 	var last = parseInt(this.temps[startPoint].value);
 	
-	for (var p = startPoint; p < this.temps.length; p++)
+	for (var p = startPoint; p < this.temps.length; p = p + pointAvg)
 	{
 		var crnTotal = 0;
-		for (var a = pointAvg; a >= 0; a--)
+		for (var a = pointAvg; a >= 1; a--)
 		{
 			if (this.temps[p-a])
 				crnTotal = crnTotal + parseInt(this.temps[p-a].value);
 			else
 				crnTotal = crnTotal + parseInt(this.temps[p].value);
-			
-			//alert(crnTotal + ' / ' + pointAvg);
 		}
-		var crnt = crnTotal / (pointAvg+1);
-		
-		//alert(crnt);
-		
-		//alert((num * segWidth) + " - " + ((num * segWidth) + segWidth));
+		var crnt = crnTotal / pointAvg;
 		
 		this.canvas.beginPath();
 		this.canvas.moveTo(num * segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (last - vertBot));
