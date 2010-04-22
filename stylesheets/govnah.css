@@ -101,16 +101,28 @@
 	height: 102px;
 	padding: 0px;
 }
-.main #graph .label.left
+.main #graph .title,
+.main #graph .label
 {
 	padding: 0px;
-	padding-left: 18px;
 	margin: 0px;
+	float: none;
+}
+.main #graph #scale
+{
+	position: absolute;
+	color: #ccc;
+	height: 50px;
+	width: 100px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 22px;
 }
 .main #graph #vertTop
 {
 	position: absolute;
 	z-index: 10;
+	padding-left: 18px;
 	padding-top: 6px;
 	top: 0px;
 }
@@ -118,6 +130,7 @@
 {
 	position: absolute;
 	z-index: 10;
+	padding-left: 18px;
 	top: 75px;
 }
 .main #graph .fade-left

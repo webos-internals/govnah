@@ -51,6 +51,8 @@ MainAssistant.prototype.setup = function()
 	
 	this.canvasElement = this.controller.get('graphCanvas');
 	this.canvas = this.canvasElement.getContext('2d');
+	this.scaleElement = this.controller.get('scale');
+	this.scaleElement.hide();
 	this.canvasWidth  = 320;
 	this.canvasHeight = 100;
 	
@@ -67,9 +69,22 @@ MainAssistant.prototype.setup = function()
 	
 	
 	
-    this.controller.listen(this.canvasElement, 'gesturestart', this.handleGestureStart.bind(this));
-    this.controller.listen(this.canvasElement, 'gesturechange', this.handleGestureChange.bind(this));
-    this.controller.listen(this.canvasElement, 'gestureend', this.handleGestureEnd.bind(this));
+	
+    this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
+    this.gestureChangeHandler =	this.gestureChangeHandler.bindAsEventListener(this);
+    this.gestureEndHandler =	this.gestureEndHandler.bindAsEventListener(this);
+	this.flickHandler =			this.flickHandler.bindAsEventListener(this);
+	this.dragStartHandler =		this.dragStartHandler.bindAsEventListener(this);
+	this.draggingHandler =		this.draggingHandler.bindAsEventListener(this);
+	this.dragEndHandler =		this.dragEndHandler.bindAsEventListener(this);
+	
+    this.controller.listen(this.canvasElement, 'gesturestart',			this.gestureStartHandler);
+    this.controller.listen(this.canvasElement, 'gesturechange',			this.gestureChangeHandler);
+    this.controller.listen(this.canvasElement, 'gestureend',			this.gestureEndHandler);
+	this.controller.listen(this.canvasElement, Mojo.Event.flick,		this.flickHandler);
+	this.controller.listen(this.canvasElement, Mojo.Event.dragStart,	this.dragStartHandler);
+	this.controller.listen(this.canvasElement, Mojo.Event.dragging,		this.draggingHandler);
+	this.controller.listen(this.canvasElement, Mojo.Event.dragEnd,		this.dragEndHandler);
 };
 
 MainAssistant.prototype.timerFunction = function()
@@ -153,29 +168,52 @@ MainAssistant.prototype.renderGraph = function()
   	this.canvas.restore();
 }
 
-MainAssistant.prototype.handleGestureStart = function(event)
+MainAssistant.prototype.gestureStartHandler = function(event)
 {
-	// always 1
-	//alert(1 / (1 * event.scale));
+	this.scaleElement.show();
+	
+    this.scaleElement.style.left = (event.centerX - 50) + "px";
+	this.scaleElement.innerHTML = Math.round((1 / (1 * event.scale)) * 100) +  "%";
+	
 }
-MainAssistant.prototype.handleGestureChange = function(event)
+MainAssistant.prototype.gestureChangeHandler = function(event)
 {
-	//alert(1 / (1 * event.scale));
 	this.pinching = true;
 	this.pinchingScale = 1 / (1 * event.scale);
+	
+	for (x in this.canvasElement) alert(x + ": " + this.canvasElement[x]);
+	
+    this.scaleElement.style.left = (event.pageX - 50) + "px";
+	this.scaleElement.innerHTML = Math.round(this.pinchingScale * 100) +  "%";
+	
 	this.renderGraph();
 }
-MainAssistant.prototype.handleGestureEnd = function(event)
+MainAssistant.prototype.gestureEndHandler = function(event)
 {
-	//alert(1 / (1 * event.scale));
 	this.pinching = false;
 	this.pinchScale = this.pinchScale * (1 / (1 * event.scale));
+	
+	this.scaleElement.hide();
+	this.scaleElement.innerHTML = "100%";
+	
 	this.renderGraph();
+}
+
+MainAssistant.prototype.flickHandler = function(event)
+{
+}
+MainAssistant.prototype.dragStartHandler = function(event)
+{
+}
+MainAssistant.prototype.draggingHandler = function(event)
+{
+}
+MainAssistant.prototype.dragEndHandler = function(event)
+{
 }
 
 MainAssistant.prototype.activate = function(event)
 {
-	
 	if (this.firstActivate)
 	{
 		
