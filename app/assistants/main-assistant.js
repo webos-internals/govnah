@@ -67,7 +67,7 @@ MainAssistant.prototype.setup = function()
 	);
 	
 	this.tempGraphZoom = 1;
-	this.tempGraphZoomLevels = ['halfsecond','second','5seconds','10seconds','30seconds','min'];
+	this.tempGraphZoomLevels = ['halfsecond','second','2seconds','5seconds','10seconds','30seconds','min'];
 	this.tempGraphPinching = false;
 	this.tempGraphPinchingZoom = this.tempGraphZoom;
 	
@@ -139,6 +139,8 @@ MainAssistant.prototype.renderGraph = function()
 		
 		case 'second':
 			if (avg === false) avg = 1;
+		case '2seconds':
+			if (avg === false) avg = 2;
 		case '5seconds':
 			if (avg === false) avg = 5;
 		case '10seconds':
