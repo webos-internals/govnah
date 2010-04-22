@@ -98,7 +98,7 @@
 .main #graph
 {
 	position: relative;
-	height: 102px;
+	height: 104px;
 	padding: 0px;
 }
 .main #graph .title,
@@ -131,7 +131,7 @@
 	position: absolute;
 	z-index: 10;
 	padding-left: 18px;
-	top: 75px;
+	top: 77px;
 }
 .main #graph .fade-left
 {
@@ -147,7 +147,7 @@
 {
 	position: absolute;
 	z-index: 0;
-	top: 0px;
+	top: 1px;
 }
 
 /*

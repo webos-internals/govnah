@@ -51,12 +51,16 @@ MainAssistant.prototype.setup = function()
 	
 	this.canvasElement = this.controller.get('graphCanvas');
 	this.canvas = this.canvasElement.getContext('2d');
+	
 	this.scaleElement = this.controller.get('scale');
 	this.scaleElement.hide();
+	this.vertTop = this.controller.get('vertTop');
+	this.vertBot = this.controller.get('vertBot');
+	
 	this.canvasWidth  = 320;
 	this.canvasHeight = 100;
 	
-	this.horzScale = 62;
+	this.horzScale = 64;
 	this.pinchScale = 1;
 	this.pinching = false;
 	this.pinchingScale = 1;
@@ -105,7 +109,7 @@ MainAssistant.prototype.onTemp = function(payload)
 
 MainAssistant.prototype.renderGraph = function()
 {
-  	this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+  	this.canvas.clearRect(0, 0, this.canvasWidth, this.canvasHeight+1);
 	this.canvas.save();
 	
 	this.canvas.strokeStyle = "rgba(0, 0, 0, 1)";
@@ -121,18 +125,30 @@ MainAssistant.prototype.renderGraph = function()
 	var vertTop = 0;
 	var vertBot = 100;
 	
+	var pointAvg = 0;
+	
 	var curHorzScale = (this.horzScale * this.pinchScale);
 	if (this.pinching)
 		curHorzScale = (curHorzScale * this.pinchingScale);
+	
+	/*
+	while (curHorzScale > (this.canvasWidth / 2))
+	{
+		curHorzScale = curHorzScale - (this.canvasWidth / 2);
+		if (curHorzScale < this.horzScale) curHorzScale = this.horzScale;
+		pointAvg++;
+	}
+	*/
+	
+	//alert(pointAvg + " : " + curHorzScale);
 
+	var segWidth = this.canvasWidth / curHorzScale;
 	var segStart = Math.round(this.temps.length < curHorzScale ? curHorzScale - this.temps.length : 0);
-	//var segWidth = this.canvasWidth / (this.temps.length > curHorzScale ? curHorzScale : this.temps.length); // auto-sizing width with 0 segStart
-	var segWidth = this.canvasWidth / curHorzScale; // fixed for graph-draw-in from side instead of sizing
 	var startPoint = Math.round(this.temps.length > curHorzScale ? this.temps.length-curHorzScale : 0);
 	
 	//alert(segWidth + ' : ' + segStart);
 	
-	for (p = startPoint; p < this.temps.length; p++)
+	for (var p = startPoint; p < this.temps.length; p++)
 	{
 		if (vertTop < this.temps[p].value) vertTop = this.temps[p].value;
 		if (vertBot > this.temps[p].value) vertBot = this.temps[p].value;
@@ -146,15 +162,28 @@ MainAssistant.prototype.renderGraph = function()
 	}
 	
 	//alert(vertTop + " - " + vertBot + " : " + vertSplit);
-	this.controller.get('vertTop').innerHTML = vertTop + '&deg;';
-	this.controller.get('vertBot').innerHTML = vertBot + '&deg;';
+	this.vertTop.innerHTML = vertTop + '&deg;';
+	this.vertBot.innerHTML = vertBot + '&deg;';
 	
 	var num = segStart;
 	
-	for (p = startPoint; p < this.temps.length; p++)
+	var last = parseInt(this.temps[startPoint].value);
+	
+	for (var p = startPoint; p < this.temps.length; p++)
 	{
-		var last = (this.temps[p-1] ? this.temps[p-1].value : this.temps[p].value);
-		var crnt = this.temps[p].value;
+		var crnTotal = 0;
+		for (var a = pointAvg; a >= 0; a--)
+		{
+			if (this.temps[p-a])
+				crnTotal = crnTotal + parseInt(this.temps[p-a].value);
+			else
+				crnTotal = crnTotal + parseInt(this.temps[p].value);
+			
+			//alert(crnTotal + ' / ' + pointAvg);
+		}
+		var crnt = crnTotal / (pointAvg+1);
+		
+		//alert(crnt);
 		
 		//alert((num * segWidth) + " - " + ((num * segWidth) + segWidth));
 		
@@ -162,6 +191,9 @@ MainAssistant.prototype.renderGraph = function()
 		this.canvas.moveTo(num * segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (last - vertBot));
 		this.canvas.lineTo((num * segWidth) + segWidth, this.canvasHeight - (this.canvasHeight / vertSplit) * (crnt - vertBot));
 		this.canvas.stroke();
+		
+		var last = crnt; 
+		
 		num++;
 	}
 	
@@ -180,8 +212,6 @@ MainAssistant.prototype.gestureChangeHandler = function(event)
 {
 	this.pinching = true;
 	this.pinchingScale = 1 / (1 * event.scale);
-	
-	for (x in this.canvasElement) alert(x + ": " + this.canvasElement[x]);
 	
     this.scaleElement.style.left = (event.pageX - 50) + "px";
 	this.scaleElement.innerHTML = Math.round(this.pinchingScale * 100) +  "%";
