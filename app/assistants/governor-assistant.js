@@ -27,9 +27,7 @@ GovernorAssistant.prototype.setup = function()
 			label: $L('Governor'),
 			choices:
 			[
-				{label:$L('userspace'),		value:'userspace'},
-				{label:$L('userspacea'),	value:'userspacea'},
-				{label:$L('userspaceb'),	value:'userspaceb'}
+				{label:$L('userspace'),		value:'userspace'}
 			],
 			modelProperty: 'governor'
 		},
