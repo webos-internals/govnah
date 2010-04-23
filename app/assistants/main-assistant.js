@@ -56,7 +56,7 @@ MainAssistant.prototype.setup = function()
 	
 	this.governorHandler = this.onGovernor.bindAsEventListener(this);
 	this.governorTapHandler = this.governorTap.bindAsEventListener(this);
-	service.get_scaling_governor(this.governorHandler);
+	
 	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
 		
 	
@@ -302,6 +302,8 @@ MainAssistant.prototype.activate = function(event)
 		
 	}
 	this.firstActivate = true;
+	
+	service.get_scaling_governor(this.governorHandler);
 };
 MainAssistant.prototype.deactivate = function(event)
 {
