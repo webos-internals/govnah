@@ -16,16 +16,36 @@ function GovernorAssistant()
 
 GovernorAssistant.prototype.setup = function()
 {
-	// get elements
-	this.titleElement =			this.controller.get('listTitle');
-	
-	// setup title
-	this.titleElement.innerHTML = $L('Governor');
-	
 	// setup menu
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 	
+	
+	this.controller.setupWidget
+	(
+		'governor',
+		{
+			label: $L('Governor'),
+			choices:
+			[
+				{label:$L('userspace'),		value:'userspace'},
+				{label:$L('userspacea'),	value:'userspacea'},
+				{label:$L('userspaceb'),	value:'userspaceb'}
+			],
+			modelProperty: 'governor'
+		},
+		{
+			governor: 'userspace'
+		}
+	);
+	
 };
+
+GovernorAssistant.prototype.buildForm = function()
+{
+	
+};
+
+
 GovernorAssistant.prototype.activate = function(event)
 {
 	if (this.firstActivate)

@@ -115,7 +115,7 @@ MainAssistant.prototype.onGovernor = function(payload)
 }
 MainAssistant.prototype.governorTap = function(event)
 {
-	//this.controller.stageController.pushScene('governor');
+	this.controller.stageController.pushScene('governor');
 }
 
 MainAssistant.prototype.timerFunction = function()
