@@ -186,6 +186,16 @@
 {
 	opacity: 0.35;
 }
+.form .palm-row .title.right .unit
+{
+	float: right;
+	width: 35px;
+	padding-left: 8px;
+	padding-top: 4px;
+	text-align: left;
+	color: #aaa;
+	font-size: 16px;
+}
 
 /*
  * Help Scene Styles

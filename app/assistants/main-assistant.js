@@ -43,6 +43,7 @@ MainAssistant.prototype.setup = function()
 	this.subTitleElement =	this.controller.get('subTitle');
 	this.governorRow =		this.controller.get('governorRow');
 	this.governorCurrent =	this.controller.get('governorCurrent');
+	this.frequencyCurrent =	this.controller.get('frequencyCurrent');
 	
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
@@ -86,9 +87,10 @@ MainAssistant.prototype.setup = function()
 	
 	this.timerHandler = this.timerFunction.bind(this);
 	this.tempHandler = this.onTemp.bindAsEventListener(this);
-	
+    this.freqHandler =	this.freqHandler.bindAsEventListener(this);
+		
 	//this.timer = setInterval(this.timerHandler, this.rate);
-	this.timer = setTimeout(this.timerHandler, this.rate);
+	this.timerHandler();
 	
     this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
     this.gestureChangeHandler =	this.gestureChangeHandler.bindAsEventListener(this);
@@ -105,6 +107,7 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.canvasElement, Mojo.Event.dragStart,	this.dragStartHandler);
 	this.controller.listen(this.canvasElement, Mojo.Event.dragging,		this.draggingHandler);
 	this.controller.listen(this.canvasElement, Mojo.Event.dragEnd,		this.dragEndHandler);
+	
 };
 
 MainAssistant.prototype.onGovernor = function(payload)
@@ -118,9 +121,17 @@ MainAssistant.prototype.governorTap = function(event)
 	this.controller.stageController.pushScene('governor');
 }
 
+MainAssistant.prototype.freqHandler = function(payload)
+{
+	this.frequencyCurrent.innerHTML = (parseInt(payload.value) / 1000) + '<div class="unit">MHz</div>';
+	//alert ('-----');
+	//for (p in payload) alert(p+":"+payload[p]);
+}
+
 MainAssistant.prototype.timerFunction = function()
 {
 	service.get_omap34xx_temp(this.tempHandler);
+	service.get_scaling_cur_freq(this.freqHandler);
 	
 	this.timer = setTimeout(this.timerHandler, this.rate);
 };
