@@ -64,7 +64,6 @@ GovernorAssistant.prototype.setup = function()
 
 	service.get_scaling_available_governors(this.onAvailableGovernors);
 	
-	
 };
 
 GovernorAssistant.prototype.onAvailableGovernors = function(payload)
@@ -79,7 +78,7 @@ GovernorAssistant.prototype.onAvailableGovernors = function(payload)
 			var tmpGov = trim(data[d]);
 			if (tmpGov && this.governors[tmpGov])
 			{
-				alert(tmpGov);
+				this.governors[tmpGov].visible = true;
 				this.governorModel.choices.push({label:$L(tmpGov), value:tmpGov});
 			}
 		}
@@ -98,6 +97,8 @@ GovernorAssistant.prototype.onCurrentGovernor = function(payload)
 	this.governorModel.value = trim(payload.value);
 	
 	this.controller.modelChanged(this.governorModel);
+	
+	
 };
 
 GovernorAssistant.prototype.buildForm = function()

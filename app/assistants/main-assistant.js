@@ -112,7 +112,7 @@ MainAssistant.prototype.setup = function()
 
 MainAssistant.prototype.onGovernor = function(payload)
 {
-	this.governorCurrent.innerHTML = payload.value;
+	this.governorCurrent.innerHTML = trim(payload.value);
 	//alert ('-----');
 	//for (p in payload) alert(p+":"+payload[p]);
 }
