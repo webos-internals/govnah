@@ -24,6 +24,17 @@ service.get_omap34xx_temp = function(callback)
 	return request;
 };
 
+service.get_scaling_available_governors = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_scaling_available_governors',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+
 service.get_scaling_governor = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,

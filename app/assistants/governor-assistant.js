@@ -12,30 +12,92 @@ function GovernorAssistant()
 			}
 		]
 	};
+	
+	this.governors =
+	{
+		conservative:
+		{
+			visible: false
+		},
+		ondemand:
+		{
+			visible: false
+		},
+		powersave:
+		{
+			visible: false
+		},
+		userspace:
+		{
+			visible: false
+		},
+		performance:
+		{
+			visible: false
+		}
+	};
+	
+	this.governorModel = 
+	{
+		value: '',
+		choices: []
+	};
 };
 
 GovernorAssistant.prototype.setup = function()
 {
 	// setup menu
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
-	
-	
+
+	// setup governor list
 	this.controller.setupWidget
 	(
 		'governor',
 		{
-			label: $L('Governor'),
-			choices:
-			[
-				{label:$L('userspace'),		value:'userspace'}
-			],
-			modelProperty: 'governor'
+			label: $L('Governor')
 		},
-		{
-			governor: 'userspace'
-		}
+		this.governorModel
 	);
 	
+    this.onAvailableGovernors = this.onAvailableGovernors.bindAsEventListener(this);
+    this.onCurrentGovernor = this.onCurrentGovernor.bindAsEventListener(this);
+
+	service.get_scaling_available_governors(this.onAvailableGovernors);
+	
+	
+};
+
+GovernorAssistant.prototype.onAvailableGovernors = function(payload)
+{
+	this.governorModel.choices = [];
+	
+	var data = payload.value.split(" ");
+	if (data.length > 0)
+	{
+		for (d = 0; d < data.length; d++)
+		{
+			var tmpGov = trim(data[d]);
+			if (tmpGov && this.governors[tmpGov])
+			{
+				alert(tmpGov);
+				this.governorModel.choices.push({label:$L(tmpGov), value:tmpGov});
+			}
+		}
+	}
+	
+	this.controller.modelChanged(this.governorModel);
+	
+	// move on
+	service.get_scaling_governor(this.onCurrentGovernor);
+};
+
+GovernorAssistant.prototype.onCurrentGovernor = function(payload)
+{
+	this.governorModel.value = "";
+	
+	this.governorModel.value = trim(payload.value);
+	
+	this.controller.modelChanged(this.governorModel);
 };
 
 GovernorAssistant.prototype.buildForm = function()
