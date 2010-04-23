@@ -41,6 +41,8 @@ MainAssistant.prototype.setup = function()
 	this.titleElement =		this.controller.get('main-title');
 	this.versionElement =	this.controller.get('version');
 	this.subTitleElement =	this.controller.get('subTitle');
+	this.governorRow =		this.controller.get('governorRow');
+	this.governorCurrent =	this.controller.get('governorCurrent');
 	
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
@@ -51,8 +53,14 @@ MainAssistant.prototype.setup = function()
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 	
 	
+	this.governorHandler = this.onGovernor.bindAsEventListener(this);
+	this.governorTapHandler = this.governorTap.bindAsEventListener(this);
+	service.get_scaling_governor(this.governorHandler);
+	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
+		
+	
 	this.temps = [];
-	this.rate = 500;
+	this.rate = 5000;
 	
 	this.canvasElement = this.controller.get('graphCanvas');
 	this.scaleElement = this.controller.get('scale');
@@ -71,12 +79,12 @@ MainAssistant.prototype.setup = function()
 		}
 	);
 	
-	this.tempGraphZoom = 1;
-	this.tempGraphZoomLevels = ['halfsecond','second','2seconds','5seconds','10seconds','30seconds','min'];
+	this.tempGraphZoom = 0;
+	this.tempGraphZoomLevels = [/*halfsecond','second','2seconds',*/'5seconds','10seconds','30seconds','min'];
 	this.tempGraphPinching = false;
 	this.tempGraphPinchingZoom = this.tempGraphZoom;
 	
-	this.timerHandler = this.timerFunction.bind(this);	
+	this.timerHandler = this.timerFunction.bind(this);
 	this.tempHandler = this.onTemp.bindAsEventListener(this);
 	
 	//this.timer = setInterval(this.timerHandler, this.rate);
@@ -98,6 +106,17 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.canvasElement, Mojo.Event.dragging,		this.draggingHandler);
 	this.controller.listen(this.canvasElement, Mojo.Event.dragEnd,		this.dragEndHandler);
 };
+
+MainAssistant.prototype.onGovernor = function(payload)
+{
+	this.governorCurrent.innerHTML = payload.value;
+	//alert ('-----');
+	//for (p in payload) alert(p+":"+payload[p]);
+}
+MainAssistant.prototype.governorTap = function(event)
+{
+	//this.controller.stageController.pushScene('governor');
+}
 
 MainAssistant.prototype.timerFunction = function()
 {
@@ -212,7 +231,6 @@ MainAssistant.prototype.gestureStartHandler = function(event)
 	this.scaleElement.show();
 	
 };
-
 MainAssistant.prototype.gestureChangeHandler = function(event)
 {
 	this.tempGraphPinching = true;
@@ -240,7 +258,6 @@ MainAssistant.prototype.gestureChangeHandler = function(event)
 	
 	//this.renderGraph();
 };
-
 MainAssistant.prototype.gestureEndHandler = function(event)
 {
 	this.tempGraphPinching = false;
@@ -270,15 +287,12 @@ MainAssistant.prototype.gestureEndHandler = function(event)
 MainAssistant.prototype.flickHandler = function(event)
 {
 };
-
 MainAssistant.prototype.dragStartHandler = function(event)
 {
 };
-
 MainAssistant.prototype.draggingHandler = function(event)
 {
 };
-
 MainAssistant.prototype.dragEndHandler = function(event)
 {
 };
@@ -295,7 +309,6 @@ MainAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 };
-
 MainAssistant.prototype.deactivate = function(event)
 {
 };
