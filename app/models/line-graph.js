@@ -17,6 +17,7 @@ function lineGraph(graph, options)
 	this.lines = []; 
 	
 };
+
 lineGraph.prototype.setLine = function(data, options)
 {
 	if (!options.top || !options.bottom)
@@ -57,6 +58,7 @@ lineGraph.prototype.clearLines = function()
 {
 	this.lines = [];
 }
+
 lineGraph.prototype.render = function()
 {
   	this.canvas.clearRect(0, 0, this.width, this.height+1);
@@ -64,6 +66,14 @@ lineGraph.prototype.render = function()
 	
 	for (var line = 0; line < this.lines.length; line++)
 	{
+	
+		this.canvas.fillStyle = "rgba(170, 170, 170, .15)";
+		for (var v = 1; v < (this.lines[line].vertical.top - this.lines[line].vertical.bottom); v = v + 2)
+		{
+			this.canvas.fillRect(0, (this.height / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * v,
+								this.width, (this.height / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)));
+		}
+		
 		this.canvas.strokeStyle = this.lines[line].strokeStyle;
 		this.canvas.lineWidth = this.lines[line].lineWidth;
 		
@@ -82,7 +92,6 @@ lineGraph.prototype.render = function()
 			}
 			last = crnt;
 		}
-			
 	}
 	
   	this.canvas.restore();

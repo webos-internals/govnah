@@ -81,7 +81,7 @@ MainAssistant.prototype.setup = function()
 	);
 	
 	this.tempGraphZoom = 0;
-	this.tempGraphZoomLevels = [/*halfsecond','second','2seconds',*/'5seconds','10seconds','30seconds','min'];
+	this.tempGraphZoomLevels = ['5seconds','10seconds','15seconds','30seconds','min'];
 	this.tempGraphPinching = false;
 	this.tempGraphPinchingZoom = this.tempGraphZoom;
 	
@@ -160,29 +160,12 @@ MainAssistant.prototype.renderGraph = function()
 	
 	switch (this.tempGraphZoomLevels[this.tempGraphPinchingZoom])
 	{
-		case 'halfsecond':
-
-			if (this.temps.length < points)
-			{
-				for (var t = 0; t < points - (this.temps.length % points); t++)
-				{
-					tmpData.push(false);
-				}
-			}
-			for (var t = (this.temps.length > points ? this.temps.length - points : 0); t < this.temps.length; t++)
-			{
-				tmpData.push(this.temps[t].value);
-			}
-			break;
-		
-		case 'second':
-			if (avg === false) avg = 1;
-		case '2seconds':
-			if (avg === false) avg = 2;
 		case '5seconds':
 			if (avg === false) avg = 5;
 		case '10seconds':
 			if (avg === false) avg = 10;
+		case '15seconds':
+			if (avg === false) avg = 15;
 		case '30seconds':
 			if (avg === false) avg = 30;
 		case 'min':
@@ -267,7 +250,7 @@ MainAssistant.prototype.gestureChangeHandler = function(event)
     this.scaleElement.style.left = (event.pageX - 100) + "px";
 	this.scaleElement.innerHTML = this.tempGraphZoomLevels[this.tempGraphPinchingZoom];
 	
-	//this.renderGraph();
+	this.renderGraph();
 };
 MainAssistant.prototype.gestureEndHandler = function(event)
 {
