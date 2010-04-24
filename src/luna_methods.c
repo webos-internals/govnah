@@ -20,6 +20,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <dirent.h>
+#include <sys/stat.h>
 
 #include "luna_service.h"
 #include "luna_methods.h"
@@ -34,7 +36,7 @@ static char line[MAXLINLEN];
 static char buffer[MAXBUFLEN];
 static char esc_buffer[MAXBUFLEN];
 static char run_command_buffer[MAXBUFLEN];
-static char read_file_buffer[CHUNKSIZE+CHUNKSIZE+1];
+static char errorText[MAXLINLEN];
 
 //
 // Escape a string so that it can be used directly in a JSON response.
@@ -437,7 +439,7 @@ static bool write_single_line(LSHandle* lshandle, LSMessage *message, char *file
   LSError lserror;
   LSErrorInit(&lserror);
 
-  // Extract the id argument from the message
+  // Extract the value argument from the message
   json_t *object = LSMessageGetPayloadJSON(message);
   json_t *value = json_find_first_label(object, "value");
   if (!value || (value->child->type != JSON_STRING)) {
@@ -463,10 +465,10 @@ static bool write_single_line(LSHandle* lshandle, LSMessage *message, char *file
       sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
     }
   }
-
+  
   fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
-
+  
   return true;
  error:
   LSErrorPrint(&lserror, stderr);
@@ -490,80 +492,123 @@ bool get_omap34xx_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx)
 }
 
 //
-// Read scaling_available_governors
+// Read cpufreq params
 //
-bool get_scaling_available_governors_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_line(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors");
+bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+  
+  static char filename[MAXLINLEN];
+
+  bool error = false;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+  
+  char *cpufreqdir = "/sys/devices/system/cpu/cpu0/cpufreq";
+  // Determine what files are in the cpufreq directory
+  bool anyfeeds = false;
+  DIR *dp = opendir (cpufreqdir);
+  if (!dp) {
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", cpufreqdir);
+  }
+  else {
+    struct dirent *ep;
+    bool first = true;
+    sprintf(buffer, "{\"params\": [");
+  
+    while (ep = readdir (dp)) {
+      if (!strcmp(ep->d_name, ".") || !strcmp(ep->d_name, "..") || !strcmp(ep->d_name, "stats")) {
+	continue;
+      }
+
+      sprintf(filename, "%s/%s", cpufreqdir, ep->d_name);
+
+      strcpy(line,"");
+
+      FILE *fp = fopen(filename, "r");
+      if (!fp) {
+	sprintf(errorText, "Unable to open %s", filename);
+	error = true;
+      }
+      else {
+	if (!fgets(line, MAXLINLEN-1, fp)) {
+	  sprintf(errorText, "Unable to parse %s", filename);
+	  error = true;
+	}
+	else {
+	  line[strlen(line)-1] = '\0';
+	}
+	if (fclose(fp)) {
+	  sprintf(errorText, "Unable to close %s", filename);
+	  error = true;
+	}
+      }
+      
+      if (error) {
+	sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+		errorText);
+	break;
+      }
+      else {
+	// %%% Need to fix writeable %%%
+	sprintf(buffer+strlen(buffer), "%s{\"name\": \"%s\", \"writeable\": true, \"value\": \"%s\"}",
+		(first ? "" : ", "), ep->d_name, 
+		json_escape_str(line));
+	first = false;
+      }
+    }
+    if (closedir(dp)) {
+      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	      cpufreqdir);
+      error = true;
+    }
+
+    if (!error) {
+      strcat(buffer, "], \"returnValue\": ");
+      strcat(buffer, error ? "false" : "true");
+      strcat(buffer, "}");
+    }
+  }
+
+  fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
 }
 
 //
-// Read scaling_available_frequencies
+// Write cpufreq params
 //
-bool get_scaling_available_frequencies_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_line(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies");
-}
+bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
 
-//
-// Read scaling_governor
-//
-bool get_scaling_governor_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_line(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-}
+  // Extract the params argument from the message
+  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *params = json_find_first_label(object, "params");
+  if (!params || (params->child->type != JSON_ARRAY)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing params array\"}",
+			&lserror)) goto error;
+    return true;
+  }
 
-//
-// Write scaling_governor
-//
-bool set_scaling_governor_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_line(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
-}
+  sprintf(buffer, "{\"returnValue\": true }");
 
-//
-// Read scaling_max_freq
-//
-bool get_scaling_max_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
-}
+  fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
-//
-// Write scaling_max_freq
-//
-bool set_scaling_max_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq");
-}
-
-//
-// Read scaling_min_freq
-//
-bool get_scaling_min_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
-}
-
-//
-// Write scaling_min_freq
-//
-bool set_scaling_min_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq");
-}
-
-//
-// Read scaling_cur_freq
-//
-bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
-}
-
-//
-// Read scaling_setspeed
-//
-bool get_scaling_setspeed_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed");
-}
-
-//
-// Write scaling_setspeed
-//
-bool set_scaling_setspeed_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed");
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
 }
 
 //
@@ -590,152 +635,15 @@ bool get_trans_table_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/trans_table 2>&1");
 }
 
-//
-// Read ignore_nice_load
-//
-bool get_ignore_nice_load_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/ignore_nice_load");
-}
-
-//
-// Write ignore_nice_load
-//
-bool set_ignore_nice_load_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/ignore_nice_load");
-}
-
-//
-// Read powersave_bias
-//
-bool get_powersave_bias_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/powersave_bias");
-}
-
-//
-// Write powersave_bias
-//
-bool set_powersave_bias_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/powersave_bias");
-}
-
-//
-// Read sampling_rate
-//
-bool get_sampling_rate_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_rate");
-}
-
-//
-// Write sampling_rate
-//
-bool set_sampling_rate_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_rate");
-}
-
-//
-// Read sampling_rate_min
-//
-bool get_sampling_rate_min_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_rate_min");
-}
-
-//
-// Read sampling_rate_max
-//
-bool get_sampling_rate_max_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_rate_max");
-}
-
-//
-// Read up_threshold
-//
-bool get_up_threshold_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/up_threshold");
-}
-
-//
-// Write up_threshold
-//
-bool set_up_threshold_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/up_threshold");
-}
-
-//
-// Read down_threshold
-//
-bool get_down_threshold_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/down_threshold");
-}
-
-//
-// Write down_threshold
-//
-bool set_down_threshold_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/down_threshold");
-}
-
-//
-// Read freq_step
-//
-bool get_freq_step_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/freq_step");
-}
-
-//
-// Wite freq_step
-//
-bool set_freq_step_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/freq_step");
-}
-
-//
-// Read sampling_down_factor
-//
-bool get_sampling_down_factor_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_down_factor");
-}
-
-//
-// Write sampling_down_factor
-//
-bool set_sampling_down_factor_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return write_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/stats/sampling_down_factor");
-}
-
 LSMethod luna_methods[] = {
   { "status",					dummy_method },
   { "get_proc_cpuinfo",				get_proc_cpuinfo_method },
   { "get_omap34xx_temp",			get_omap34xx_temp_method },
-  { "get_scaling_available_governors",		get_scaling_available_governors_method },
-  { "get_scaling_available_frequencies",	get_scaling_available_frequencies_method },
-  { "get_scaling_governor",			get_scaling_governor_method },
-  { "set_scaling_governor",			set_scaling_governor_method },
-  { "get_scaling_max_freq",			get_scaling_max_freq_method },
-  { "set_scaling_max_freq",			set_scaling_max_freq_method },
-  { "get_scaling_min_freq",			get_scaling_min_freq_method },
-  { "set_scaling_min_freq",			set_scaling_min_freq_method },
-  { "get_scaling_cur_freq",			get_scaling_cur_freq_method },
-  { "get_scaling_setspeed",			get_scaling_setspeed_method },
-  { "set_scaling_setspeed",			set_scaling_setspeed_method },
+  { "get_cpufreq_params",			get_cpufreq_params_method },
+  { "set_cpufreq_params",			set_cpufreq_params_method },
   { "get_time_in_state",			get_time_in_state_method },
   { "get_total_trans",				get_total_trans_method },
   { "get_trans_table",				get_trans_table_method },
-  { "get_ignore_nice_load",			get_ignore_nice_load_method },
-  { "set_ignore_nice_load",			set_ignore_nice_load_method },
-  { "get_powersave_bias",			get_powersave_bias_method },
-  { "set_powersave_bias",			set_powersave_bias_method },
-  { "get_sampling_rate",			get_sampling_rate_method },
-  { "set_sampling_rate",			set_sampling_rate_method },
-  { "get_sampling_rate_max",			get_sampling_rate_max_method },
-  { "get_sampling_rate_min",			get_sampling_rate_min_method },
-  { "get_up_threshold",				get_up_threshold_method },
-  { "set_up_threshold",				set_up_threshold_method },
-  { "get_down_threshold",			get_down_threshold_method },
-  { "set_down_threshold",			set_down_threshold_method },
-  { "get_freq_step",				get_freq_step_method },
-  { "set_freq_step",				set_freq_step_method },
-  { "get_sampling_down_factor",			get_sampling_down_factor_method },
-  { "set_sampling_down_factor",			set_sampling_down_factor_method },
   { 0, 0 }
 };
 
