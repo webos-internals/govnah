@@ -149,21 +149,22 @@
 	margin-left: 11px;
 	top: 77px;
 }
-.main #graph .fade-left
-{
-	position: absolute;
-	z-index: 1;
-	width: 46px;
-	height: 101px;
-	top: 0px;
-	bottom: 100px;
-	background: url(../images/graphFade-left.png) top left repeat-y;
-}
 .main #graph #graphCanvas
 {
 	position: absolute;
 	z-index: 0;
 	top: 1px;
+}
+
+.main .palm-row-wrapper
+{
+	position: relative;
+}
+.main canvas#freqCanvas
+{
+	position: absolute;
+	z-index: 0;
+	top: 10px;
 }
 
 /*

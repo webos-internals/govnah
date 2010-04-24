@@ -61,7 +61,8 @@ MainAssistant.prototype.setup = function()
 		
 	
 	this.temps = [];
-	this.rate = 5000;
+	this.freqs = [];
+	this.rate = 1000;
 	
 	this.canvasElement = this.controller.get('graphCanvas');
 	this.scaleElement = this.controller.get('scale');
@@ -80,8 +81,17 @@ MainAssistant.prototype.setup = function()
 		}
 	);
 	
+	this.freqGraph = new lineGraph
+	(
+		this.controller.get('freqCanvas'),
+		{
+			height: 30,
+			width: 320
+		}
+	);
+	
 	this.tempGraphZoom = 0;
-	this.tempGraphZoomLevels = ['5seconds','10seconds','15seconds','30seconds','min'];
+	this.tempGraphZoomLevels = ['second','5seconds','10seconds','15seconds','30seconds','min'];
 	this.tempGraphPinching = false;
 	this.tempGraphPinchingZoom = this.tempGraphZoom;
 	
@@ -131,7 +141,7 @@ MainAssistant.prototype.freqHandler = function(payload)
 MainAssistant.prototype.timerFunction = function()
 {
 	service.get_omap34xx_temp(this.tempHandler);
-	service.get_scaling_cur_freq(this.freqHandler);
+	//service.get_scaling_cur_freq(this.freqHandler);
 	
 	this.timer = setTimeout(this.timerHandler, this.rate);
 };
@@ -158,62 +168,61 @@ MainAssistant.prototype.renderGraph = function()
 	var avg = false;
 	var points = 180;
 	
-	switch (this.tempGraphZoomLevels[this.tempGraphPinchingZoom])
+	if (this.tempGraphZoomLevels[this.tempGraphPinchingZoom] == 'second') avg = 1;
+	if (this.tempGraphZoomLevels[this.tempGraphPinchingZoom] == '5seconds') avg = 5;
+	if (this.tempGraphZoomLevels[this.tempGraphPinchingZoom] == '10seconds') avg = 10;
+	if (this.tempGraphZoomLevels[this.tempGraphPinchingZoom] == '15seconds') avg = 15;
+	if (this.tempGraphZoomLevels[this.tempGraphPinchingZoom] == '30seconds') avg = 30;
+	if (this.tempGraphZoomLevels[this.tempGraphPinchingZoom] == 'min') avg = 60;
+	
+	var avgData = $H();
+	for (var t = 0; t < this.temps.length; t++)
 	{
-		case '5seconds':
-			if (avg === false) avg = 5;
-		case '10seconds':
-			if (avg === false) avg = 10;
-		case '15seconds':
-			if (avg === false) avg = 15;
-		case '30seconds':
-			if (avg === false) avg = 30;
-		case 'min':
-			if (avg === false) avg = 60;
-			
-			var avgData = $H();
-			for (var t = 0; t < this.temps.length; t++)
+		var avgTime = Math.round(this.temps[t].date.getTime()/1000);
+		avgTime = avgTime - (avgTime % avg);
+		
+		if (tmpObj = avgData.get(avgTime))
+		{
+			tmpObj.total = tmpObj.total + this.temps[t].value;
+			tmpObj.count++;
+		}
+		else
+		{
+			var tmpObj =
 			{
-				var avgTime = Math.round(this.temps[t].date.getTime()/1000);
-				avgTime = avgTime - (avgTime % avg);
-				
-				if (tmpObj = avgData.get(avgTime))
-				{
-					tmpObj.total = tmpObj.total + this.temps[t].value;
-					tmpObj.count++;
-				}
-				else
-				{
-					var tmpObj =
-					{
-						total: this.temps[t].value,
-						count: 1
-					}
-				}
-				
-				avgData.set(avgTime, tmpObj);
+				total: this.temps[t].value,
+				count: 1
 			}
-			
-			var tmpKeys = avgData.keys();
-			if (tmpKeys.length < points)
-			{
-				for (var t = 0; t < points - (tmpKeys.length % points); t++)
-				{
-					tmpData.push(false);
-				}
-			}
-			for (t = (tmpKeys.length > points ? tmpKeys.length - points : 0); t < tmpKeys.length; t++)
-			{
-				var tmpObj = avgData.get(tmpKeys[t]);
-				tmpData.push(tmpObj.total / tmpObj.count);
-			}
-			break;
+		}
+		
+		avgData.set(avgTime, tmpObj);
+	}
+	
+	var tmpKeys = avgData.keys();
+	if (tmpKeys.length < points)
+	{
+		for (var t = 0; t < points - (tmpKeys.length % points); t++)
+		{
+			tmpData.push(false);
+		}
+	}
+	for (t = (tmpKeys.length > points ? tmpKeys.length - points : 0); t < tmpKeys.length; t++)
+	{
+		var tmpObj = avgData.get(tmpKeys[t]);
+		tmpData.push(tmpObj.total / tmpObj.count);
 	}
 	
 	this.tempGraph.setLine(tmpData, {});
 	
 	
 	this.tempGraph.render();
+	
+	
+	/*
+	this.freqGraph.clearLines();
+	this.freqGraph.setLine(tmpData, {fillStyle: "rgba(170, 170, 170, .2)", lineWidth: 1});
+	this.freqGraph.render();
+	*/
 	
 	this.vertTopCount.innerHTML = Math.round(this.tempGraph.lines[0].vertical.top) + '&deg;';
 	this.vertBotCount.innerHTML = Math.round(this.tempGraph.lines[0].vertical.bottom) + '&deg;';
@@ -303,7 +312,7 @@ MainAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 	
-	service.get_scaling_governor(this.governorHandler);
+	//service.get_scaling_governor(this.governorHandler);
 };
 MainAssistant.prototype.deactivate = function(event)
 {
