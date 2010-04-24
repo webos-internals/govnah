@@ -13,6 +13,8 @@ function GovernorAssistant()
 		]
 	};
 	
+	
+	
 	this.settings = 
 	{
 		'scaling_min_freq':
@@ -29,13 +31,11 @@ function GovernorAssistant()
 		}
 	};
 	
-	
 	this.governorModel = 
 	{
 		value: '',
 		choices: []
 	};
-	
 	
 	this.scalingFrequencyChoices = [];
 	
@@ -60,16 +60,21 @@ GovernorAssistant.prototype.setup = function()
 	// setup governor list
 	this.controller.setupWidget
 	(
-		'scaling-governor',
+		'governor',
 		{
 			label: $L('Governor')
 		},
 		this.governorModel
 	);
+	this.governorChange = this.governorChange.bindAsEventListener(this);
+	this.controller.listen('governor', Mojo.Event.propertyChange, this.governorChange);
+	
 	
 	this.settingsForm = this.controller.get('settings');
 	
     this.onGetParams = this.onGetParams.bindAsEventListener(this);
+    this.onSetParams = this.onSetParams.bindAsEventListener(this);
+	
 	service.get_cpufreq_params(this.onGetParams);
 	
 };
@@ -80,6 +85,10 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 	for (var param = 0; param < payload.params.length; param++)
 	{
 		tmpParam = payload.params[param];
+		
+		alert('-----');
+		for (p in tmpParam) alert(p + " : " + tmpParam[p]);
+
 		switch(tmpParam.name)
 		{
 			case 'scaling_available_governors':
@@ -127,29 +136,46 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 		
 		if (tmpParam.writeable && tmpParam.name != 'scaling_governor')
 		{
-			alert('-----');
-			for (p in tmpParam) alert(p + " : " + tmpParam[p]);
+			//alert('-----');
+			//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
 			
-			switch(this.settings[tmpParam.name].type)
+			if (this.settings[tmpParam.name])
 			{
-				case 'listFreq':
-					this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-					this.controller.setupWidget
-					(
-						tmpParam.name,
-						{
-							label: tmpParam.name
-						},
-						{
-							value: tmpParam.value,
-							choices: this.scalingFrequencyChoices
-						}
-					);
-					break;
-					
-				default:
-					alert('-- UNKNOWN FIELD TYPE');
-					break;
+				switch(this.settings[tmpParam.name].type)
+				{
+					case 'listFreq':
+						this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+						this.controller.setupWidget
+						(
+							tmpParam.name,
+							{
+								label: tmpParam.name
+							},
+							{
+								value: tmpParam.value,
+								choices: this.scalingFrequencyChoices
+							}
+						);
+						break;
+				}
+			}
+			else
+			{
+				this.settingsForm.innerHTML += Mojo.View.render({object: {label:tmpParam.name, id: tmpParam.name}, template: 'governor/textfield-widget'});
+				this.controller.setupWidget
+				(
+					tmpParam.name,
+					{
+						multiline: false,
+						enterSubmits: false,
+						maxLength: 25,
+						textCase: Mojo.Widget.steModeLowerCase,
+						focusMode: Mojo.Widget.focusSelectMode
+					},
+					{
+						value: tmpParam.value
+					}
+				);
 			}
 		}
 	}
@@ -157,7 +183,20 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 	this.controller.instantiateChildWidgets(this.settingsForm);
 }
 
+GovernorAssistant.prototype.governorChange = function(event)
+{
+	//alert('===========');
+	//for (e in event) alert(e+' : '+event[e]);
+	
+	//alert(event.value);
+	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor',value:event.value}])
+}
 
+GovernorAssistant.prototype.onSetParams = function(payload)
+{
+	alert('===========');
+	for (p in payload) alert(p+' : '+payload[p]);
+}
 
 GovernorAssistant.prototype.activate = function(event)
 {
