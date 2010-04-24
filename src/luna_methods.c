@@ -33,10 +33,13 @@
 // since we're a long-running service, and do not want to leak anything.
 //
 static char line[MAXLINLEN];
+static char filename[MAXLINLEN];
 static char buffer[MAXBUFLEN];
 static char esc_buffer[MAXBUFLEN];
 static char run_command_buffer[MAXBUFLEN];
 static char errorText[MAXLINLEN];
+
+static char *cpufreqdir = "/sys/devices/system/cpu/cpu0/cpufreq";
 
 //
 // Escape a string so that it can be used directly in a JSON response.
@@ -352,132 +355,6 @@ static bool read_single_integer(LSHandle* lshandle, LSMessage *message, char *fi
 }
 
 //
-// Read a single integer from a file, and return it to webOS.
-//
-static bool write_single_integer(LSHandle* lshandle, LSMessage *message, char *file) {
-  LSError lserror;
-  LSErrorInit(&lserror);
-
-  // Extract the id argument from the message
-  json_t *object = LSMessageGetPayloadJSON(message);
-  json_t *value = json_find_first_label(object, "value");
-  if (!value || (value->child->type != JSON_NUMBER)) {
-    if (!LSMessageReply(lshandle, message,
-			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value\"}",
-			&lserror)) goto error;
-    return true;
-  }
-
-  FILE *fp = fopen(file, "w");
-
-  if (!fp) {
-    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-  }
-  else {
-    if (fputs(value->child->text, fp) >= 0) {
-      sprintf(buffer, "{\"returnValue\": true }");
-    }
-    else {
-      sprintf(buffer, "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-    }
-    if (fclose(fp)) {
-      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-    }
-  }
-
-  fprintf(stderr, "Message is %s\n", buffer);
-  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
-
-  return true;
- error:
-  LSErrorPrint(&lserror, stderr);
-  LSErrorFree(&lserror);
- end:
-  return false;
-}
-
-//
-// Read a single string from a file, and return it to webOS.
-//
-static bool read_single_line(LSHandle* lshandle, LSMessage *message, char *file) {
-  LSError lserror;
-  LSErrorInit(&lserror);
-
-  FILE *fp = fopen(file, "r");
-
-  if (!fp) {
-    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-  }
-  else {
-    int value;
-    if (fgets(line, MAXLINLEN-1, fp)) {
-      sprintf(buffer, "{\"value\": \"%s\", \"returnValue\": true }", json_escape_str(line));
-    }
-    else {
-      sprintf(buffer, "{\"errorText\": \"Unable to parse %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-    }
-    if (fclose(fp)) {
-      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-    }
-  }
-
-  fprintf(stderr, "Message is %s\n", buffer);
-  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
-
-  return true;
- error:
-  LSErrorPrint(&lserror, stderr);
-  LSErrorFree(&lserror);
- end:
-  return false;
-}
-
-//
-// Read a single integer from a file, and return it to webOS.
-//
-static bool write_single_line(LSHandle* lshandle, LSMessage *message, char *file) {
-  LSError lserror;
-  LSErrorInit(&lserror);
-
-  // Extract the value argument from the message
-  json_t *object = LSMessageGetPayloadJSON(message);
-  json_t *value = json_find_first_label(object, "value");
-  if (!value || (value->child->type != JSON_STRING)) {
-    if (!LSMessageReply(lshandle, message,
-			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value\"}",
-			&lserror)) goto error;
-    return true;
-  }
-
-  FILE *fp = fopen(file, "w");
-
-  if (!fp) {
-    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-  }
-  else {
-    if (fputs(value->child->text, fp) >= 0) {
-      sprintf(buffer, "{\"returnValue\": true }");
-    }
-    else {
-      sprintf(buffer, "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-    }
-    if (fclose(fp)) {
-      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
-    }
-  }
-  
-  fprintf(stderr, "Message is %s\n", buffer);
-  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
-  
-  return true;
- error:
-  LSErrorPrint(&lserror, stderr);
-  LSErrorFree(&lserror);
- end:
-  return false;
-}
-
-//
 // Read /proc/cpuinfo
 //
 bool get_proc_cpuinfo_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -498,13 +375,12 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   LSError lserror;
   LSErrorInit(&lserror);
   
-  static char filename[MAXLINLEN];
+  struct stat statbuf;
 
   bool error = false;
 
   sprintf(buffer, "{\"returnValue\": true }");
   
-  char *cpufreqdir = "/sys/devices/system/cpu/cpu0/cpufreq";
   // Determine what files are in the cpufreq directory
   bool anyfeeds = false;
   DIR *dp = opendir (cpufreqdir);
@@ -550,10 +426,14 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 	break;
       }
       else {
-	// %%% Need to fix writeable %%%
-	sprintf(buffer+strlen(buffer), "%s{\"name\": \"%s\", \"writeable\": true, \"value\": \"%s\"}",
-		(first ? "" : ", "), ep->d_name, 
-		json_escape_str(line));
+	bool writeable = false;
+	if (!stat(filename, &statbuf)) {
+	  if (statbuf.st_mode & S_IWUSR) {
+	    writeable = true;
+	  }
+	}
+	sprintf(buffer+strlen(buffer), "%s{\"name\": \"%s\", \"writeable\": %s, \"value\": \"%s\"}",
+		(first ? "" : ", "), ep->d_name, (writeable ? "true" : "false"), json_escape_str(line));
 	first = false;
       }
     }
@@ -588,6 +468,10 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   LSError lserror;
   LSErrorInit(&lserror);
 
+  bool error = false;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
   // Extract the params argument from the message
   json_t *object = LSMessageGetPayloadJSON(message);
   json_t *params = json_find_first_label(object, "params");
@@ -598,7 +482,57 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     return true;
   }
 
-  sprintf(buffer, "{\"returnValue\": true }");
+  json_t *entry = params->child->child;
+  while (entry) {
+    if (entry->type != JSON_OBJECT) {
+      if (!LSMessageReply(lshandle, message,
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing params array element\"}",
+			  &lserror)) goto error;
+      return true;
+    }
+    json_t *name = json_find_first_label(entry, "name");
+    if (!name || (name->child->type != JSON_STRING)) {
+      if (!LSMessageReply(lshandle, message,
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing name entry\"}",
+			  &lserror)) goto error;
+      return true;
+    }
+    json_t *value = json_find_first_label(entry, "value");
+    if (!value || (value->child->type != JSON_STRING)) {
+      if (!LSMessageReply(lshandle, message,
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value entry\"}",
+			  &lserror)) goto error;
+      return true;
+    }
+
+    fprintf(stderr, "Name is %s, value is %s\n", name->child->text, value->child->text);
+
+    sprintf(filename, "%s/%s", cpufreqdir, name->child->text);
+
+    FILE *fp = fopen(filename, "w");
+    if (!fp) {
+      sprintf(errorText, "Unable to open %s", filename);
+      error = true;
+    }
+    else {
+      if (fputs(value->child->text, fp) < 0) {
+	sprintf(errorText, "Unable to write to %s", filename);
+	error = true;
+      }
+      if (fclose(fp)) {
+	sprintf(errorText, "Unable to close %s", filename);
+	error = true;
+      }
+    }
+      
+    if (error) {
+      sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+	      errorText);
+      break;
+    }
+    
+    entry = entry->next;
+  }
 
   fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
