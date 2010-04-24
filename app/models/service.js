@@ -33,11 +33,15 @@ service.get_cpufreq_params = function(callback)
 	});
 	return request;
 };
-service.set_cpufreq_params = function(callback)
+service.set_cpufreq_params = function(callback, params)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'set_cpufreq_params',
+		parameters:
+		{
+			params: params
+		},
 		onSuccess: callback,
 		onFailure: callback
 	});

@@ -194,8 +194,12 @@ GovernorAssistant.prototype.governorChange = function(event)
 
 GovernorAssistant.prototype.onSetParams = function(payload)
 {
-	alert('===========');
-	for (p in payload) alert(p+' : '+payload[p]);
+	//alert('===========');
+	//for (p in payload) alert(p+' : '+payload[p]);
+	
+	this.settingsForm.innerHTML = '';
+	
+	service.get_cpufreq_params(this.onGetParams);
 }
 
 GovernorAssistant.prototype.activate = function(event)
