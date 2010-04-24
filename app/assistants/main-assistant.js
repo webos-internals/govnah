@@ -141,7 +141,7 @@ MainAssistant.prototype.freqHandler = function(payload)
 MainAssistant.prototype.timerFunction = function()
 {
 	service.get_omap34xx_temp(this.tempHandler);
-	//service.get_scaling_cur_freq(this.freqHandler);
+	service.get_scaling_cur_freq(this.freqHandler);
 	
 	this.timer = setTimeout(this.timerHandler, this.rate);
 };
@@ -312,7 +312,7 @@ MainAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 	
-	//service.get_scaling_governor(this.governorHandler);
+	service.get_scaling_governor(this.governorHandler);
 };
 MainAssistant.prototype.deactivate = function(event)
 {
