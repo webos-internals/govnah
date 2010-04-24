@@ -370,6 +370,20 @@ bool get_omap34xx_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx)
 }
 
 //
+// Read scaling_cur_freq
+//
+bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
+}
+
+//
+// Read scaling_governor
+//
+bool get_scaling_governor_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return read_single_line(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor");
+}
+
+//
 // Read cpufreq params
 //
 bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -617,6 +631,8 @@ LSMethod luna_methods[] = {
   { "status",					dummy_method },
   { "get_proc_cpuinfo",				get_proc_cpuinfo_method },
   { "get_omap34xx_temp",			get_omap34xx_temp_method },
+  { "get_scaling_cur_freq",         get_scaling_cur_freq_method },
+  { "get_scaling_governor",         get_scaling_governor_method },
   { "get_cpufreq_params",			get_cpufreq_params_method },
   { "set_cpufreq_params",			set_cpufreq_params_method },
   { "get_time_in_state",			get_time_in_state_method },

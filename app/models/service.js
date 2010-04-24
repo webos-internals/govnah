@@ -22,6 +22,26 @@ service.get_omap34xx_temp = function(callback)
 	});
 	return request;
 };
+service.get_scaling_cur_freq = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_scaling_cur_freq',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.get_scaling_governor = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_scaling_governor',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 
 service.get_cpufreq_params = function(callback)
 {
