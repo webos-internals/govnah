@@ -13,35 +13,43 @@ function GovernorAssistant()
 		]
 	};
 	
-	this.governors =
+	this.settings = 
 	{
-		conservative:
+		'scaling_min_freq':
 		{
-			visible: false
+			type: 'listFreq',
 		},
-		ondemand:
+		'scaling_max_freq':
 		{
-			visible: false
+			type: 'listFreq',
 		},
-		powersave:
+		'scaling_setspeed':
 		{
-			visible: false
-		},
-		userspace:
-		{
-			visible: false
-		},
-		performance:
-		{
-			visible: false
+			type: 'listFreq',
 		}
 	};
+	
 	
 	this.governorModel = 
 	{
 		value: '',
 		choices: []
 	};
+	
+	
+	this.scalingFrequencyChoices = [];
+	
+	this.percentChoices = [];
+	for (x = 0; x <= 100; x = x + 5)
+	{
+		this.percentChoices.push({label:$L(x+'%'), value:x});
+	}
+	
+	this.powersaveChoices = [];
+	for (x = 0; x <= 1000; x = x + 10)
+	{
+		this.percentChoices.push({label:$L(x+'%'), value:x});
+	}
 };
 
 GovernorAssistant.prototype.setup = function()
@@ -52,59 +60,103 @@ GovernorAssistant.prototype.setup = function()
 	// setup governor list
 	this.controller.setupWidget
 	(
-		'governor',
+		'scaling-governor',
 		{
 			label: $L('Governor')
 		},
 		this.governorModel
 	);
 	
-    this.onAvailableGovernors = this.onAvailableGovernors.bindAsEventListener(this);
-    this.onCurrentGovernor = this.onCurrentGovernor.bindAsEventListener(this);
-
-	service.get_scaling_available_governors(this.onAvailableGovernors);
+	this.settingsForm = this.controller.get('settings');
+	
+    this.onGetParams = this.onGetParams.bindAsEventListener(this);
+	service.get_cpufreq_params(this.onGetParams);
 	
 };
 
-GovernorAssistant.prototype.onAvailableGovernors = function(payload)
+GovernorAssistant.prototype.onGetParams = function(payload)
 {
-	this.governorModel.choices = [];
-	
-	var data = payload.value.split(" ");
-	if (data.length > 0)
+	// initial loop
+	for (var param = 0; param < payload.params.length; param++)
 	{
-		for (d = 0; d < data.length; d++)
+		tmpParam = payload.params[param];
+		switch(tmpParam.name)
 		{
-			var tmpGov = trim(data[d]);
-			if (tmpGov && this.governors[tmpGov])
+			case 'scaling_available_governors':
+				this.governorModel.choices = [];
+				var data = tmpParam.value.split(" ");
+				if (data.length > 0)
+				{
+					for (d = 0; d < data.length; d++)
+					{
+						var tmpGov = trim(data[d]);
+						if (tmpGov != "")
+						{
+							this.governorModel.choices.push({label:$L(tmpGov), value:tmpGov});
+						}
+					}
+				}
+				this.controller.modelChanged(this.governorModel);
+				break;
+				
+			case 'scaling_governor':
+				this.governorModel.value = "";
+				this.governorModel.value = trim(tmpParam.value);
+				this.controller.modelChanged(this.governorModel);
+				break;
+			
+			case 'scaling_available_frequencies':
+				this.scalingFrequencyChoices = [];
+				var data = tmpParam.value.split(" ");
+				if (data.length > 0)
+				{
+					for (d = 0; d < data.length; d++)
+					{
+						var tmpFreq = trim(data[d]);
+						this.scalingFrequencyChoices.push({label:$L(tmpFreq), value:tmpFreq});
+					}
+				}
+				break;
+		}
+	}
+	
+	// second loop
+	for (var param = 0; param < payload.params.length; param++)
+	{
+		tmpParam = payload.params[param];
+		
+		if (tmpParam.writeable && tmpParam.name != 'scaling_governor')
+		{
+			alert('-----');
+			for (p in tmpParam) alert(p + " : " + tmpParam[p]);
+			
+			switch(this.settings[tmpParam.name].type)
 			{
-				this.governors[tmpGov].visible = true;
-				this.governorModel.choices.push({label:$L(tmpGov), value:tmpGov});
+				case 'listFreq':
+					this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+					this.controller.setupWidget
+					(
+						tmpParam.name,
+						{
+							label: tmpParam.name
+						},
+						{
+							value: tmpParam.value,
+							choices: this.scalingFrequencyChoices
+						}
+					);
+					break;
+					
+				default:
+					alert('-- UNKNOWN FIELD TYPE');
+					break;
 			}
 		}
 	}
 	
-	this.controller.modelChanged(this.governorModel);
-	
-	// move on
-	service.get_scaling_governor(this.onCurrentGovernor);
-};
+	this.controller.instantiateChildWidgets(this.settingsForm);
+}
 
-GovernorAssistant.prototype.onCurrentGovernor = function(payload)
-{
-	this.governorModel.value = "";
-	
-	this.governorModel.value = trim(payload.value);
-	
-	this.controller.modelChanged(this.governorModel);
-	
-	
-};
-
-GovernorAssistant.prototype.buildForm = function()
-{
-	
-};
 
 
 GovernorAssistant.prototype.activate = function(event)
