@@ -320,6 +320,42 @@ static bool simple_command(LSHandle* lshandle, LSMessage *message, char *command
 }
 
 //
+// Read a single string from a file, and return it to webOS.
+//
+static bool read_single_line(LSHandle* lshandle, LSMessage *message, char *file) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  FILE *fp = fopen(file, "r");
+
+  if (!fp) {
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+  }
+  else {
+    int value;
+    if (fgets(line, MAXLINLEN-1, fp)) {
+      sprintf(buffer, "{\"value\": \"%s\", \"returnValue\": true }", json_escape_str(line));
+    }
+    else {
+      sprintf(buffer, "{\"errorText\": \"Unable to parse %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+    }
+    if (fclose(fp)) {
+      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+    }
+  }
+
+  fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
 // Read a single integer from a file, and return it to webOS.
 //
 static bool read_single_integer(LSHandle* lshandle, LSMessage *message, char *file) {
