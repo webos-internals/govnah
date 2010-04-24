@@ -26,7 +26,7 @@
 #include "luna_service.h"
 #include "luna_methods.h"
 
-#define ALLOWED_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-"
+#define ALLOWED_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
 
 //
 // We use static buffers instead of continually allocating and deallocating stuff,
@@ -34,6 +34,7 @@
 //
 static char line[MAXLINLEN];
 static char filename[MAXLINLEN];
+static char directory[MAXLINLEN];
 static char buffer[MAXBUFLEN];
 static char esc_buffer[MAXBUFLEN];
 static char run_command_buffer[MAXBUFLEN];
@@ -165,7 +166,7 @@ static bool run_command(char *command, bool escape) {
   // Local buffers to store the current and previous lines.
   char line[MAXLINLEN];
 
-  fprintf(stderr, "Running command %s\n", command);
+  // fprintf(stderr, "Running command %s\n", command);
 
   // run_command_buffer is assumed to be initialised, ready for strcat to append.
 
@@ -267,7 +268,7 @@ static bool report_command_failure(LSHandle* lshandle, LSMessage *message, char 
   // Terminate the JSON reply message ...
   strcat(buffer, "}");
 
-  fprintf(stderr, "Message is %s\n", buffer);
+  // fprintf(stderr, "Message is %s\n", buffer);
 
   // and send it.
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
@@ -296,7 +297,7 @@ static bool simple_command(LSHandle* lshandle, LSMessage *message, char *command
     // Finalise the message ...
     strcat(run_command_buffer, "], \"returnValue\": true}");
 
-    fprintf(stderr, "Message is %s\n", run_command_buffer);
+    // fprintf(stderr, "Message is %s\n", run_command_buffer);
 
     // and send it to webOS.
     if (!LSMessageReply(lshandle, message, run_command_buffer, &lserror)) goto error;
@@ -343,7 +344,7 @@ static bool read_single_integer(LSHandle* lshandle, LSMessage *message, char *fi
     }
   }
 
-  fprintf(stderr, "Message is %s\n", buffer);
+  // fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
   return true;
@@ -378,14 +379,28 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   struct stat statbuf;
 
   bool error = false;
+  char *governor = NULL;
 
   sprintf(buffer, "{\"returnValue\": true }");
   
-  // Determine what files are in the cpufreq directory
-  bool anyfeeds = false;
-  DIR *dp = opendir (cpufreqdir);
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the governor argument from the message
+  json_t *param = json_find_first_label(object, "governor");
+  if (param && (param->child->type == JSON_STRING)) {
+    governor = param->child->text;
+  }
+
+  if (governor) {
+    sprintf(directory, "%s/%s", cpufreqdir, governor);
+  }
+  else {
+    sprintf(directory, "%s", cpufreqdir);
+  }
+
+  DIR *dp = opendir (directory);
   if (!dp) {
-    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", cpufreqdir);
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", directory);
   }
   else {
     struct dirent *ep;
@@ -393,53 +408,67 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     sprintf(buffer, "{\"params\": [");
   
     while (ep = readdir (dp)) {
-      if (!strcmp(ep->d_name, ".") || !strcmp(ep->d_name, "..") || !strcmp(ep->d_name, "stats")) {
+      if (!strcmp(ep->d_name, ".") || !strcmp(ep->d_name, "..") ||
+	  !strcmp(ep->d_name, "stats") || !strcmp(ep->d_name, "affected_cpus") ||
+	  !strcmp(ep->d_name, "scaling_driver")) {
 	continue;
       }
 
-      sprintf(filename, "%s/%s", cpufreqdir, ep->d_name);
+      sprintf(filename, "%s/%s", directory, ep->d_name);
 
-      strcpy(line,"");
+      bool writeable = false;
+      bool directory = false;
 
-      FILE *fp = fopen(filename, "r");
-      if (!fp) {
-	sprintf(errorText, "Unable to open %s", filename);
-	error = true;
-      }
-      else {
-	if (!fgets(line, MAXLINLEN-1, fp)) {
-	  sprintf(errorText, "Unable to parse %s", filename);
-	  error = true;
+      if (!stat(filename, &statbuf)) {
+	if (statbuf.st_mode & S_IWUSR) {
+	  writeable = true;
 	}
-	else {
-	  line[strlen(line)-1] = '\0';
-	}
-	if (fclose(fp)) {
-	  sprintf(errorText, "Unable to close %s", filename);
-	  error = true;
+	if (statbuf.st_mode & S_IFDIR) {
+	  directory = true;
 	}
       }
       
-      if (error) {
-	sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
-		errorText);
-	break;
+      strcpy(line,"");
+
+      if (directory) {
+	// Skip over other directories
+	continue;
       }
       else {
-	bool writeable = false;
-	if (!stat(filename, &statbuf)) {
-	  if (statbuf.st_mode & S_IWUSR) {
-	    writeable = true;
+	FILE *fp = fopen(filename, "r");
+	if (!fp) {
+	  sprintf(errorText, "Unable to open %s", filename);
+	  error = true;
+	}
+	else {
+	  if (!fgets(line, MAXLINLEN-1, fp)) {
+	    sprintf(errorText, "Unable to parse %s", filename);
+	    error = true;
+	  }
+	  else {
+	    line[strlen(line)-1] = '\0';
+	  }
+	  if (fclose(fp)) {
+	    sprintf(errorText, "Unable to close %s", filename);
+	    error = true;
 	  }
 	}
-	sprintf(buffer+strlen(buffer), "%s{\"name\": \"%s\", \"writeable\": %s, \"value\": \"%s\"}",
-		(first ? "" : ", "), ep->d_name, (writeable ? "true" : "false"), json_escape_str(line));
-	first = false;
+	
+	if (error) {
+	  sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+		  errorText);
+	  break;
+	}
+	else {
+	  sprintf(buffer+strlen(buffer), "%s{\"name\": \"%s\", \"writeable\": %s, \"value\": \"%s\"}",
+		  (first ? "" : ", "), ep->d_name, (writeable ? "true" : "false"), json_escape_str(line));
+	  first = false;
+	}
       }
     }
     if (closedir(dp)) {
       sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
-	      cpufreqdir);
+	      directory);
       error = true;
     }
 
@@ -450,7 +479,7 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     }
   }
 
-  fprintf(stderr, "Message is %s\n", buffer);
+  // fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
   return true;
@@ -469,11 +498,26 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   LSErrorInit(&lserror);
 
   bool error = false;
+  char *governor = NULL;
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  // Extract the params argument from the message
   json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the governor argument from the message
+  json_t *param = json_find_first_label(object, "governor");
+  if (param && (param->child->type == JSON_STRING)) {
+    governor = param->child->text;
+  }
+
+  if (governor) {
+    sprintf(directory, "%s/%s", cpufreqdir, governor);
+  }
+  else {
+    sprintf(directory, "%s", cpufreqdir);
+  }
+
+  // Extract the params argument from the message
   json_t *params = json_find_first_label(object, "params");
   if (!params || (params->child->type != JSON_ARRAY)) {
     if (!LSMessageReply(lshandle, message,
@@ -491,23 +535,23 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
       return true;
     }
     json_t *name = json_find_first_label(entry, "name");
-    if (!name || (name->child->type != JSON_STRING)) {
+    if (!name || (name->child->type != JSON_STRING) ||
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) {
       if (!LSMessageReply(lshandle, message,
 			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing name entry\"}",
 			  &lserror)) goto error;
       return true;
     }
     json_t *value = json_find_first_label(entry, "value");
-    if (!value || (value->child->type != JSON_STRING)) {
+    if (!value || (value->child->type != JSON_STRING) ||
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) {
       if (!LSMessageReply(lshandle, message,
 			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value entry\"}",
 			  &lserror)) goto error;
       return true;
     }
 
-    fprintf(stderr, "Name is %s, value is %s\n", name->child->text, value->child->text);
-
-    sprintf(filename, "%s/%s", cpufreqdir, name->child->text);
+    sprintf(filename, "%s/%s", directory, name->child->text);
 
     FILE *fp = fopen(filename, "w");
     if (!fp) {
@@ -534,7 +578,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     entry = entry->next;
   }
 
-  fprintf(stderr, "Message is %s\n", buffer);
+  // fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
   return true;
