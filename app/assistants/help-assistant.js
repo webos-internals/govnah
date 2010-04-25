@@ -81,7 +81,13 @@ HelpAssistant.prototype.listTapHandler = function(event)
 	}
 };
 
-HelpAssistant.prototype.activate = function(event) {};
+HelpAssistant.prototype.activate = function(event)
+{
+	if (this.controller.stageController.setWindowOrientation)
+	{
+    	this.controller.stageController.setWindowOrientation("up");
+	}
+};
 HelpAssistant.prototype.deactivate = function(event) {};
 HelpAssistant.prototype.cleanup = function(event)
 {

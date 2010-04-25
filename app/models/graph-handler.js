@@ -22,6 +22,8 @@ function graphHandlerModel()
 	this.loadGraph = false;
 	this.timeGraph = false;
 	
+	this.fullGraph = false;
+	
 };
 
 graphHandlerModel.prototype.start = function()
@@ -63,6 +65,20 @@ graphHandlerModel.prototype.setMainAssistant = function(assistant)
 		this.mainAssistant.controller.get('timeCanvas'),
 		{
 			height: 27,
+			width: 320
+		}
+	);
+}
+
+graphHandlerModel.prototype.setGraphAssistant = function(assistant)
+{
+	this.graphAssistant = assistant;
+	
+	this.fullGraph = new lineGraph
+	(
+		this.graphAssistant.controller.get('graphCanvas'),
+		{
+			height: 480,
 			width: 320
 		}
 	);
@@ -185,10 +201,9 @@ graphHandlerModel.prototype.timeHandler = function(payload)
 
 graphHandlerModel.prototype.renderGraph = function()
 {
-	
+
 	if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 	{
-			
 		this.tempGraph.clearLines();
 		this.freqGraph.clearLines();
 		this.loadGraph.clearLines();
@@ -242,6 +257,30 @@ graphHandlerModel.prototype.renderGraph = function()
 			this.timeGraph.render();
 		}
 	}
+	
+	if (this.graphAssistant && this.graphAssistant.controller && this.graphAssistant.isVisible)
+	{
+		this.fullGraph.clearLines();
+		
+		var tempData = [];
+		
+		var avg = 1;
+		
+		var keys = this.lineData.keys();
+		for (var k = 0; k < keys.length; k++)
+		{
+			var dataObj = this.lineData.get(keys[k]);
+			
+			if (dataObj.temp)
+				tempData.push({key: keys[k], value: dataObj.temp.value});
+		}
+		
+		this.fullGraph.setLine(tempData, {strokeStyle: "rgba(153, 205, 153, .4)", fillStyle: "rgba(153, 205, 153, .2)"});
+		
+		this.fullGraph.render();
+	}
+	
+	
 	
 };
 

@@ -54,6 +54,7 @@ MainAssistant.prototype.setup = function()
 	this.governorCurrent =	this.controller.get('governorCurrent');
 	
 	this.freqCurrent =		this.controller.get('freqCurrent');
+	this.tempRow =			this.controller.get('tempRow');
 	this.tempCurrent =		this.controller.get('tempCurrent');
 	this.loadCurrent =		this.controller.get('loadCurrent');
 	
@@ -68,8 +69,11 @@ MainAssistant.prototype.setup = function()
 	
 	this.governorHandler = this.onGovernor.bindAsEventListener(this);
 	this.governorTapHandler = this.governorTap.bindAsEventListener(this);
+	this.graphTapHandler = this.graphTap.bindAsEventListener(this);
 	
 	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
+	
+	this.controller.listen(this.tempRow, Mojo.Event.tap, this.graphTapHandler);
 	
 	
 	this.visible = this.visible.bindAsEventListener(this);
@@ -91,9 +95,18 @@ MainAssistant.prototype.governorTap = function(event)
 {
 	this.controller.stageController.pushScene('governor', this.currentGovernor);
 }
+MainAssistant.prototype.graphTap = function(event)
+{
+	this.controller.stageController.pushScene('graph');
+}
 
 MainAssistant.prototype.activate = function(event)
 {
+	if (this.controller.stageController.setWindowOrientation)
+	{
+    	this.controller.stageController.setWindowOrientation("up");
+	}
+	
 	if (this.firstActivate)
 	{
 		

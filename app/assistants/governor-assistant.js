@@ -430,6 +430,11 @@ GovernorAssistant.prototype.saveComplete = function(payload)
 
 GovernorAssistant.prototype.activate = function(event)
 {
+	if (this.controller.stageController.setWindowOrientation)
+	{
+    	this.controller.stageController.setWindowOrientation("up");
+	}
+	
 	if (this.firstActivate)
 	{
 		

@@ -19,6 +19,12 @@ function lineGraph(graph, options)
 	
 };
 
+lineGraph.prototype.changeDimenstions = function(width, height)
+{
+	this.height = height;
+	this.width = width;
+}
+
 lineGraph.prototype.setLine = function(data, options)
 {
 	if (!options.top || !options.bottom)
@@ -58,7 +64,7 @@ lineGraph.prototype.clearLines = function()
 
 lineGraph.prototype.render = function()
 {
-  	this.canvas.clearRect(0, 0, this.width, this.height+1);
+  	this.canvas.clearRect(0, 0, 480, 480);
 	this.canvas.save();
 	
 	for (var line = 0; line < this.lines.length; line++)
