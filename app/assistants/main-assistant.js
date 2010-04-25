@@ -292,7 +292,7 @@ MainAssistant.prototype.renderGraph = function()
 			loadData.push({key: keys[k], value: dataObj.load.value});
 	}
 	
-	this.tempGraph.setLine(tempData, {strokeStyle: "rgba(153, 255, 153, .3)", fillStyle: "rgba(153, 255, 153, .1)"});
+	this.tempGraph.setLine(tempData, {strokeStyle: "rgba(153, 205, 153, .3)", fillStyle: "rgba(153, 205, 153, .1)"});
 	this.freqGraph.setLine(freqData, {strokeStyle: "rgba(255, 153, 153, .3)", fillStyle: "rgba(255, 153, 153, .1)"});
 	this.loadGraph.setLine(loadData, {strokeStyle: "rgba(153, 153, 255, .3)", fillStyle: "rgba(153, 153, 255, .1)"});
 	
