@@ -3,6 +3,7 @@
     {"source": "app/models/utility.js"},
     {"source": "app/models/cookies.js"},
     {"source": "app/models/line-graph.js"},
+    {"source": "app/models/bar-graph.js"},
     {"source": "app/assistants/app-assistant.js"},
     {
         "scenes": "main",

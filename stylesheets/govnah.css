@@ -162,7 +162,8 @@
 }
 .main canvas#freqCanvas,
 .main canvas#tempCanvas,
-.main canvas#loadCanvas
+.main canvas#loadCanvas,
+.main canvas#timeCanvas
 {
 	position: absolute;
 	z-index: -5;

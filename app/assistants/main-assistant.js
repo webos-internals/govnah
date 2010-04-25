@@ -64,7 +64,7 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
 		
 	this.lineData = $H();
-	this.barData = $H();
+	this.barData = {};
 	this.rate = 1000;
 	
 	//this.canvasElement = this.controller.get('graphCanvas');
@@ -99,16 +99,14 @@ MainAssistant.prototype.setup = function()
 			width: 320
 		}
 	);
-	/*
-	this.timeGraph = new lineGraph
+	this.timeGraph = new barGraph
 	(
 		this.controller.get('timeCanvas'),
 		{
-			height: 30,
+			height: 27,
 			width: 320
 		}
 	);
-	*/
 	
 	/*
 	this.tempGraphZoom = 0;
@@ -234,19 +232,20 @@ MainAssistant.prototype.loadHandler = function(payload)
 }
 MainAssistant.prototype.timeHandler = function(payload)
 {
-	/*
-	alert ('***** TIME');
-	for (p in payload) alert(p+":"+payload[p]);
-	
-	
 	if (payload.returnValue) 
 	{
-		var valueArray = payload.stdOut.split(',');
-		
-		alert(value);
-		
+		var dataHash = $H();
+		var valueArray = String(payload.stdOut).split(',');
+		for (var v = 0; v < valueArray.length; v++)
+		{
+			if (valueArray[v])
+			{
+				var dataArray = valueArray[v].split(' ');
+				dataHash.set(parseInt(dataArray[0]), parseInt(dataArray[1]));
+			}
+		}
+		this.barData.time = dataHash;
 	}
-	*/
 }
 
 MainAssistant.prototype.timerFunction = function()
@@ -256,7 +255,7 @@ MainAssistant.prototype.timerFunction = function()
 	service.get_omap34xx_temp(this.tempHandler);
 	service.get_scaling_cur_freq(this.freqHandler);
 	service.get_proc_loadavg(this.loadHandler);
-	//service.get_time_in_state(this.timeHandler);
+	service.get_time_in_state(this.timeHandler);
 	
 	this.timer = setTimeout(this.timerHandler, this.rate);
 };
@@ -293,13 +292,30 @@ MainAssistant.prototype.renderGraph = function()
 			loadData.push({key: keys[k], value: dataObj.load.value});
 	}
 	
-	this.tempGraph.setLine(tempData, {strokeStyle: "rgba(153, 205, 153, .3)", fillStyle: "rgba(153, 205, 153, .1)"});
-	this.freqGraph.setLine(freqData, {strokeStyle: "rgba(255, 153, 153, .3)", fillStyle: "rgba(255, 153, 153, .1)"});
-	this.loadGraph.setLine(loadData, {strokeStyle: "rgba(153, 153, 255, .3)", fillStyle: "rgba(153, 153, 255, .1)"});
+	this.tempGraph.setLine(tempData, {strokeStyle: "rgba(153, 205, 153, .4)", fillStyle: "rgba(153, 205, 153, .2)"});
+	this.freqGraph.setLine(freqData, {strokeStyle: "rgba(255, 153, 153, .4)", fillStyle: "rgba(255, 153, 153, .2)"});
+	this.loadGraph.setLine(loadData, {strokeStyle: "rgba(153, 153, 255, .4)", fillStyle: "rgba(153, 153, 255, .2)"});
 	
 	this.tempGraph.render();
 	this.freqGraph.render();
 	this.loadGraph.render();
+	
+	
+	var timeData = [];
+	
+	if (this.barData.time)
+	{
+		var keys = this.barData.time.keys();
+		for (var k = 0; k < keys.length; k++)
+		{
+			var value = this.barData.time.get(keys[k]);
+			timeData.push({key: keys[k], value: value});
+		}
+	
+		this.timeGraph.setData(timeData, {strokeStyle: "rgba(153, 153, 153, .4)", fillStyle: "rgba(153, 153, 153, .2)"});
+		
+		this.timeGraph.render();
+	}
 	
 };
 
