@@ -33,7 +33,6 @@ function MainAssistant()
 	
 	
 	this.currentGovernor = '';
-	this.timer = false;
 };
 
 MainAssistant.prototype.setup = function()

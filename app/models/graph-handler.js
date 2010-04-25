@@ -7,6 +7,7 @@ function graphHandlerModel()
 	this.lineData = $H();
 	this.barData = {};
 	
+	this.timer = false;
 	this.rate = 1000; // every second
 	
 	this.timerHandler = this.timerFunction.bind(this);
@@ -31,7 +32,6 @@ graphHandlerModel.prototype.start = function()
 
 graphHandlerModel.prototype.setMainAssistant = function(assistant)
 {
-	
 	this.mainAssistant = assistant;
 	
 	this.tempGraph = new lineGraph
