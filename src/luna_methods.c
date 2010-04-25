@@ -399,7 +399,14 @@ bool get_proc_cpuinfo_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 }
 
 //
-// Read /proc/cpuinfo
+// Read /proc/loadavg
+//
+bool get_proc_loadavg_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message, "/bin/cat /proc/loadavg 2>&1");
+}
+
+//
+// Read omap34xx_temp
 //
 bool get_omap34xx_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   return read_single_integer(lshandle, message, "/sys/devices/platform/omap34xx_temp/temp1_input");
@@ -671,16 +678,17 @@ bool get_trans_table_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 }
 
 LSMethod luna_methods[] = {
-  { "status",					dummy_method },
-  { "get_proc_cpuinfo",				get_proc_cpuinfo_method },
-  { "get_omap34xx_temp",			get_omap34xx_temp_method },
-  { "get_scaling_cur_freq",         get_scaling_cur_freq_method },
-  { "get_scaling_governor",         get_scaling_governor_method },
-  { "get_cpufreq_params",			get_cpufreq_params_method },
-  { "set_cpufreq_params",			set_cpufreq_params_method },
-  { "get_time_in_state",			get_time_in_state_method },
-  { "get_total_trans",				get_total_trans_method },
-  { "get_trans_table",				get_trans_table_method },
+  { "status",			dummy_method },
+  { "get_proc_cpuinfo",		get_proc_cpuinfo_method },
+  { "get_proc_loadavg",		get_proc_loadavg_method },
+  { "get_omap34xx_temp",	get_omap34xx_temp_method },
+  { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
+  { "get_scaling_governor",     get_scaling_governor_method },
+  { "get_cpufreq_params",	get_cpufreq_params_method },
+  { "set_cpufreq_params",	set_cpufreq_params_method },
+  { "get_time_in_state",	get_time_in_state_method },
+  { "get_total_trans",		get_total_trans_method },
+  { "get_trans_table",		get_trans_table_method },
   { 0, 0 }
 };
 
