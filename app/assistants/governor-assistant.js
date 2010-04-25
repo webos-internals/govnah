@@ -84,7 +84,7 @@ function GovernorAssistant(governor)
 	this.percentChoices = [];
 	for (var x = 0; x <= 100; x = x + 5)
 	{
-		this.percentChoices.push({label:x, value:x});
+		this.percentChoices.push({label:x + ' %', value:x});
 	}
 	
 	this.powersaveChoices = [];
@@ -239,7 +239,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 								{
 									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
-									choices: this.powersaveChoices
+									choices: this.percentChoices
 								},
 								this.settingsModel
 							);
@@ -254,7 +254,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 								{
 									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
-									choices: this.percentChoices
+									choices: this.powersaveChoices
 								},
 								this.settingsModel
 							);
