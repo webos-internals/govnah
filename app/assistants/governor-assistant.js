@@ -19,14 +19,17 @@ function GovernorAssistant(governor)
 	{
 		'scaling_min_freq':
 		{
+			nice: 'min freq',
 			type: 'listFreq',
 		},
 		'scaling_max_freq':
 		{
+			nice: 'max freq',
 			type: 'listFreq',
 		},
 		'scaling_setspeed':
 		{
+			nice: 'setspeed',
 			type: 'listFreq',
 		},
 		'up_threshold':
@@ -40,6 +43,18 @@ function GovernorAssistant(governor)
 		'freq_step':
 		{
 			type: 'listPcnt',
+		},
+		'sampling_rate':
+		{
+			type: 'listSamp',
+		},
+		'powersave_bias':
+		{
+			type: 'listPowr',
+		},
+		'ignore_nice_load':
+		{
+			type: 'toggleTF',
 		}
 	};
 	
@@ -53,16 +68,18 @@ function GovernorAssistant(governor)
 	
 	this.scalingFrequencyChoices = [];
 	
+	this.samplingRates = {min:false, max:false};
+	
 	this.percentChoices = [];
-	for (x = 0; x <= 100; x = x + 5)
+	for (var x = 0; x <= 100; x = x + 5)
 	{
-		this.percentChoices.push({label:$L(x+'%'), value:x});
+		this.percentChoices.push({label:x, value:x});
 	}
 	
 	this.powersaveChoices = [];
-	for (x = 0; x <= 1000; x = x + 10)
+	for (var x = 0; x <= 1000; x = x + 10)
 	{
-		this.percentChoices.push({label:$L(x+'%'), value:x});
+		this.powersaveChoices.push({label:x, value:x});
 	}
 };
 
@@ -141,7 +158,6 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 					}
 					this.controller.modelChanged(this.governorModel);
 					break;
-					
 				case 'scaling_governor':
 					this.governorModel.value = "";
 					this.governorModel.value = trim(tmpParam.value);
@@ -159,6 +175,13 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							this.scalingFrequencyChoices.push({label:$L(tmpFreq), value:tmpFreq});
 						}
 					}
+					break;
+					
+				case 'sampling_rate_max':
+					this.samplingRates.max = parseInt(trim(tmpParam.value));
+					break;
+				case 'sampling_rate_min':
+					this.samplingRates.min = parseInt(trim(tmpParam.value));
 					break;
 			}
 		}
@@ -185,7 +208,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: tmpParam.name,
+									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
 									choices: this.scalingFrequencyChoices
 								},
@@ -199,9 +222,68 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: tmpParam.name,
+									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									modelProperty: tmpParam.name,
+									choices: this.powersaveChoices
+								},
+								this.settingsModel
+							);
+							break;
+						case 'listPowr':
+							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
 									choices: this.percentChoices
+								},
+								this.settingsModel
+							);
+							break;
+						case 'listSamp':
+							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							var samplingChoices = [];
+							if (this.samplingRates.max !== false && this.samplingRates.min !== false)
+							{
+								for (var s = this.samplingRates.min; s <= this.samplingRates.max; s = s + 10000000)
+								{
+									samplingChoices.push({label:s, value:s});
+								}
+								if (s > this.samplingRates.max && s - 10000000 < this.samplingRates.max)
+									samplingChoices.push({label:this.samplingRates.max, value:this.samplingRates.max});
+							}
+							else
+							{
+								samplingChoices.push({label:$L(tmpParam.value), value:tmpParam.value});
+							}
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									modelProperty: tmpParam.name,
+									choices: samplingChoices
+								},
+								this.settingsModel
+							);
+							break;
+							
+						case 'toggleTF':
+							this.settingsForm.innerHTML += Mojo.View.render({object: {label:(this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							this.settingsModel[tmpParam.name] = parseInt(tmpParam.value);
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+						  			trueLabel: $L('True'),
+									trueValue: 1,
+						 			falseLabel: $L('False'),
+									falseValue: 0,
+									modelProperty: tmpParam.name
 								},
 								this.settingsModel
 							);
@@ -210,7 +292,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 				}
 				else
 				{
-					this.settingsForm.innerHTML += Mojo.View.render({object: {label:tmpParam.name, id: tmpParam.name}, template: 'governor/textfield-widget'});
+					this.settingsForm.innerHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'governor/textfield-widget'});
 					this.settingsModel[tmpParam.name] = tmpParam.value;
 					this.controller.setupWidget
 					(
@@ -222,7 +304,9 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							changeOnKeyPress: true,
 							maxLength: 25,
 							textCase: Mojo.Widget.steModeLowerCase,
-							focusMode: Mojo.Widget.focusSelectMode
+							focusMode: Mojo.Widget.focusSelectMode,
+							modifierState: Mojo.Widget.numLock,
+							charsAllow: this.onlyNumbers.bind(this)
 						},
 						this.settingsModel
 					);
@@ -314,6 +398,14 @@ GovernorAssistant.prototype.handleCommand = function(event)
 		}
 	}
 };
+
+GovernorAssistant.prototype.onlyNumbers = function (charCode)
+{
+	if (charCode > 47 && charCode < 58) {
+		return true;
+	}
+	return false;
+}
 
 GovernorAssistant.prototype.cleanup = function(event)
 {
