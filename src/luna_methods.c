@@ -525,6 +525,11 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     if (!error) {
       strcat(buffer, "], \"returnValue\": ");
       strcat(buffer, error ? "false" : "true");
+      if (governor) {
+	strcat(buffer, ", \"governor\": \"");
+	strcat(buffer, governor);
+	strcat(buffer, "\"");
+      }
       strcat(buffer, "}");
     }
   }
@@ -550,8 +555,6 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   bool error = false;
   char *governor = NULL;
 
-  sprintf(buffer, "{\"returnValue\": true }");
-
   json_t *object = LSMessageGetPayloadJSON(message);
 
   // Extract the governor argument from the message
@@ -562,9 +565,11 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   if (governor) {
     sprintf(directory, "%s/%s", cpufreqdir, governor);
+    sprintf(buffer, "{\"returnValue\": true, \"governor\": \"%s\"}", governor);
   }
   else {
     sprintf(directory, "%s", cpufreqdir);
+    sprintf(buffer, "{\"returnValue\": true }");
   }
 
   // Extract the params argument from the message
@@ -602,6 +607,8 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     }
 
     sprintf(filename, "%s/%s", directory, name->child->text);
+
+    fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
     FILE *fp = fopen(filename, "w");
     if (!fp) {
