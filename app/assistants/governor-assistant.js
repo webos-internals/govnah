@@ -303,16 +303,16 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							
 						case 'toggleTF':
 							this.settingsForm.innerHTML += Mojo.View.render({object: {label:(this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")), id: tmpParam.name}, template: 'governor/toggle-widget'});
-							this.settingsModel[tmpParam.name] = parseInt(tmpParam.value);
+							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = payload.governor;
 							this.controller.setupWidget
 							(
 								tmpParam.name,
 								{
 						  			trueLabel: $L('True'),
-									trueValue: 1,
+									trueValue: '1',
 						 			falseLabel: $L('False'),
-									falseValue: 0,
+									falseValue: '0',
 									modelProperty: tmpParam.name
 								},
 								this.settingsModel
@@ -398,12 +398,11 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	{
 		if (!this.settingsLocation[m])
 		{
-			params.push({name:m, value:this.settingsModel[m]});
+			params.push({name:m, value:String(this.settingsModel[m])});
 		}
 	}
 	
 	service.set_cpufreq_params(this.saveComplete, params);
-	
 	
 	var params = [];
 	
@@ -411,7 +410,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	{
 		if (this.settingsLocation[m])
 		{
-			params.push({name:m, value:this.settingsModel[m]});
+			params.push({name:m, value:String(this.settingsModel[m])});
 		}
 	}
 	
