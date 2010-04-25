@@ -63,7 +63,8 @@ MainAssistant.prototype.setup = function()
 	
 	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
 		
-	this.data = $H();
+	this.lineData = $H();
+	this.barData = $H();
 	this.rate = 1000;
 	
 	//this.canvasElement = this.controller.get('graphCanvas');
@@ -167,7 +168,7 @@ MainAssistant.prototype.tempHandler = function(payload)
 		this.iconElement.className = 'icon temp-' + value;
 		this.tempCurrent.innerHTML = value + '<div class="unit">&deg;C</div>';
 		
-		var dataObj = this.data.get(timestamp)
+		var dataObj = this.lineData.get(timestamp)
 		if (!dataObj) dataObj = {};
 		if (!dataObj.temp)
 		{
@@ -179,7 +180,7 @@ MainAssistant.prototype.tempHandler = function(payload)
 			dataObj.temp.count++;
 			dataObj.temp.value = (dataObj.temp.total / dataObj.temp.count);
 		}
-		this.data.set(timestamp, dataObj);
+		this.lineData.set(timestamp, dataObj);
 	}
 };
 MainAssistant.prototype.freqHandler = function(payload)
@@ -191,7 +192,7 @@ MainAssistant.prototype.freqHandler = function(payload)
 	
 		this.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
 		
-		var dataObj = this.data.get(timestamp)
+		var dataObj = this.lineData.get(timestamp)
 		if (!dataObj) dataObj = {};
 		if (!dataObj.freq)
 		{
@@ -203,7 +204,7 @@ MainAssistant.prototype.freqHandler = function(payload)
 			dataObj.freq.count++;
 			dataObj.freq.value = (dataObj.freq.total / dataObj.freq.count);
 		}
-		this.data.set(timestamp, dataObj);
+		this.lineData.set(timestamp, dataObj);
 	}
 }
 MainAssistant.prototype.loadHandler = function(payload)
@@ -216,7 +217,7 @@ MainAssistant.prototype.loadHandler = function(payload)
 		
 		this.loadCurrent.innerHTML = valueArray[0] + ' ' + valueArray[1] + ' ' + valueArray[2];
 		
-		var dataObj = this.data.get(timestamp)
+		var dataObj = this.lineData.get(timestamp)
 		if (!dataObj) dataObj = {};
 		if (!dataObj.load)
 		{
@@ -228,7 +229,7 @@ MainAssistant.prototype.loadHandler = function(payload)
 			dataObj.load.count++;
 			dataObj.load.value = (dataObj.load.total / dataObj.load.count);
 		}
-		this.data.set(timestamp, dataObj);
+		this.lineData.set(timestamp, dataObj);
 	}
 }
 MainAssistant.prototype.timeHandler = function(payload)
@@ -275,12 +276,12 @@ MainAssistant.prototype.renderGraph = function()
 	var avg = 1;
 	var points = 80;
 	
-	var keys = this.data.keys();
+	var keys = this.lineData.keys();
 	var start = 0;
 	if (keys.length > points) start = keys.length - points;
 	for (var k = start; k < keys.length; k++)
 	{
-		var dataObj = this.data.get(keys[k]);
+		var dataObj = this.lineData.get(keys[k]);
 		
 		if (dataObj.temp)
 			tempData.push({key: keys[k], value: dataObj.temp.value});
