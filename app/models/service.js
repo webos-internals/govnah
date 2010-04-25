@@ -12,6 +12,16 @@ service.get_proc_cpuinfo = function(callback)
 	});
 	return request;
 };
+service.get_proc_loadavg = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_proc_loadavg',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 service.get_omap34xx_temp = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
