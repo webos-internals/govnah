@@ -112,131 +112,139 @@ GovernorAssistant.prototype.setup = function()
 
 GovernorAssistant.prototype.onGetParams = function(payload)
 {
-	// initial loop
-	for (var param = 0; param < payload.params.length; param++)
+	if (payload.params)
 	{
-		tmpParam = payload.params[param];
 		
-		//alert('-----');
-		//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
-
-		switch(tmpParam.name)
+		// initial loop
+		for (var param = 0; param < payload.params.length; param++)
 		{
-			case 'scaling_available_governors':
-				this.governorModel.choices = [];
-				var data = tmpParam.value.split(" ");
-				if (data.length > 0)
-				{
-					for (d = 0; d < data.length; d++)
-					{
-						var tmpGov = trim(data[d]);
-						if (tmpGov != "")
-						{
-							this.governorModel.choices.push({label:$L(tmpGov), value:tmpGov});
-						}
-					}
-				}
-				this.controller.modelChanged(this.governorModel);
-				break;
-				
-			case 'scaling_governor':
-				this.governorModel.value = "";
-				this.governorModel.value = trim(tmpParam.value);
-				this.controller.modelChanged(this.governorModel);
-				break;
+			tmpParam = payload.params[param];
 			
-			case 'scaling_available_frequencies':
-				this.scalingFrequencyChoices = [];
-				var data = tmpParam.value.split(" ");
-				if (data.length > 0)
-				{
-					for (d = 0; d < data.length; d++)
-					{
-						var tmpFreq = trim(data[d]);
-						this.scalingFrequencyChoices.push({label:$L(tmpFreq), value:tmpFreq});
-					}
-				}
-				break;
-		}
-	}
-	
-	
-	// second loop
-	for (var param = 0; param < payload.params.length; param++)
-	{
-		tmpParam = payload.params[param];
-		
-		if (tmpParam.writeable && tmpParam.name != 'scaling_governor')
-		{
 			//alert('-----');
 			//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
-			
-			if (this.settings[tmpParam.name])
+	
+			switch(tmpParam.name)
 			{
-				switch(this.settings[tmpParam.name].type)
-				{
-					case 'listFreq':
-						this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-						this.settingsModel[tmpParam.name] = tmpParam.value;
-						this.controller.setupWidget
-						(
-							tmpParam.name,
-							{
-								label: tmpParam.name,
-								modelProperty: tmpParam.name,
-								choices: this.scalingFrequencyChoices
-							},
-							this.settingsModel
-						);
-						break;
-					case 'listPcnt':
-						this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-						this.settingsModel[tmpParam.name] = tmpParam.value;
-						this.controller.setupWidget
-						(
-							tmpParam.name,
-							{
-								label: tmpParam.name,
-								modelProperty: tmpParam.name,
-								choices: this.percentChoices
-							},
-							this.settingsModel
-						);
-						break;
-				}
-			}
-			else
-			{
-				this.settingsForm.innerHTML += Mojo.View.render({object: {label:tmpParam.name, id: tmpParam.name}, template: 'governor/textfield-widget'});
-				this.settingsModel[tmpParam.name] = tmpParam.value;
-				this.controller.setupWidget
-				(
-					tmpParam.name,
+				case 'scaling_available_governors':
+					this.governorModel.choices = [];
+					var data = tmpParam.value.split(" ");
+					if (data.length > 0)
 					{
-						modelProperty: tmpParam.name,
-						multiline: false,
-						enterSubmits: false,
-						changeOnKeyPress: true,
-						maxLength: 25,
-						textCase: Mojo.Widget.steModeLowerCase,
-						focusMode: Mojo.Widget.focusSelectMode
-					},
-					this.settingsModel
-				);
+						for (d = 0; d < data.length; d++)
+						{
+							var tmpGov = trim(data[d]);
+							if (tmpGov != "")
+							{
+								this.governorModel.choices.push({label:$L(tmpGov), value:tmpGov});
+							}
+						}
+					}
+					this.controller.modelChanged(this.governorModel);
+					break;
+					
+				case 'scaling_governor':
+					this.governorModel.value = "";
+					this.governorModel.value = trim(tmpParam.value);
+					this.controller.modelChanged(this.governorModel);
+					break;
+				
+				case 'scaling_available_frequencies':
+					this.scalingFrequencyChoices = [];
+					var data = tmpParam.value.split(" ");
+					if (data.length > 0)
+					{
+						for (d = 0; d < data.length; d++)
+						{
+							var tmpFreq = trim(data[d]);
+							this.scalingFrequencyChoices.push({label:$L(tmpFreq), value:tmpFreq});
+						}
+					}
+					break;
 			}
 		}
+		
+		
+		// second loop
+		for (var param = 0; param < payload.params.length; param++)
+		{
+			tmpParam = payload.params[param];
+			
+			if (tmpParam.writeable && tmpParam.name != 'scaling_governor')
+			{
+				//alert('-----');
+				//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
+				
+				if (this.settings[tmpParam.name])
+				{
+					switch(this.settings[tmpParam.name].type)
+					{
+						case 'listFreq':
+							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: tmpParam.name,
+									modelProperty: tmpParam.name,
+									choices: this.scalingFrequencyChoices
+								},
+								this.settingsModel
+							);
+							break;
+						case 'listPcnt':
+							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: tmpParam.name,
+									modelProperty: tmpParam.name,
+									choices: this.percentChoices
+								},
+								this.settingsModel
+							);
+							break;
+					}
+				}
+				else
+				{
+					this.settingsForm.innerHTML += Mojo.View.render({object: {label:tmpParam.name, id: tmpParam.name}, template: 'governor/textfield-widget'});
+					this.settingsModel[tmpParam.name] = tmpParam.value;
+					this.controller.setupWidget
+					(
+						tmpParam.name,
+						{
+							modelProperty: tmpParam.name,
+							multiline: false,
+							enterSubmits: false,
+							changeOnKeyPress: true,
+							maxLength: 25,
+							textCase: Mojo.Widget.steModeLowerCase,
+							focusMode: Mojo.Widget.focusSelectMode
+						},
+						this.settingsModel
+					);
+				}
+			}
+		}
+		
+		this.controller.instantiateChildWidgets(this.settingsForm);
+		
+		
+		// update form styles so list looks OK
+		var rows = this.settingsForm.querySelectorAll('div.palm-row');
+		for (var r = 0; r < rows.length; r++)
+		{
+			if (r == 0) rows[r].className = 'palm-row first';
+			else if (r == rows.length-1) rows[r].className = 'palm-row last';
+			else rows[r].className = 'palm-row';
+		}
 	}
-	
-	this.controller.instantiateChildWidgets(this.settingsForm);
-	
-	
-	// update form styles so list looks OK
-	var rows = this.settingsForm.querySelectorAll('div.palm-row');
-	for (var r = 0; r < rows.length; r++)
+	else
 	{
-		if (r == 0) rows[r].className = 'palm-row first';
-		else if (r == rows.length-1) rows[r].className = 'palm-row last';
-		else rows[r].className = 'palm-row';
+		//error
 	}
 }
 
