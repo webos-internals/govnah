@@ -4,6 +4,7 @@
     {"source": "app/models/cookies.js"},
     {"source": "app/models/line-graph.js"},
     {"source": "app/models/bar-graph.js"},
+    {"source": "app/models/graph-handler.js"},
     {"source": "app/assistants/app-assistant.js"},
     {
         "scenes": "main",
@@ -16,5 +17,9 @@
     {
         "scenes": "governor",
         "source": "app/assistants/governor-assistant.js"
+    },
+    {
+        "scenes": "graph",
+        "source": "app/assistants/graph-assistant.js"
     }
 ]
