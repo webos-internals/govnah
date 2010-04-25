@@ -49,6 +49,8 @@ function GovernorAssistant(governor)
 		choices: []
 	};
 	
+	this.settingsModel = {};
+	
 	this.scalingFrequencyChoices = [];
 	
 	this.percentChoices = [];
@@ -82,6 +84,22 @@ GovernorAssistant.prototype.setup = function()
 	this.controller.listen('governor', Mojo.Event.propertyChange, this.governorChange);
 	
 	
+	this.controller.setupWidget
+	(
+		'saveButton',
+		{
+			type: Mojo.Widget.activityButton
+		},
+		{
+			buttonLabel: 'Save'
+		}
+	);
+	this.saveButtonElement = this.controller.get('saveButton');
+	this.saveButtonPressed = this.saveButtonPressed.bindAsEventListener(this);
+    this.saveComplete = this.saveComplete.bindAsEventListener(this);
+	this.controller.listen('saveButton', Mojo.Event.tap, this.saveButtonPressed);
+	
+	
 	this.settingsForm = this.controller.get('settings');
 	
     this.onGetParams = this.onGetParams.bindAsEventListener(this);
@@ -99,8 +117,8 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 	{
 		tmpParam = payload.params[param];
 		
-		alert('-----');
-		for (p in tmpParam) alert(p + " : " + tmpParam[p]);
+		//alert('-----');
+		//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
 
 		switch(tmpParam.name)
 		{
@@ -159,30 +177,30 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 				{
 					case 'listFreq':
 						this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+						this.settingsModel[tmpParam.name] = tmpParam.value;
 						this.controller.setupWidget
 						(
 							tmpParam.name,
 							{
 								label: tmpParam.name,
+								modelProperty: tmpParam.name,
 								choices: this.scalingFrequencyChoices
 							},
-							{
-								value: tmpParam.value
-							}
+							this.settingsModel
 						);
 						break;
 					case 'listPcnt':
 						this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+						this.settingsModel[tmpParam.name] = tmpParam.value;
 						this.controller.setupWidget
 						(
 							tmpParam.name,
 							{
 								label: tmpParam.name,
+								modelProperty: tmpParam.name,
 								choices: this.percentChoices
 							},
-							{
-								value: tmpParam.value
-							}
+							this.settingsModel
 						);
 						break;
 				}
@@ -190,19 +208,20 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 			else
 			{
 				this.settingsForm.innerHTML += Mojo.View.render({object: {label:tmpParam.name, id: tmpParam.name}, template: 'governor/textfield-widget'});
+				this.settingsModel[tmpParam.name] = tmpParam.value;
 				this.controller.setupWidget
 				(
 					tmpParam.name,
 					{
+						modelProperty: tmpParam.name,
 						multiline: false,
 						enterSubmits: false,
+						changeOnKeyPress: true,
 						maxLength: 25,
 						textCase: Mojo.Widget.steModeLowerCase,
 						focusMode: Mojo.Widget.focusSelectMode
 					},
-					{
-						value: tmpParam.value
-					}
+					this.settingsModel
 				);
 			}
 		}
@@ -228,7 +247,7 @@ GovernorAssistant.prototype.governorChange = function(event)
 	
 	//alert(event.value);
 	this.governorModel.value = event.value;
-	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor',value:this.governorModel.value}])
+	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}]);
 }
 
 GovernorAssistant.prototype.onSetParams = function(payload)
@@ -237,9 +256,34 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
 	this.settingsForm.innerHTML = '';
+	this.settingsModel = {};
 	
 	service.get_cpufreq_params(this.onGetParams);
 	service.get_cpufreq_params(this.onGetParams, this.governorModel.value);
+}
+
+GovernorAssistant.prototype.saveButtonPressed = function(event)
+{
+	//alert('-------');
+	//for (var m in this.settingsModel) alert(m+" : "+this.settingsModel[m]);
+	
+	var params = [];
+	
+	for (var m in this.settingsModel)
+	{
+		params.push({name:m, value:this.settingsModel[m]});
+	}
+	
+	service.set_cpufreq_params(this.saveComplete, params);
+	
+}
+
+GovernorAssistant.prototype.saveComplete = function(payload)
+{
+	//alert('===========');
+	//for (p in payload) alert(p+' : '+payload[p]);
+	
+	this.saveButtonElement.mojo.deactivate();
 }
 
 GovernorAssistant.prototype.activate = function(event)
