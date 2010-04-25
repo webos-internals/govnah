@@ -16,34 +16,6 @@ preferenceCookie.prototype.get = function(reload)
 				// Global Group
 				theme: 'palm-default',
 				
-				/*
-				// Startup Group
-				updateInterval: 'launch',
-				lastUpdate: 0, // will be updated every time update is successful
-				fixUnknown: true,
-				
-				// Main Scene Group
-				showAvailableTypes: false,
-				showTypeApplication: true,
-				showTypeTheme: true,
-				showTypePatch: true,
-				showTypeOther: true,
-				
-				// List Scene Group
-				listSort: 'default',
-				secondRow: 'version,maint',
-				listInstalled: false,
-				onlyShowFree: false,
-				searchDesc: false,
-				
-				// Background Group
-				backgroundUpdates: 'disabled',
-				autoInstallUpdates: false//,
-				
-				// Hidden Advanced Group
-				//allowServiceUpdates: false
-				//allowFlagSkip: false
-				*/
 			};
 			
 			// uncomment to delete cookie for testing

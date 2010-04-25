@@ -4,6 +4,7 @@ var prefs = new preferenceCookie();
 // stage names
 var mainStageName = 'govnah-main';
 
+var prefs = new preferenceCookie();
 var graphHandler = new graphHandlerModel();
 
 function AppAssistant() {}

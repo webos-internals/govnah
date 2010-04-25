@@ -8,7 +8,7 @@
 	z-index: 11000;
 	height: 30px; 
 	width: 100%;
-	background: url(../images/scrollFade-top.png) top center repeat-x;
+	background: url(../images/palm-default/scrollFade-top.png) top center repeat-x;
 	-webkit-palm-mouse-target: ignore;
 }
 .scene-fade-bottom
@@ -18,8 +18,16 @@
 	z-index: 11000;
 	height: 30px; 
 	width: 100%;
-	background: url(../images/scrollFade-bottom.png) bottom center repeat-x;
+	background: url(../images/palm-default/scrollFade-bottom.png) bottom center repeat-x;
 	-webkit-palm-mouse-target: ignore;
+}
+body.palm-dark .scene-fade-top
+{
+	background: url(../images/palm-dark/scrollFade-top.png) top center repeat-x;
+}
+body.palm-dark .scene-fade-bottom
+{
+	background: url(../images/palm-dark/scrollFade-bottom.png) bottom center repeat-x;
 }
 
 /*

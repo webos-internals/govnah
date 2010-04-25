@@ -25,6 +25,10 @@ function MainAssistant()
 		items:
 		[
 			{
+				label: $L("Preferences"),
+				command: 'do-prefs'
+			},
+			{
 				label: $L("Help"),
 				command: 'do-help'
 			}
@@ -38,6 +42,9 @@ function MainAssistant()
 
 MainAssistant.prototype.setup = function()
 {
+	// set theme because this can be the first scene pushed
+	this.controller.document.body.className = prefs.get().theme;
+	
 	// get elements
 	this.iconElement =		this.controller.get('icon');
 	this.titleElement =		this.controller.get('main-title');
@@ -152,6 +159,10 @@ MainAssistant.prototype.handleCommand = function(event)
 	{
 		switch (event.command)
 		{
+			case 'do-prefs':
+				this.controller.stageController.pushScene('preferences');
+				break;
+				
 			case 'do-help':
 				this.controller.stageController.pushScene('help');
 				break;
