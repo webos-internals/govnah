@@ -209,6 +209,16 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 	}
 	
 	this.controller.instantiateChildWidgets(this.settingsForm);
+	
+	
+	// update form styles so list looks OK
+	var rows = this.settingsForm.querySelectorAll('div.palm-row');
+	for (var r = 0; r < rows.length; r++)
+	{
+		if (r == 0) rows[r].className = 'palm-row first';
+		else if (r == rows.length-1) rows[r].className = 'palm-row last';
+		else rows[r].className = 'palm-row';
+	}
 }
 
 GovernorAssistant.prototype.governorChange = function(event)
