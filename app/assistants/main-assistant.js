@@ -31,6 +31,7 @@ function MainAssistant()
 		]
 	};
 	
+	this.isVisible = false;
 	
 	this.currentGovernor = '';
 };
@@ -63,6 +64,12 @@ MainAssistant.prototype.setup = function()
 	
 	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
 	
+	
+	this.visible = this.visible.bindAsEventListener(this);
+	this.invisible = this.invisible.bindAsEventListener(this);
+	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
+	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
+	
 	graphHandler.setMainAssistant(this);
 	graphHandler.start();
 	
@@ -94,6 +101,19 @@ MainAssistant.prototype.activate = function(event)
 };
 MainAssistant.prototype.deactivate = function(event)
 {
+};
+MainAssistant.prototype.visible = function(event)
+{
+	if (!this.isVisible)
+	{
+		this.isVisible = true;
+	}
+	
+	service.get_scaling_governor(this.governorHandler);
+};
+MainAssistant.prototype.invisible = function(event)
+{
+	this.isVisible = false;
 };
 
 MainAssistant.prototype.getRandomSubTitle = function()
@@ -141,6 +161,10 @@ MainAssistant.prototype.handleCommand = function(event)
 
 MainAssistant.prototype.cleanup = function(event)
 {
+	this.controller.stopListening(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
+	
+	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
+	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 };
 
 // Local Variables:

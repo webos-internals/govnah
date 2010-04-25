@@ -89,7 +89,7 @@ graphHandlerModel.prototype.tempHandler = function(payload)
 		var value = parseInt(payload.value);
 		
 		AppAssistant.updateIcon(value);
-		if (this.mainAssistant && this.mainAssistant.controller)
+		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
 			this.mainAssistant.iconElement.className = 'icon temp-' + value;
 			this.mainAssistant.tempCurrent.innerHTML = value + '<div class="unit">&deg;C</div>';
@@ -117,7 +117,7 @@ graphHandlerModel.prototype.freqHandler = function(payload)
 		var timestamp = Math.round(new Date().getTime()/1000.0);
 		var value = parseInt(payload.value);
 	
-		if (this.mainAssistant && this.mainAssistant.controller)
+		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
 			this.mainAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
 		}
@@ -145,7 +145,7 @@ graphHandlerModel.prototype.loadHandler = function(payload)
 		var valueArray = String(payload.stdOut).split(' ');
 		var value = parseFloat(trim(valueArray[0]));
 		
-		if (this.mainAssistant && this.mainAssistant.controller)
+		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
 			this.mainAssistant.loadCurrent.innerHTML = valueArray[0] + ' ' + valueArray[1] + ' ' + valueArray[2];
 		}
@@ -186,7 +186,7 @@ graphHandlerModel.prototype.timeHandler = function(payload)
 graphHandlerModel.prototype.renderGraph = function()
 {
 	
-	if (this.mainAssistant && this.mainAssistant.controller)
+	if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 	{
 			
 		this.tempGraph.clearLines();
