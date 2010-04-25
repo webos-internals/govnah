@@ -28,6 +28,18 @@ function GovernorAssistant(governor)
 		'scaling_setspeed':
 		{
 			type: 'listFreq',
+		},
+		'up_threshold':
+		{
+			type: 'listPcnt',
+		},
+		'down_threshold':
+		{
+			type: 'listPcnt',
+		},
+		'freq_step':
+		{
+			type: 'listPcnt',
 		}
 	};
 	
@@ -153,6 +165,20 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							{
 								label: tmpParam.name,
 								choices: this.scalingFrequencyChoices
+							},
+							{
+								value: tmpParam.value
+							}
+						);
+						break;
+					case 'listPcnt':
+						this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+						this.controller.setupWidget
+						(
+							tmpParam.name,
+							{
+								label: tmpParam.name,
+								choices: this.percentChoices
 							},
 							{
 								value: tmpParam.value
