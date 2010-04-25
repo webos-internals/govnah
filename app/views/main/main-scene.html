@@ -17,7 +17,7 @@
 		
 		<div class="palm-row" id="governorRow" x-mojo-tap-highlight="momentary">
 			<div class="palm-row-wrapper">
-				<div class="label left">Current Governor</div>
+				<div class="label left">Governor</div>
 				<div class="title right" id="governorCurrent">...</div>
 			</div>
 		</div>
@@ -25,17 +25,24 @@
 		<div class="palm-row">
 			<div class="palm-row-wrapper">
 				<canvas id="freqCanvas" width="320" height="31"></canvas>
-				<div class="label left">Current Frequency</div>
-				<div class="title right" id="frequencyCurrent">...</div>
+				<div class="label left">Frequency</div>
+				<div class="title right" id="freqCurrent">...</div>
 			</div>
 		</div>
 		
 		<div class="palm-row">
-			<div class="palm-row-wrapper" id="graph">
-				<div class="title center" id="scale"></div>
-				<div class="label left" id="vertTop"><div class="count" id="vertTopCount"></div></div>
-				<div class="label left" id="vertBot"><div class="count" id="vertBotCount"></div></div>
-				<canvas id="graphCanvas" width="320" height="101"></canvas>
+			<div class="palm-row-wrapper">
+				<canvas id="tempCanvas" width="320" height="31"></canvas>
+				<div class="label left">Temperature</div>
+				<div class="title right" id="tempCurrent">...</div>
+			</div>
+		</div>
+		
+		<div class="palm-row">
+			<div class="palm-row-wrapper">
+				<canvas id="loadCanvas" width="320" height="31"></canvas>
+				<div class="label left">Load Average</div>
+				<div class="title right" id="loadCurrent">...</div>
 			</div>
 		</div>
 		

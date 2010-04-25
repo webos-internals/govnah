@@ -160,11 +160,13 @@
 {
 	position: relative;
 }
-.main canvas#freqCanvas
+.main canvas#freqCanvas,
+.main canvas#tempCanvas,
+.main canvas#loadCanvas
 {
 	position: absolute;
-	z-index: 0;
-	top: 10px;
+	z-index: -5;
+	top: 22px;
 }
 
 
@@ -197,7 +199,6 @@
 .form .palm-row .title.right .unit
 {
 	float: right;
-	width: 35px;
 	padding-left: 8px;
 	padding-top: 4px;
 	text-align: left;
