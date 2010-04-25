@@ -182,7 +182,10 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 						for (d = 0; d < data.length; d++)
 						{
 							var tmpFreq = parseInt(trim(data[d]));
-							this.scalingFrequencyChoices.push({label:(tmpFreq/1000) + ' MHz', value:tmpFreq});
+							if (tmpFreq)
+							{
+								this.scalingFrequencyChoices.push({label:(tmpFreq/1000) + ' MHz', value:tmpFreq});
+							}
 						}
 					}
 					break;
