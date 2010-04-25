@@ -48,6 +48,10 @@ function GovernorAssistant(governor)
 		{
 			type: 'listSamp',
 		},
+		'sampling_down_factor':
+		{
+			type: 'listSampDown',
+		},
 		'powersave_bias':
 		{
 			type: 'listPowr',
@@ -70,6 +74,12 @@ function GovernorAssistant(governor)
 	
 	this.samplingRates = {min:false, max:false};
 	
+	this.samplingDownChoices = [];
+	for (var x = 1; x <= 10; x++)
+	{
+		this.samplingDownChoices.push({label:x, value:x});
+	}
+			
 	this.percentChoices = [];
 	for (var x = 0; x <= 100; x = x + 5)
 	{
@@ -267,6 +277,20 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
 									choices: samplingChoices
+								},
+								this.settingsModel
+							);
+							break;
+						case 'listSampDown':
+							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									modelProperty: tmpParam.name,
+									choices: this.samplingDownChoices
 								},
 								this.settingsModel
 							);
