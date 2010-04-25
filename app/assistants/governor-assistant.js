@@ -1,4 +1,4 @@
-function GovernorAssistant()
+function GovernorAssistant(governor)
 {
 	// setup menu
 	this.menuModel =
@@ -33,7 +33,7 @@ function GovernorAssistant()
 	
 	this.governorModel = 
 	{
-		value: '',
+		value: governor,
 		choices: []
 	};
 	
@@ -76,6 +76,7 @@ GovernorAssistant.prototype.setup = function()
     this.onSetParams = this.onSetParams.bindAsEventListener(this);
 	
 	service.get_cpufreq_params(this.onGetParams);
+	service.get_cpufreq_params(this.onGetParams, this.governorModel.value);
 	
 };
 
@@ -129,6 +130,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 		}
 	}
 	
+	
 	// second loop
 	for (var param = 0; param < payload.params.length; param++)
 	{
@@ -149,11 +151,11 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 						(
 							tmpParam.name,
 							{
-								label: tmpParam.name
+								label: tmpParam.name,
+								choices: this.scalingFrequencyChoices
 							},
 							{
-								value: tmpParam.value,
-								choices: this.scalingFrequencyChoices
+								value: tmpParam.value
 							}
 						);
 						break;
@@ -189,7 +191,8 @@ GovernorAssistant.prototype.governorChange = function(event)
 	//for (e in event) alert(e+' : '+event[e]);
 	
 	//alert(event.value);
-	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor',value:event.value}])
+	this.governorModel.value = event.value;
+	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor',value:this.governorModel.value}])
 }
 
 GovernorAssistant.prototype.onSetParams = function(payload)
@@ -200,6 +203,7 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	this.settingsForm.innerHTML = '';
 	
 	service.get_cpufreq_params(this.onGetParams);
+	service.get_cpufreq_params(this.onGetParams, this.governorModel.value);
 }
 
 GovernorAssistant.prototype.activate = function(event)

@@ -43,11 +43,15 @@ service.get_scaling_governor = function(callback)
 	return request;
 };
 
-service.get_cpufreq_params = function(callback)
+service.get_cpufreq_params = function(callback, governor)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'get_cpufreq_params',
+		parameters:
+		{
+			governor: governor
+		},
 		onSuccess: callback,
 		onFailure: callback
 	});

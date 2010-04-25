@@ -31,6 +31,8 @@ function MainAssistant()
 		]
 	};
 	
+	
+	this.currentGovernor = '';
 	this.timer = false;
 };
 
@@ -122,13 +124,14 @@ MainAssistant.prototype.setup = function()
 
 MainAssistant.prototype.onGovernor = function(payload)
 {
-	this.governorCurrent.innerHTML = trim(payload.value);
+	this.currentGovernor = trim(payload.value);
+	this.governorCurrent.innerHTML = this.currentGovernor;
 	//alert ('-----');
 	//for (p in payload) alert(p+":"+payload[p]);
 }
 MainAssistant.prototype.governorTap = function(event)
 {
-	this.controller.stageController.pushScene('governor');
+	this.controller.stageController.pushScene('governor', this.currentGovernor);
 }
 
 MainAssistant.prototype.freqHandler = function(payload)
