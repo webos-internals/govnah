@@ -392,6 +392,9 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	
 	service.set_cpufreq_params(this.saveComplete, params);
 	
+	params.push({name:'scaling_governor', value:this.governorModel.value});
+	
+	service.set_cpufreq_params(this.saveComplete, params);	
 }
 
 GovernorAssistant.prototype.saveComplete = function(payload)
