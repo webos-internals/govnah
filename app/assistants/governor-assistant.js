@@ -72,7 +72,7 @@ function GovernorAssistant(governor)
 	
 	this.scalingFrequencyChoices = [];
 	
-	this.samplingRates = {min:false, max:false};
+	this.samplingRates = {min:false, max:false}; 
 	
 	this.samplingDownChoices = [];
 	for (var x = 1; x <= 10; x++)

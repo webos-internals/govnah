@@ -167,6 +167,13 @@
 	top: 10px;
 }
 
+
+.governor .palm-row .label
+{
+	max-width: 300px;
+}
+
+
 /*
  * Generic Form Styles
  */
