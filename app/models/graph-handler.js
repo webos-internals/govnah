@@ -281,7 +281,15 @@ graphHandlerModel.prototype.renderGraph = function()
 				fullData.push({key: keys[k], value: dataObj.load.value});
 		}
 		
-		this.fullGraph.setLine(fullData, {strokeStyle: "rgba(153, 153, 153, .4)", fillStyle: "rgba(153, 153, 153, .2)"});
+		if (this.graphAssistant.display == "temp")
+			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(153, 205, 153, .4)", fillStyle: "rgba(153, 205, 153, .2)"});
+		
+		if (this.graphAssistant.display == "freq")
+			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(205, 153, 153, .4)", fillStyle: "rgba(205, 153, 153, .2)"});
+		
+		if (this.graphAssistant.display == "load")
+			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(153, 153, 205, .4)", fillStyle: "rgba(153, 153, 205, .2)"});
+		
 		
 		this.fullGraph.render();
 	}
