@@ -8,7 +8,7 @@ function graphHandlerModel()
 	this.barData = {};
 	
 	this.timer = false;
-	this.rate = 1000; // every second
+	this.rate = parseInt(prefs.get().pollSpeed) * 1000;
 	
 	this.timerHandler = this.timerFunction.bind(this);
 	
@@ -96,7 +96,6 @@ graphHandlerModel.prototype.timerFunction = function()
 	this.timer = setTimeout(this.timerHandler, this.rate);
 };
 
-
 graphHandlerModel.prototype.tempHandler = function(payload)
 {
 	if (payload.returnValue) 
@@ -159,24 +158,34 @@ graphHandlerModel.prototype.loadHandler = function(payload)
 	{
 		var timestamp = Math.round(new Date().getTime()/1000.0);
 		var valueArray = String(payload.stdOut).split(' ');
-		var value = parseFloat(trim(valueArray[0]));
+		var value1 =  parseFloat(trim(valueArray[0]));
+		var value5 =  parseFloat(trim(valueArray[1]));
+		var value15 = parseFloat(trim(valueArray[2]));
 		
 		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
-			this.mainAssistant.loadCurrent.innerHTML = valueArray[0] + ' ' + valueArray[1] + ' ' + valueArray[2];
+			this.mainAssistant.loadCurrent.innerHTML = value1 + ' ' + value5 + ' ' + value15;
 		}
 		
 		var dataObj = this.lineData.get(timestamp)
 		if (!dataObj) dataObj = {};
 		if (!dataObj.load)
 		{
-			dataObj.load = {total:value, count:1, value:value};
+			dataObj.load = {total1:  value1,  count1:  1, value1:  value1,
+							total5:  value5,  count5:  1, value5:  value5,
+							total15: value15, count15: 1, value15: value15};
 		}
-		if (dataObj.load && dataObj.load.count)
+		if (dataObj.load && dataObj.load.count1)
 		{
-			dataObj.load.total = dataObj.load.total + value;
-			dataObj.load.count++;
-			dataObj.load.value = (dataObj.load.total / dataObj.load.count);
+			dataObj.load.total1 =  dataObj.load.total1  + value1;
+			dataObj.load.total5 =  dataObj.load.total5  + value5;
+			dataObj.load.total15 = dataObj.load.total15 + value15;
+			dataObj.load.count1++;
+			dataObj.load.count5++;
+			dataObj.load.count15++;
+			dataObj.load.value1 =  (dataObj.load.total1  / dataObj.load.count1);
+			dataObj.load.value5 =  (dataObj.load.total5  / dataObj.load.count5);
+			dataObj.load.value15 = (dataObj.load.total15 / dataObj.load.count15);
 		}
 		this.lineData.set(timestamp, dataObj);
 	}
@@ -218,18 +227,33 @@ graphHandlerModel.prototype.renderGraph = function()
 		var keys = this.lineData.keys();
 		var start = 0;
 		if (keys.length > points) start = keys.length - points;
+		if (start == 0)
+		{
+			for (var s = 0; s < (points - keys.length); s++)
+			{
+				tempData.push(false);
+				freqData.push(false);
+				loadData.push(false);
+			}
+		}
 		for (var k = start; k < keys.length; k++)
 		{
 			var dataObj = this.lineData.get(keys[k]);
 			
 			if (dataObj.temp)
 				tempData.push({key: keys[k], value: dataObj.temp.value});
+			else
+				tempData.push(false);
 			
 			if (dataObj.freq)
 				freqData.push({key: keys[k], value: dataObj.freq.value});
+			else
+				freqData.push(false);
 			
 			if (dataObj.load)
-				loadData.push({key: keys[k], value: dataObj.load.value});
+				loadData.push({key: keys[k], value: dataObj.load.value1});
+			else
+				loadData.push(false);
 		}
 		
 		this.tempGraph.setLine(tempData, {strokeStyle: "rgba(153, 205, 153, .4)", fillStyle: "rgba(153, 205, 153, .2)"});
@@ -239,7 +263,6 @@ graphHandlerModel.prototype.renderGraph = function()
 		this.tempGraph.render();
 		this.freqGraph.render();
 		this.loadGraph.render();
-		
 		
 		var timeData = [];
 		
@@ -257,6 +280,8 @@ graphHandlerModel.prototype.renderGraph = function()
 			this.timeGraph.render();
 		}
 	}
+	
+	
 	
 	if (this.graphAssistant && this.graphAssistant.controller && this.graphAssistant.isVisible)
 	{
@@ -278,7 +303,7 @@ graphHandlerModel.prototype.renderGraph = function()
 				fullData.push({key: keys[k], value: dataObj.freq.value});
 			
 			if (dataObj.load && this.graphAssistant.display == "load")
-				fullData.push({key: keys[k], value: dataObj.load.value});
+				fullData.push({key: keys[k], value: dataObj.load.value1});
 		}
 		
 		if (this.graphAssistant.display == "temp")
@@ -289,7 +314,6 @@ graphHandlerModel.prototype.renderGraph = function()
 		
 		if (this.graphAssistant.display == "load")
 			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(153, 153, 205, .4)", fillStyle: "rgba(153, 153, 205, .2)"});
-		
 		
 		this.fullGraph.render();
 	}

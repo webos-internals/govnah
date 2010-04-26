@@ -53,6 +53,30 @@ PreferencesAssistant.prototype.setup = function()
 		
 		this.controller.listen('theme', Mojo.Event.propertyChange, this.themeChanged.bindAsEventListener(this));
 		
+		
+		// Data Polling Group
+		this.controller.setupWidget
+		(
+			'pollSpeed',
+			{
+				label: $L('Poll Speed'),
+				choices:
+				[
+					{label:$L('1 Second'),		value:1},
+					{label:$L('2 Seconds'),		value:2},
+					{label:$L('5 Seconds'),		value:5},
+					{label:$L('10 Seconds'),	value:10},
+					{label:$L('15 Seconds'),	value:15},
+					{label:$L('30 Seconds'),	value:30},
+					{label:$L('1 Minute'),		value:60}
+				],
+				modelProperty: 'pollSpeed'
+			},
+			this.prefs
+		);
+		
+		this.controller.listen('pollSpeed', Mojo.Event.propertyChange, this.pollSpeedChanged.bindAsEventListener(this));
+		
 	}
 	catch (e)
 	{
@@ -69,6 +93,12 @@ PreferencesAssistant.prototype.themeChanged = function(event)
 {
 	// set the theme right away with the body class
 	this.controller.document.body.className = event.value;
+	this.cookie.put(this.prefs);
+};
+PreferencesAssistant.prototype.pollSpeedChanged = function(event)
+{
+	// set the rate right away with the new value
+	graphHandler.rate = parseInt(event.value) * 1000;
 	this.cookie.put(this.prefs);
 };
 PreferencesAssistant.prototype.toggleChanged = function(event)

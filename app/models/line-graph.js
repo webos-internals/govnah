@@ -86,7 +86,7 @@ lineGraph.prototype.render = function()
 		if (start < this.lines[line].data.length)
 		{
 			this.canvas.beginPath();
-			this.canvas.moveTo(0, this.height - (this.height / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (first.value - this.lines[line].vertical.bottom));
+			this.canvas.moveTo(((start-1) * segmentLength), this.height - (this.height / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (first.value - this.lines[line].vertical.bottom));
 			
 			var last = first;
 			for (var d = start; d < this.lines[line].data.length; d++)
@@ -101,8 +101,9 @@ lineGraph.prototype.render = function()
 			
 			if (this.lines[line].fillStyle)
 			{
+				this.canvas.lineTo(this.width+5, this.height - (this.height / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (crnt.value - this.lines[line].vertical.bottom));
 				this.canvas.lineTo(this.width+5, this.height+5);
-				this.canvas.lineTo(-5, this.height+5);
+				this.canvas.lineTo(((start-1) * segmentLength), this.height+5);
 				this.canvas.fill();
 			}
 			this.canvas.stroke();

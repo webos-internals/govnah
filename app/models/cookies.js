@@ -15,7 +15,9 @@ preferenceCookie.prototype.get = function(reload)
 			{
 				// Global Group
 				theme: 'palm-default',
-				
+								
+				// Data Polling Group
+				pollSpeed: 1
 			};
 			
 			// uncomment to delete cookie for testing
