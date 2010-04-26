@@ -326,8 +326,8 @@ graphHandlerModel.prototype.renderGraph = function()
 		
 		if (this.graphAssistant.display == "load")
 		{
-			this.fullGraph.setLine(fullData3, {strokeStyle: "rgba(75, 75, 205, .4)", fillStyle: "rgba(75, 75, 205, .2)"});
-			this.fullGraph.setLine(fullData2, {strokeStyle: "rgba(105, 105, 205, .4)", fillStyle: "rgba(105, 105, 205, .2)"});
+			this.fullGraph.setLine(fullData3, {strokeStyle: "rgba(75, 75, 205, .4)"/*, fillStyle: "rgba(75, 75, 205, .2)"*/});
+			this.fullGraph.setLine(fullData2, {strokeStyle: "rgba(105, 105, 205, .4)"/*, fillStyle: "rgba(105, 105, 205, .2)"*/});
 			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(135, 135, 205, .4)", fillStyle: "rgba(135, 135, 205, .2)"});
 		}
 				
