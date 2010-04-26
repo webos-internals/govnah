@@ -22,7 +22,15 @@ GraphAssistant.prototype.setup = function()
 {
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 	
+	this.titleElement = this.controller.get('title');
 	this.canvasElement = this.controller.get('graphCanvas');
+	
+	if (this.display == 'temp')
+		this.titleElement.innerHTML = $L('Temperature Graph');
+	if (this.display == 'freq')
+		this.titleElement.innerHTML = $L('Frequency Graph');
+	if (this.display == 'load')
+		this.titleElement.innerHTML = $L('Load Average Graph');
 	
     this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
     this.gestureChangeHandler =	this.gestureChangeHandler.bindAsEventListener(this);
@@ -83,7 +91,7 @@ GraphAssistant.prototype.orientationChanged = function(orientation)
 			
 		case 'up':
 		case 'down':
-			graphHandler.fullGraph.changeDimenstions(320, 480);
+			graphHandler.fullGraph.changeDimenstions(320, 452);
 			break;
 	}
 }

@@ -100,7 +100,7 @@ MainAssistant.prototype.governorTap = function(event)
 }
 MainAssistant.prototype.graphTap = function(event, display)
 {
-	this.controller.stageController.pushScene('graph', display);
+	this.controller.stageController.pushScene({name: 'graph', disableSceneScroller: true}, display);
 }
 
 MainAssistant.prototype.activate = function(event)

@@ -78,10 +78,10 @@ graphHandlerModel.prototype.setGraphAssistant = function(assistant)
 	(
 		this.graphAssistant.controller.get('graphCanvas'),
 		{
-			height: 480,
+			height: 452,
 			width: 320,
 			paddingLeft: 50,
-			paddingTop: 40,
+			paddingTop: 52,
 			paddingBottom: 30,
 			leftScale: true,
 			bottomScale: true
@@ -292,7 +292,9 @@ graphHandlerModel.prototype.renderGraph = function()
 	{
 		this.fullGraph.clearLines();
 		
-		var fullData = [];
+		var fullData =  [];
+		var fullData2 = [];
+		var fullData3 = [];
 		
 		var avg = 1;
 		
@@ -308,7 +310,11 @@ graphHandlerModel.prototype.renderGraph = function()
 				fullData.push({key: keys[k], value: dataObj.freq.value});
 			
 			if (dataObj.load && this.graphAssistant.display == "load")
+			{
 				fullData.push({key: keys[k], value: dataObj.load.value1});
+				fullData2.push({key: keys[k], value: dataObj.load.value5});
+				fullData3.push({key: keys[k], value: dataObj.load.value15});
+			}
 		}
 		
 		if (this.graphAssistant.display == "temp")
@@ -318,8 +324,12 @@ graphHandlerModel.prototype.renderGraph = function()
 			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(205, 153, 153, .4)", fillStyle: "rgba(205, 153, 153, .2)"});
 		
 		if (this.graphAssistant.display == "load")
-			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(153, 153, 205, .4)", fillStyle: "rgba(153, 153, 205, .2)"});
-		
+		{
+			this.fullGraph.setLine(fullData3, {strokeStyle: "rgba(75, 75, 205, .4)", fillStyle: "rgba(75, 75, 205, .2)"});
+			this.fullGraph.setLine(fullData2, {strokeStyle: "rgba(105, 105, 205, .4)", fillStyle: "rgba(105, 105, 205, .2)"});
+			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(135, 135, 205, .4)", fillStyle: "rgba(135, 135, 205, .2)"});
+		}
+				
 		this.fullGraph.render();
 	}
 	
