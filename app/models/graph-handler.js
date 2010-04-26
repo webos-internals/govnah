@@ -84,7 +84,8 @@ graphHandlerModel.prototype.setGraphAssistant = function(assistant)
 			paddingTop: 52,
 			paddingBottom: 30,
 			leftScale: true,
-			bottomScale: true
+			bottomScale: true,
+			bottomValue: 0
 		}
 	);
 }

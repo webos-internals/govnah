@@ -11,9 +11,8 @@ function lineGraph(graph, options)
 	this.paddingRight = options.paddingRight ? options.paddingRight : 0;
 	this.leftScale = options.leftScale ? options.leftScale : false;
 	this.bottomScale = options.bottomScale ? options.bottomScale : false;
-	
-	this.topValue = 0;
-	this.bottomValue = 999999;
+	this.topValue = options.topValue ? options.topValue : 0;
+	this.bottomValue = options.bottomValue ? options.bottomValue : 999999;
 	
 	this.canvas = this.graph.getContext('2d');
 	
