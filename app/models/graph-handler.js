@@ -262,7 +262,7 @@ graphHandlerModel.prototype.renderGraph = function()
 	{
 		this.fullGraph.clearLines();
 		
-		var tempData = [];
+		var fullData = [];
 		
 		var avg = 1;
 		
@@ -271,11 +271,17 @@ graphHandlerModel.prototype.renderGraph = function()
 		{
 			var dataObj = this.lineData.get(keys[k]);
 			
-			if (dataObj.temp)
-				tempData.push({key: keys[k], value: dataObj.temp.value});
+			if (dataObj.temp && this.graphAssistant.display == "temp")
+				fullData.push({key: keys[k], value: dataObj.temp.value});
+			
+			if (dataObj.freq && this.graphAssistant.display == "freq")
+				fullData.push({key: keys[k], value: dataObj.freq.value});
+			
+			if (dataObj.load && this.graphAssistant.display == "load")
+				fullData.push({key: keys[k], value: dataObj.load.value});
 		}
 		
-		this.fullGraph.setLine(tempData, {strokeStyle: "rgba(153, 205, 153, .4)", fillStyle: "rgba(153, 205, 153, .2)"});
+		this.fullGraph.setLine(fullData, {strokeStyle: "rgba(153, 153, 153, .4)", fillStyle: "rgba(153, 153, 153, .2)"});
 		
 		this.fullGraph.render();
 	}

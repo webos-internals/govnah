@@ -1,4 +1,4 @@
-function GraphAssistant()
+function GraphAssistant(display)
 {
 	// setup menu
 	this.menuModel =
@@ -12,6 +12,8 @@ function GraphAssistant()
 			}
 		]
 	};
+	
+	this.display = display;
 	
 	this.isVisible = true;
 };

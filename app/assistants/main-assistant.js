@@ -53,9 +53,11 @@ MainAssistant.prototype.setup = function()
 	this.governorRow =		this.controller.get('governorRow');
 	this.governorCurrent =	this.controller.get('governorCurrent');
 	
+	this.freqRow =			this.controller.get('freqRow');
 	this.freqCurrent =		this.controller.get('freqCurrent');
 	this.tempRow =			this.controller.get('tempRow');
 	this.tempCurrent =		this.controller.get('tempCurrent');
+	this.loadRow =			this.controller.get('loadRow');
 	this.loadCurrent =		this.controller.get('loadCurrent');
 	
 	// set version string random subtitle
@@ -69,11 +71,12 @@ MainAssistant.prototype.setup = function()
 	
 	this.governorHandler = this.onGovernor.bindAsEventListener(this);
 	this.governorTapHandler = this.governorTap.bindAsEventListener(this);
-	this.graphTapHandler = this.graphTap.bindAsEventListener(this);
 	
 	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
 	
-	this.controller.listen(this.tempRow, Mojo.Event.tap, this.graphTapHandler);
+	this.controller.listen(this.freqRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq'));
+	this.controller.listen(this.tempRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'temp'));
+	this.controller.listen(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
 	
 	
 	this.visible = this.visible.bindAsEventListener(this);
@@ -95,9 +98,9 @@ MainAssistant.prototype.governorTap = function(event)
 {
 	this.controller.stageController.pushScene('governor', this.currentGovernor);
 }
-MainAssistant.prototype.graphTap = function(event)
+MainAssistant.prototype.graphTap = function(event, display)
 {
-	this.controller.stageController.pushScene('graph');
+	this.controller.stageController.pushScene('graph', display);
 }
 
 MainAssistant.prototype.activate = function(event)
