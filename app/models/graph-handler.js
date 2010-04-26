@@ -223,6 +223,10 @@ graphHandlerModel.prototype.renderGraph = function()
 		this.freqGraph.clearLines();
 		this.loadGraph.clearLines();
 		
+		this.tempGraph.resetTopBottomValue();
+		this.freqGraph.resetTopBottomValue();
+		this.loadGraph.resetTopBottomValue();
+		
 		var tempData = [];
 		var freqData = [];
 		var loadData = [];

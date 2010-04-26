@@ -32,6 +32,11 @@ lineGraph.prototype.changeDimenstions = function(width, height)
 	this.height = height;
 	this.width = width;
 }
+lineGraph.prototype.resetTopBottomValue = function()
+{
+	this.topValue = 0;
+	this.bottomValue = 999999;
+}
 
 lineGraph.prototype.setLine = function(data, options)
 {
