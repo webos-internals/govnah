@@ -79,7 +79,12 @@ graphHandlerModel.prototype.setGraphAssistant = function(assistant)
 		this.graphAssistant.controller.get('graphCanvas'),
 		{
 			height: 480,
-			width: 320
+			width: 320,
+			paddingLeft: 50,
+			paddingTop: 40,
+			paddingBottom: 30,
+			leftScale: true,
+			bottomScale: true
 		}
 	);
 }

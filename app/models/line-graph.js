@@ -5,6 +5,12 @@ function lineGraph(graph, options)
 	
 	this.height = options.height ? options.height : 100;
 	this.width = options.width ? options.width : 320;
+	this.paddingLeft = options.paddingLeft ? options.paddingLeft : 0;
+	this.paddingTop = options.paddingTop ? options.paddingTop : 0;
+	this.paddingBottom = options.paddingBottom ? options.paddingBottom : 0;
+	this.paddingRight = options.paddingRight ? options.paddingRight : 0;
+	this.leftScale = options.leftScale ? options.leftScale : false;
+	this.bottomScale = options.bottomScale ? options.bottomScale : false;
 	
 	this.canvas = this.graph.getContext('2d');
 	
@@ -73,7 +79,10 @@ lineGraph.prototype.render = function()
 		this.canvas.fillStyle = this.lines[line].fillStyle;
 		this.canvas.lineWidth = this.lines[line].lineWidth;
 		
-		var segmentLength = this.width / this.lines[line].data.length;
+		this.graphHeight = (this.height - (this.paddingTop + this.paddingLeft));
+		this.graphWidth = (this.width - (this.paddingLeft + this.paddingRight));
+		
+		var segmentLength = this.graphWidth / this.lines[line].data.length;
 		
 		var first = false
 		var start = 0;
@@ -87,7 +96,7 @@ lineGraph.prototype.render = function()
 		if (start < this.lines[line].data.length)
 		{
 			this.canvas.beginPath();
-			this.canvas.moveTo((start * segmentLength), this.height - (this.height / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (first.value - this.lines[line].vertical.bottom));
+			this.canvas.moveTo((start * segmentLength) + this.paddingLeft, (this.graphHeight - (this.graphHeight / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (first.value - this.lines[line].vertical.bottom)) + this.paddingTop);
 			
 			var last = first;
 			for (var d = start; d < this.lines[line].data.length; d++)
@@ -95,20 +104,29 @@ lineGraph.prototype.render = function()
 				var crnt = this.lines[line].data[d];
 				if (crnt !== false)
 				{
-					this.canvas.lineTo((d * segmentLength) + segmentLength, this.height - (this.height / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (crnt.value - this.lines[line].vertical.bottom));
+					this.canvas.lineTo(((d * segmentLength) + segmentLength) + this.paddingLeft, (this.graphHeight - (this.graphHeight / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (crnt.value - this.lines[line].vertical.bottom)) + this.paddingTop);
 					last = crnt;
 				}
 			}
 			
 			if (this.lines[line].fillStyle)
 			{
-				this.canvas.lineTo(this.width+5, this.height - (this.height / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (last.value - this.lines[line].vertical.bottom));
-				this.canvas.lineTo(this.width+5, this.height+5);
-				this.canvas.lineTo((start * segmentLength), this.height+5);
+				this.canvas.lineTo(this.graphWidth+5 + this.paddingLeft, (this.graphHeight - (this.graphHeight / (this.lines[line].vertical.top - this.lines[line].vertical.bottom)) * (last.value - this.lines[line].vertical.bottom)) + this.paddingTop);
+				this.canvas.lineTo(this.graphWidth+5 + this.paddingLeft, this.graphHeight+5+this.paddingTop);
+				this.canvas.lineTo((start * segmentLength) + this.paddingLeft, this.graphHeight+5+this.paddingTop);
 				this.canvas.fill();
 			}
 			this.canvas.stroke();
 		}
+		
+		if (this.paddingLeft || this.paddingTop || this.paddingRight || this.paddingBottom)
+		{
+			this.canvas.clearRect(0, 0, this.width, this.paddingTop);
+			this.canvas.clearRect(0, 0, this.paddingLeft, this.height);
+			this.canvas.clearRect(this.width-this.paddingRight, 0, this.paddingRight, this.height);
+			this.canvas.clearRect(0, this.height-this.paddingBottom, this.width, this.paddingBottom);
+		}
+		
 	}
 	
   	this.canvas.restore();
