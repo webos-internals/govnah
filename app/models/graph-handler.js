@@ -9,6 +9,7 @@ function graphHandlerModel()
 	
 	this.timer = false;
 	this.rate = parseInt(prefs.get().pollSpeed) * 1000;
+	this.cutoff = 300;
 	
 	this.timerHandler = this.timerFunction.bind(this);
 	
@@ -85,13 +86,23 @@ graphHandlerModel.prototype.setGraphAssistant = function(assistant)
 			paddingBottom: 30,
 			leftScale: true,
 			bottomScale: true,
-			bottomValue: 0
+			bottomValue: this.graphAssistant.display == 'load' ? 0 : 999999
 		}
 	);
 }
 
 graphHandlerModel.prototype.timerFunction = function()
 {
+
+	var keys = this.lineData.keys();
+	if (keys.length > this.cutoff)
+	{
+		for (var k = 0; k < keys.length - this.cutoff; k++)
+		{
+			this.lineData.unset(keys[k]);
+		}
+	}
+	
 	this.renderGraph();
 	
 	service.get_omap34xx_temp(this.tempHandler);

@@ -63,6 +63,8 @@ lineGraph.prototype.setLine = function(data, options)
 		if (this.bottomValue > options.bottom) this.bottomValue = options.bottom;
 	}
 	
+	
+	
 	var tmpLine =
 	{
 		data: data,
@@ -86,6 +88,10 @@ lineGraph.prototype.clearLines = function()
 	this.lines = [];
 }
 
+lineGraph.prototype.scaleData = function()
+{
+}
+
 lineGraph.prototype.render = function()
 {
   	this.canvas.clearRect(0, 0, 480, 480);
@@ -93,6 +99,8 @@ lineGraph.prototype.render = function()
 	
 	this.graphHeight = (this.height - (this.paddingTop + this.paddingBottom));
 	this.graphWidth = (this.width - (this.paddingLeft + this.paddingRight));
+	
+	this.scaleData();
 	
 	for (var line = 0; line < this.lines.length; line++)
 	{
