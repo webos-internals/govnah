@@ -87,11 +87,13 @@ GraphAssistant.prototype.orientationChanged = function(orientation)
 		case 'left':
 		case 'right':
 			dataHandler.fullGraph.changeDimenstions(480, 320);
+			dataHandler.renderGraph();
 			break;
 			
 		case 'up':
 		case 'down':
 			dataHandler.fullGraph.changeDimenstions(320, 452);
+			dataHandler.renderGraph();
 			break;
 	}
 }
