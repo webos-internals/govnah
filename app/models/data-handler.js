@@ -7,6 +7,8 @@ function dataHandlerModel()
 	
 	this.currentMode = "card";
 	
+	this.iconDirty = false;
+	
 	this.lineData = $H();
 	this.barData = {};
 	
@@ -322,6 +324,7 @@ dataHandlerModel.prototype.updateIcon = function(temp)
 	if ((this.currentMode == "card" && prefs.get().cardIconUpdate) ||
 		(this.currentMode == "dash" && prefs.get().dashIconUpdate))
 	{
+		this.iconDirty = true;
 		var r = new Mojo.Service.Request
 		(
 			'palm://com.palm.applicationManager',
@@ -334,6 +337,11 @@ dataHandlerModel.prototype.updateIcon = function(temp)
 				}
 			}
 		);
+	}
+	else if (this.iconDirty)
+	{
+		this.iconDirty = false;
+		this.resetIcon();
 	}
 }
 dataHandlerModel.prototype.resetIcon = function()

@@ -46,6 +46,7 @@ AppAssistant.prototype.launchFirstScene = function(controller)
 
 AppAssistant.prototype.cleanup = function(event)
 {
+	dataHandler.resetIcon();
 	alert('AppAssistant#cleanup');
 };
 
