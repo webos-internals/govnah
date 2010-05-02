@@ -3,6 +3,7 @@ function dataHandlerModel()
 	
 	this.mainAssistant = false;
 	this.graphAssistant = false;
+	this.dashAssistant = false;
 	
 	this.lineData = $H();
 	this.barData = {};
@@ -75,7 +76,6 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 		}
 	);
 }
-
 dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 {
 	this.graphAssistant = assistant;
@@ -94,6 +94,72 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 			bottomValue: this.graphAssistant.display == 'load' ? 0 : 999999
 		}
 	);
+}
+dataHandlerModel.prototype.setDashAssistant = function(assistant)
+{
+	this.dashAssistant = assistant;
+}
+
+
+dataHandlerModel.prototype.openDash = function(skipBanner)
+{
+	try
+	{
+		Mojo.Controller.appController.removeBanner(dashStageName+'-open');
+		if (!skipBanner)
+		{
+			Mojo.Controller.appController.showBanner
+			(
+				{
+					icon: 'icon.png',
+					messageText: "Govnah: Opening Dashboard",
+					soundClass: ""
+				},
+				{
+					type: 'dash-close'
+				},
+				dashStageName+'-close'
+			);
+		}
+		
+		this.dashController = Mojo.Controller.appController.getStageController(dashStageName);
+	    if (this.dashController) 
+		{
+			
+		}
+		else
+		{
+			Mojo.Controller.appController.createStageWithCallback({name: dashStageName, lightweight: true}, this.openDashCallback.bind(this), "dashboard");
+		}
+	}
+	catch (e)
+	{
+		Mojo.Log.logException(e, "dataHandlerModel#openDash");
+	}
+}
+dataHandlerModel.prototype.openDashCallback = function(controller)
+{
+	controller.pushScene('dashboard', this);
+}
+dataHandlerModel.prototype.closeDash = function(skipBanner)
+{
+	Mojo.Controller.appController.removeBanner(dashStageName+'-close');
+	if (!skipBanner)
+	{
+		Mojo.Controller.appController.showBanner
+		(
+			{
+				icon: 'icon.png',
+				messageText: "Closing Dashboard - Tap To Cancel",
+				soundClass: ""
+			},
+			{
+				type: 'dash-open'
+			},
+			dashStageName+'-open'
+		);
+	}
+	Mojo.Controller.appController.closeStage(dashStageName);
 }
 
 dataHandlerModel.prototype.timerFunction = function()
@@ -125,7 +191,7 @@ dataHandlerModel.prototype.tempHandler = function(payload)
 		var timestamp = Math.round(new Date().getTime()/1000.0);
 		var value = parseInt(payload.value);
 		
-		AppAssistant.updateIcon(value);
+		this.updateIcon(value);
 		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
 			this.mainAssistant.iconElement.className = 'icon temp-' + value;
@@ -241,6 +307,21 @@ dataHandlerModel.prototype.transHandler = function(payload)
 	alert('===============');
 }
 
+dataHandlerModel.prototype.updateIcon = function(temp)
+{
+	var r = new Mojo.Service.Request
+	(
+		'palm://com.palm.applicationManager',
+		{
+			method: 'updateLaunchPointIcon',
+			parameters:
+			{
+				launchPointId:	Mojo.appInfo.id + '_default',
+				icon:			Mojo.appPath + 'images/icons/icon-' + temp + '.png'
+			}
+		}
+	);
+}
 dataHandlerModel.prototype.renderGraph = function()
 {
 

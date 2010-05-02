@@ -16,8 +16,18 @@ preferenceCookie.prototype.get = function(reload)
 				// Global Group
 				theme: 'palm-default',
 								
-				// Data Polling Group
-				pollSpeed: 1
+				// Card Group
+				cardPollSpeed: 1,
+				cardIconUpdate: true,
+				
+				// Dashboard Group
+				useDash: false,
+				dashPollSpeed: 1,
+				dashIconUpdate: true,
+				
+				// GovernorSettings Group
+				manualEntry: false
+				
 			};
 			
 			// uncomment to delete cookie for testing

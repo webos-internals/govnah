@@ -192,6 +192,11 @@ MainAssistant.prototype.cleanup = function(event)
 	
 	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
+	
+	if (prefs.get().useDash)
+	{
+		dataHandler.openDash();
+	}
 };
 
 // Local Variables:

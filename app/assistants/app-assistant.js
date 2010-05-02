@@ -3,6 +3,7 @@ var prefs = new preferenceCookie();
 
 // stage names
 var mainStageName = 'govnah-main';
+var dashStageName = 'govnah-dash';
 
 var prefs = new preferenceCookie();
 var dataHandler = new dataHandlerModel();
@@ -27,6 +28,10 @@ AppAssistant.prototype.handleLaunch = function(params)
 				this.controller.createStageWithCallback({name: mainStageName, lightweight: true}, this.launchFirstScene.bind(this));
 			}
 		}
+		else if (params.type == 'dash-open')
+		{
+			dataHandler.openDash(true);
+		}
 	}
 	catch (e)
 	{
@@ -39,30 +44,11 @@ AppAssistant.prototype.launchFirstScene = function(controller)
 	controller.pushScene('main');
 };
 
-AppAssistant.prototype.cleanup = function() {};
-
-AppAssistant.updateIcon = function(temp)
+AppAssistant.prototype.cleanup = function(event)
 {
-	try
-	{
-		var r = new Mojo.Service.Request
-		(
-			'palm://com.palm.applicationManager',
-			{
-				method: 'updateLaunchPointIcon',
-				parameters:
-				{
-					launchPointId:	Mojo.appInfo.id + '_default',
-					icon:			Mojo.appPath + 'images/icons/icon-' + temp + '.png'
-				}
-			}
-		);
-	}
-	catch (e)
-	{
-		Mojo.Log.logException(e, "AppAssistant#updateIcon");
-	}
-}
+	alert('AppAssistant#cleanup');
+};
+
 
 // Local Variables:
 // tab-width: 4
