@@ -1,5 +1,6 @@
 function DashboardAssistant()
 {
+	this.skipClose = false;
 }
 
 DashboardAssistant.prototype.setup = function()
@@ -25,5 +26,8 @@ DashboardAssistant.prototype.dashTapped = function(event)
 DashboardAssistant.prototype.cleanup = function(event)
 {
 	Mojo.Event.stopListening(this.dashboardElement, Mojo.Event.tap, this.dashTapHandler);
-	dataHandler.closeDash();
+	if (!this.skipClose)
+	{
+		dataHandler.closeDash();
+	}
 }

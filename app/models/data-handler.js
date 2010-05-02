@@ -167,6 +167,13 @@ dataHandlerModel.prototype.closeDash = function(skipBanner)
 			dashStageName+'-open'
 		);
 	}
+	else
+	{
+		if (this.dashAssistant && this.dashAssistant.controller)
+		{
+			this.dashAssistant.skipClose = true;
+		}
+	}
 	Mojo.Controller.appController.closeStage(dashStageName);
 }
 

@@ -18,6 +18,7 @@ AppAssistant.prototype.handleLaunch = function(params)
 	{
 		if (!params) 
 		{
+			dataHandler.closeDash(true);
 	        if (mainStageController) 
 			{
 				mainStageController.popScenesTo('main');
