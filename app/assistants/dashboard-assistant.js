@@ -9,12 +9,10 @@ DashboardAssistant.prototype.setup = function()
 	this.dashboardTextElement =		this.controller.get('dashboardText');
 	this.iconActionElement =		this.controller.get('iconAction');
 	this.textActionElement =		this.controller.get('textAction');
+	this.iconElement = 				this.controller.get('dashboardIcon');
 	
 	this.dashTapHandler =	this.dashTapped.bindAsEventListener(this);
-	
-	// to whole thing for tap
 	Mojo.Event.listen(this.dashboardElement, Mojo.Event.tap, this.dashTapHandler);
-	
 	
 	dataHandler.setDashAssistant(this);
 	dataHandler.rate = parseInt(prefs.get().dashPollSpeed) * 1000;

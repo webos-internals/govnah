@@ -209,6 +209,10 @@ dataHandlerModel.prototype.tempHandler = function(payload)
 			this.mainAssistant.iconElement.className = 'icon temp-' + value;
 			this.mainAssistant.tempCurrent.innerHTML = value + '<div class="unit">&deg;C</div>';
 		}
+		if (this.dashAssistant && this.dashAssistant.controller)
+		{
+			this.dashAssistant.iconElement.className = 'palm-dashboard-icon temp-' + value;
+		}
 		
 		var dataObj = this.lineData.get(timestamp)
 		if (!dataObj) dataObj = {};
