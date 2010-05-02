@@ -98,7 +98,7 @@ PreferencesAssistant.prototype.themeChanged = function(event)
 PreferencesAssistant.prototype.pollSpeedChanged = function(event)
 {
 	// set the rate right away with the new value
-	graphHandler.rate = parseInt(event.value) * 1000;
+	dataHandler.rate = parseInt(event.value) * 1000;
 	this.cookie.put(this.prefs);
 };
 PreferencesAssistant.prototype.toggleChanged = function(event)

@@ -4,7 +4,7 @@
     {"source": "app/models/cookies.js"},
     {"source": "app/models/line-graph.js"},
     {"source": "app/models/bar-graph.js"},
-    {"source": "app/models/graph-handler.js"},
+    {"source": "app/models/data-handler.js"},
     {"source": "app/assistants/app-assistant.js"},
     {
         "scenes": "main",

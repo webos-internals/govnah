@@ -54,7 +54,7 @@ GraphAssistant.prototype.setup = function()
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 	
-	graphHandler.setGraphAssistant(this);
+	dataHandler.setGraphAssistant(this);
 };
 
 GraphAssistant.prototype.gestureStartHandler = function(event)
@@ -86,12 +86,12 @@ GraphAssistant.prototype.orientationChanged = function(orientation)
 	{
 		case 'left':
 		case 'right':
-			graphHandler.fullGraph.changeDimenstions(480, 320);
+			dataHandler.fullGraph.changeDimenstions(480, 320);
 			break;
 			
 		case 'up':
 		case 'down':
-			graphHandler.fullGraph.changeDimenstions(320, 452);
+			dataHandler.fullGraph.changeDimenstions(320, 452);
 			break;
 	}
 }

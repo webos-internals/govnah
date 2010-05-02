@@ -192,9 +192,11 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 					
 				case 'sampling_rate_max':
 					this.samplingRates.max = parseInt(trim(tmpParam.value));
+					alert(this.samplingRates.max);
 					break;
 				case 'sampling_rate_min':
 					this.samplingRates.min = parseInt(trim(tmpParam.value));
+					alert(this.samplingRates.min);
 					break;
 			}
 		}
@@ -266,12 +268,36 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							var samplingChoices = [];
 							if (this.samplingRates.max !== false && this.samplingRates.min !== false)
 							{
-								for (var s = this.samplingRates.min; s <= this.samplingRates.max; s = s + 10000000)
+								for (var s = this.samplingRates.min; s <= 2000000; s = s + 100000)
 								{
-									samplingChoices.push({label:s, value:s});
+									var sec = (s / 1000000);
+									var display = sec+' Second';
+									if (sec < 1 || sec > 1) display += 's';
+									samplingChoices.push({label:display, value:s});
 								}
-								if (s > this.samplingRates.max && s - 10000000 < this.samplingRates.max)
-									samplingChoices.push({label:this.samplingRates.max, value:this.samplingRates.max});
+								for (var s = 3000000; s <= 10000000; s = s + 1000000)
+								{
+									var sec = (s / 1000000);
+									var display = sec+' Second';
+									if (sec < 1 || sec > 1) display += 's';
+									samplingChoices.push({label:display, value:s});
+								}
+								for (var s = 20000000; s <= this.samplingRates.max; s = s + 10000000)
+								{
+									var min = 0;
+									var sec = (s / 1000000);
+									if (sec / 60 >= 1)
+									{
+										min = Math.floor(sec / 60);
+										sec = (sec % 60);
+									}
+									var display = '';
+									if (min > 0) display += min+' Minute';
+									if (min > 1) display += 's ';
+									else display += ' ';
+									if (sec > 0) display += sec+' Seconds';
+									samplingChoices.push({label:display, value:s});
+								}
 							}
 							else
 							{

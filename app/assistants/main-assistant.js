@@ -84,8 +84,8 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 	
-	graphHandler.setMainAssistant(this);
-	graphHandler.start();
+	dataHandler.setMainAssistant(this);
+	dataHandler.start();
 	
 };
 

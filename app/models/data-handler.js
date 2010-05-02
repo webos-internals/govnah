@@ -1,4 +1,4 @@
-function graphHandlerModel()
+function dataHandlerModel()
 {
 	
 	this.mainAssistant = false;
@@ -13,10 +13,11 @@ function graphHandlerModel()
 	
 	this.timerHandler = this.timerFunction.bind(this);
 	
-	this.tempHandler = this.tempHandler.bindAsEventListener(this);
-    this.freqHandler = this.freqHandler.bindAsEventListener(this);
-    this.loadHandler = this.loadHandler.bindAsEventListener(this);
-    this.timeHandler = this.timeHandler.bindAsEventListener(this);
+	this.tempHandler =  this.tempHandler.bindAsEventListener(this);
+    this.freqHandler =  this.freqHandler.bindAsEventListener(this);
+    this.loadHandler =  this.loadHandler.bindAsEventListener(this);
+    this.timeHandler =  this.timeHandler.bindAsEventListener(this);
+    this.transHandler = this.transHandler.bindAsEventListener(this);
 	
 	this.tempGraph = false;
 	this.freqGraph = false;
@@ -25,15 +26,19 @@ function graphHandlerModel()
 	
 	this.fullGraph = false;
 	
+	
+	service.get_trans_table(this.transHandler);
+	//service.get_total_trans(this.transHandler);
+	
 };
 
-graphHandlerModel.prototype.start = function()
+dataHandlerModel.prototype.start = function()
 {
 	//this.timer = setInterval(this.timerHandler, this.rate);
 	this.timerHandler();
 };
 
-graphHandlerModel.prototype.setMainAssistant = function(assistant)
+dataHandlerModel.prototype.setMainAssistant = function(assistant)
 {
 	this.mainAssistant = assistant;
 	
@@ -71,7 +76,7 @@ graphHandlerModel.prototype.setMainAssistant = function(assistant)
 	);
 }
 
-graphHandlerModel.prototype.setGraphAssistant = function(assistant)
+dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 {
 	this.graphAssistant = assistant;
 	
@@ -91,7 +96,7 @@ graphHandlerModel.prototype.setGraphAssistant = function(assistant)
 	);
 }
 
-graphHandlerModel.prototype.timerFunction = function()
+dataHandlerModel.prototype.timerFunction = function()
 {
 
 	var keys = this.lineData.keys();
@@ -113,7 +118,7 @@ graphHandlerModel.prototype.timerFunction = function()
 	this.timer = setTimeout(this.timerHandler, this.rate);
 };
 
-graphHandlerModel.prototype.tempHandler = function(payload)
+dataHandlerModel.prototype.tempHandler = function(payload)
 {
 	if (payload.returnValue) 
 	{
@@ -142,7 +147,7 @@ graphHandlerModel.prototype.tempHandler = function(payload)
 		this.lineData.set(timestamp, dataObj);
 	}
 };
-graphHandlerModel.prototype.freqHandler = function(payload)
+dataHandlerModel.prototype.freqHandler = function(payload)
 {
 	if (payload.returnValue) 
 	{
@@ -169,7 +174,7 @@ graphHandlerModel.prototype.freqHandler = function(payload)
 		this.lineData.set(timestamp, dataObj);
 	}
 }
-graphHandlerModel.prototype.loadHandler = function(payload)
+dataHandlerModel.prototype.loadHandler = function(payload)
 {
 	if (payload.returnValue) 
 	{
@@ -207,7 +212,7 @@ graphHandlerModel.prototype.loadHandler = function(payload)
 		this.lineData.set(timestamp, dataObj);
 	}
 }
-graphHandlerModel.prototype.timeHandler = function(payload)
+dataHandlerModel.prototype.timeHandler = function(payload)
 {
 	if (payload.returnValue) 
 	{
@@ -224,8 +229,19 @@ graphHandlerModel.prototype.timeHandler = function(payload)
 		this.barData.time = dataHash;
 	}
 }
+dataHandlerModel.prototype.transHandler = function(payload)
+{
+	if (payload.returnValue) 
+	{
+		
+	}
+	
+	alert('===============');
+	for (var p in payload) alert(p+' : '+payload[p]);
+	alert('===============');
+}
 
-graphHandlerModel.prototype.renderGraph = function()
+dataHandlerModel.prototype.renderGraph = function()
 {
 
 	if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
