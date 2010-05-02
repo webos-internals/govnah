@@ -113,8 +113,7 @@ dataHandlerModel.prototype.openDash = function(skipBanner)
 {
 	try
 	{
-		Mojo.Controller.appController.removeBanner(dashStageName+'-close');
-		Mojo.Controller.appController.removeBanner(dashStageName+'-open');
+		Mojo.Controller.appController.removeBanner('govnahBanner');
 		if (!skipBanner)
 		{
 			Mojo.Controller.appController.showBanner
@@ -127,7 +126,7 @@ dataHandlerModel.prototype.openDash = function(skipBanner)
 				{
 					type: 'dash-close'
 				},
-				dashStageName+'-close'
+				'govnahBanner'
 			);
 		}
 		
@@ -152,8 +151,7 @@ dataHandlerModel.prototype.openDashCallback = function(controller)
 }
 dataHandlerModel.prototype.closeDash = function(skipBanner)
 {
-	Mojo.Controller.appController.removeBanner(dashStageName+'-close');
-	Mojo.Controller.appController.removeBanner(dashStageName+'-open');
+	Mojo.Controller.appController.removeBanner('govnahBanner');
 	if (!skipBanner)
 	{
 		Mojo.Controller.appController.showBanner
@@ -166,7 +164,7 @@ dataHandlerModel.prototype.closeDash = function(skipBanner)
 			{
 				type: 'dash-open'
 			},
-			dashStageName+'-open'
+			'govnahBanner'
 		);
 	}
 	else
