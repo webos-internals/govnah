@@ -5,6 +5,8 @@ function dataHandlerModel()
 	this.graphAssistant = false;
 	this.dashAssistant = false;
 	
+	this.currentMode = "card";
+	
 	this.lineData = $H();
 	this.barData = {};
 	
@@ -28,7 +30,7 @@ function dataHandlerModel()
 	this.fullGraph = false;
 	
 	
-	service.get_trans_table(this.transHandler);
+	//service.get_trans_table(this.transHandler);
 	//service.get_total_trans(this.transHandler);
 	
 };
@@ -42,6 +44,8 @@ dataHandlerModel.prototype.start = function()
 dataHandlerModel.prototype.setMainAssistant = function(assistant)
 {
 	this.mainAssistant = assistant;
+	this.currentMode = "card";
+	this.rate = parseInt(prefs.get().cardPollSpeed) * 1000;
 	
 	this.tempGraph = new lineGraph
 	(
@@ -98,6 +102,8 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 dataHandlerModel.prototype.setDashAssistant = function(assistant)
 {
 	this.dashAssistant = assistant;
+	this.currentMode = "dash";
+	this.rate = parseInt(prefs.get().dashPollSpeed) * 1000;
 }
 
 
@@ -177,9 +183,13 @@ dataHandlerModel.prototype.timerFunction = function()
 	this.renderGraph();
 	
 	service.get_omap34xx_temp(this.tempHandler);
-	service.get_scaling_cur_freq(this.freqHandler);
-	service.get_proc_loadavg(this.loadHandler);
-	service.get_time_in_state(this.timeHandler);
+	
+	if (this.currentMode == "card")
+	{ // we really only need these when in card mode...
+		service.get_scaling_cur_freq(this.freqHandler);
+		service.get_proc_loadavg(this.loadHandler);
+		service.get_time_in_state(this.timeHandler);
+	}
 	
 	this.timer = setTimeout(this.timerHandler, this.rate);
 };
@@ -309,6 +319,25 @@ dataHandlerModel.prototype.transHandler = function(payload)
 
 dataHandlerModel.prototype.updateIcon = function(temp)
 {
+	if ((this.currentMode == "card" && prefs.get().cardIconUpdate) ||
+		(this.currentMode == "dash" && prefs.get().dashIconUpdate))
+	{
+		var r = new Mojo.Service.Request
+		(
+			'palm://com.palm.applicationManager',
+			{
+				method: 'updateLaunchPointIcon',
+				parameters:
+				{
+					launchPointId:	Mojo.appInfo.id + '_default',
+					icon:			Mojo.appPath + 'images/icons/icon-' + temp + '.png'
+				}
+			}
+		);
+	}
+}
+dataHandlerModel.prototype.resetIcon = function()
+{
 	var r = new Mojo.Service.Request
 	(
 		'palm://com.palm.applicationManager',
@@ -317,11 +346,12 @@ dataHandlerModel.prototype.updateIcon = function(temp)
 			parameters:
 			{
 				launchPointId:	Mojo.appInfo.id + '_default',
-				icon:			Mojo.appPath + 'images/icons/icon-' + temp + '.png'
+				icon:			Mojo.appPath + 'icon.png'
 			}
 		}
 	);
 }
+
 dataHandlerModel.prototype.renderGraph = function()
 {
 

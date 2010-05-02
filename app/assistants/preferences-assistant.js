@@ -89,7 +89,7 @@ PreferencesAssistant.prototype.setup = function()
 		);
 		
 		this.controller.listen('cardPollSpeed', Mojo.Event.propertyChange, this.pollSpeedChanged.bindAsEventListener(this));
-		this.controller.listen('cardIconUpdate', Mojo.Event.propertyChange, this.toggleChangeHandler);
+		this.controller.listen('cardIconUpdate', Mojo.Event.propertyChange, this.iconUpdateChanged.bindAsEventListener(this));
 		
 		
 		// Dash Group
@@ -179,15 +179,21 @@ PreferencesAssistant.prototype.listChanged = function(event)
 };
 PreferencesAssistant.prototype.themeChanged = function(event)
 {
-	// set the theme right away with the body class
 	this.controller.document.body.className = event.value;
 	this.cookie.put(this.prefs);
 };
 PreferencesAssistant.prototype.pollSpeedChanged = function(event)
 {
-	// set the rate right away with the new value
 	dataHandler.rate = parseInt(event.value) * 1000;
 	this.cookie.put(this.prefs);
+};
+PreferencesAssistant.prototype.iconUpdateChanged = function(event)
+{
+	this.toggleChanged(event);
+	if (!this.prefs['cardIconUpdate'])
+	{
+		dataHandler.resetIcon();
+	}
 };
 PreferencesAssistant.prototype.useDashChanged = function(event)
 {
