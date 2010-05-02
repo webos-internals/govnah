@@ -88,7 +88,11 @@ function GovernorAssistant(governor)
 	}
 	
 	this.powersaveChoices = [];
-	for (var x = 0; x <= 1000; x = x + 10)
+	for (var x = 0; x <= 10; x++)
+	{
+		this.powersaveChoices.push({label:x, value:x});
+	}
+	for (var x = 20; x <= 1000; x = x + 10)
 	{
 		this.powersaveChoices.push({label:x, value:x});
 	}
