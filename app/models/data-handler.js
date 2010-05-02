@@ -113,6 +113,7 @@ dataHandlerModel.prototype.openDash = function(skipBanner)
 {
 	try
 	{
+		Mojo.Controller.appController.removeBanner(dashStageName+'-close');
 		Mojo.Controller.appController.removeBanner(dashStageName+'-open');
 		if (!skipBanner)
 		{
@@ -152,6 +153,7 @@ dataHandlerModel.prototype.openDashCallback = function(controller)
 dataHandlerModel.prototype.closeDash = function(skipBanner)
 {
 	Mojo.Controller.appController.removeBanner(dashStageName+'-close');
+	Mojo.Controller.appController.removeBanner(dashStageName+'-open');
 	if (!skipBanner)
 	{
 		Mojo.Controller.appController.showBanner
