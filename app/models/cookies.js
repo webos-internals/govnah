@@ -22,7 +22,7 @@ preferenceCookie.prototype.get = function(reload)
 				
 				// Dashboard Group
 				useDash: false,
-				dashPollSpeed: 1,
+				dashPollSpeed: 2,
 				dashIconUpdate: true,
 				
 				// Governor Settings Group
