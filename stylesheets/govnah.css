@@ -161,6 +161,12 @@ body.palm-dark .scene-fade-bottom
 /*
  * Generic Form Styles
  */
+.form .palm-row-wrapper .note
+{
+	clear: both;
+	padding-left: 10px;
+	font-style: italic;
+}
 .form .palm-row-wrapper .label.left
 {
 	padding-left: 6px;
