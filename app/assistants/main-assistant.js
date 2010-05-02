@@ -85,6 +85,7 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 	
 	dataHandler.setMainAssistant(this);
+	dataHandler.rate = parseInt(prefs.get().cardPollSpeed) * 1000;
 	dataHandler.start();
 	
 };

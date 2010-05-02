@@ -212,7 +212,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 				//alert('-----');
 				//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
 				
-				if (this.settings[tmpParam.name])
+				if (this.settings[tmpParam.name] && !prefs.get().manualEntry)
 				{
 					switch(this.settings[tmpParam.name].type)
 					{

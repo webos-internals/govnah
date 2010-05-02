@@ -1,6 +1,5 @@
 function DashboardAssistant()
 {
-	dataHandler.setDashAssistant(this);
 }
 
 DashboardAssistant.prototype.setup = function()
@@ -15,6 +14,10 @@ DashboardAssistant.prototype.setup = function()
 	
 	// to whole thing for tap
 	Mojo.Event.listen(this.dashboardElement, Mojo.Event.tap, this.dashTapHandler);
+	
+	
+	dataHandler.setDashAssistant(this);
+	dataHandler.rate = parseInt(prefs.get().dashPollSpeed) * 1000;
 }
 
 DashboardAssistant.prototype.dashTapped = function(event)

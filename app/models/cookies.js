@@ -25,7 +25,7 @@ preferenceCookie.prototype.get = function(reload)
 				dashPollSpeed: 1,
 				dashIconUpdate: true,
 				
-				// GovernorSettings Group
+				// Governor Settings Group
 				manualEntry: false
 				
 			};

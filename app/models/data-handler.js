@@ -9,7 +9,7 @@ function dataHandlerModel()
 	this.barData = {};
 	
 	this.timer = false;
-	this.rate = parseInt(prefs.get().pollSpeed) * 1000;
+	this.rate = parseInt(prefs.get().cardPollSpeed) * 1000;
 	this.cutoff = 300;
 	
 	this.timerHandler = this.timerFunction.bind(this);
