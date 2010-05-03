@@ -15,7 +15,7 @@ DashboardAssistant.prototype.setup = function()
 	this.iconElement = 				this.controller.get('dashboardIcon');
 	
 	this.dashTapHandler =	this.dashTapped.bindAsEventListener(this);
-	Mojo.Event.listen(this.dashboardElement, Mojo.Event.tap, this.dashTapHandler);
+	this.controller.listen(this.dashboardElement, Mojo.Event.tap, this.dashTapHandler);
 	
 	dataHandler.setDashAssistant(this);
 	dataHandler.start();
@@ -46,7 +46,11 @@ DashboardAssistant.prototype.invisible = function(event)
 
 DashboardAssistant.prototype.cleanup = function(event)
 {
-	Mojo.Event.stopListening(this.dashboardElement, Mojo.Event.tap, this.dashTapHandler);
+	this.controller.stopListening(this.dashboardElement, Mojo.Event.tap, this.dashTapHandler);
+
+	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
+	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
+	
 	if (!this.skipClose)
 	{
 		dataHandler.closeDash();
