@@ -123,13 +123,30 @@ GovernorAssistant.prototype.setup = function()
 			type: Mojo.Widget.activityButton
 		},
 		{
-			buttonLabel: 'Save'
+			buttonLabel: 'Apply Settings'
 		}
 	);
 	this.saveButtonElement = this.controller.get('saveButton');
 	this.saveButtonPressed = this.saveButtonPressed.bindAsEventListener(this);
     this.saveComplete = this.saveComplete.bindAsEventListener(this);
 	this.controller.listen('saveButton', Mojo.Event.tap, this.saveButtonPressed);
+	
+	/*
+	this.controller.setupWidget
+	(
+		'saveAsProfileButton',
+		{
+			type: Mojo.Widget.activityButton
+		},
+		{
+			buttonLabel: 'Save As Profile'
+		}
+	);
+	this.saveAsProfileButtonElement = this.controller.get('saveAsProfileButton');
+	this.saveAsProfileButtonPressed = this.saveAsProfileButtonPressed.bindAsEventListener(this);
+    //this.saveAsProfileComplete = this.saveAsProfileComplete.bindAsEventListener(this);
+	this.controller.listen('saveAsProfileButton', Mojo.Event.tap, this.saveAsProfileButtonPressed);
+	*/
 	
 	
 	this.settingsForm = this.controller.get('settings');
@@ -141,6 +158,17 @@ GovernorAssistant.prototype.setup = function()
 	service.get_cpufreq_params(this.onGetParams, this.governorModel.value);
 	
 };
+
+
+GovernorAssistant.prototype.governorChange = function(event)
+{
+	//alert('===========');
+	//for (e in event) alert(e+' : '+event[e]);
+	
+	//alert(event.value);
+	this.governorModel.value = event.value;
+	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}]);
+}
 
 GovernorAssistant.prototype.onGetParams = function(payload)
 {
@@ -395,17 +423,6 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 		//error
 	}
 }
-
-GovernorAssistant.prototype.governorChange = function(event)
-{
-	//alert('===========');
-	//for (e in event) alert(e+' : '+event[e]);
-	
-	//alert(event.value);
-	this.governorModel.value = event.value;
-	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}]);
-}
-
 GovernorAssistant.prototype.onSetParams = function(payload)
 {
 	//alert('===========');
@@ -449,13 +466,24 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	
 	service.set_cpufreq_params(this.saveComplete, params, this.governorModel.value);	
 }
-
 GovernorAssistant.prototype.saveComplete = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
 	this.saveButtonElement.mojo.deactivate();
+}
+
+GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
+{
+	
+}
+GovernorAssistant.prototype.saveAsProfileComplete = function(payload)
+{
+	//alert('===========');
+	//for (p in payload) alert(p+' : '+payload[p]);
+	
+	this.saveAsProfileButtonElement.mojo.deactivate();
 }
 
 GovernorAssistant.prototype.activate = function(event)

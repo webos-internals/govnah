@@ -103,7 +103,7 @@ PreferencesAssistant.prototype.setup = function()
 			},
 			{
 				value : this.prefs.useDash,
-	 			disabled: false
+	 			disabled: true
 			}
 		);
 		this.controller.setupWidget
