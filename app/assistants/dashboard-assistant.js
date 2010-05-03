@@ -1,6 +1,8 @@
 function DashboardAssistant()
 {
 	this.skipClose = false;
+	
+	this.isVisible = false;
 }
 
 DashboardAssistant.prototype.setup = function()
@@ -17,11 +19,30 @@ DashboardAssistant.prototype.setup = function()
 	
 	dataHandler.setDashAssistant(this);
 	dataHandler.start();
+	
+	this.visible = this.visible.bindAsEventListener(this);
+	this.invisible = this.invisible.bindAsEventListener(this);
+	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
+	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 }
 
 DashboardAssistant.prototype.dashTapped = function(event)
 {
 }
+
+DashboardAssistant.prototype.visible = function(event)
+{
+	if (!this.isVisible)
+	{
+		this.isVisible = true;
+	}
+	
+	service.get_scaling_governor(this.governorHandler);
+};
+DashboardAssistant.prototype.invisible = function(event)
+{
+	this.isVisible = false;
+};
 
 DashboardAssistant.prototype.cleanup = function(event)
 {
