@@ -131,7 +131,6 @@ GovernorAssistant.prototype.setup = function()
     this.saveComplete = this.saveComplete.bindAsEventListener(this);
 	this.controller.listen('saveButton', Mojo.Event.tap, this.saveButtonPressed);
 	
-	/*
 	this.controller.setupWidget
 	(
 		'saveAsProfileButton',
@@ -146,7 +145,6 @@ GovernorAssistant.prototype.setup = function()
 	this.saveAsProfileButtonPressed = this.saveAsProfileButtonPressed.bindAsEventListener(this);
     //this.saveAsProfileComplete = this.saveAsProfileComplete.bindAsEventListener(this);
 	this.controller.listen('saveAsProfileButton', Mojo.Event.tap, this.saveAsProfileButtonPressed);
-	*/
 	
 	
 	this.settingsForm = this.controller.get('settings');
@@ -476,7 +474,7 @@ GovernorAssistant.prototype.saveComplete = function(payload)
 
 GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 {
-	
+	this.saveAsProfileComplete();
 }
 GovernorAssistant.prototype.saveAsProfileComplete = function(payload)
 {
