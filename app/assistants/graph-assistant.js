@@ -86,13 +86,15 @@ GraphAssistant.prototype.orientationChanged = function(orientation)
 	{
 		case 'left':
 		case 'right':
-			dataHandler.fullGraph.changeDimenstions(480, 320);
+			dataHandler.fullGraph.options.renderWidth = 480;
+			dataHandler.fullGraph.options.renderHeight = 320;
 			dataHandler.renderGraph();
 			break;
 			
 		case 'up':
 		case 'down':
-			dataHandler.fullGraph.changeDimenstions(320, 452);
+			dataHandler.fullGraph.options.renderWidth = 320;
+			dataHandler.fullGraph.options.renderHeight = 452;
 			dataHandler.renderGraph();
 			break;
 	}
@@ -113,6 +115,8 @@ GraphAssistant.prototype.activate = function(event)
 		
 	}
 	this.firstActivate = true;
+	
+	graphHandler.renderGraph();
 };
 GraphAssistant.prototype.deactivate = function(event)
 {
@@ -124,6 +128,8 @@ GraphAssistant.prototype.visible = function(event)
 	{
 		this.isVisible = true;
 	}
+	
+	graphHandler.renderGraph();
 };
 GraphAssistant.prototype.invisible = function(event)
 {

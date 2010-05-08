@@ -120,6 +120,8 @@ MainAssistant.prototype.activate = function(event)
 	this.firstActivate = true;
 	
 	service.get_scaling_governor(this.governorHandler);
+	
+	graphHandler.renderGraph();
 };
 MainAssistant.prototype.deactivate = function(event)
 {
@@ -132,6 +134,8 @@ MainAssistant.prototype.visible = function(event)
 	}
 	
 	service.get_scaling_governor(this.governorHandler);
+	
+	graphHandler.renderGraph();
 };
 MainAssistant.prototype.invisible = function(event)
 {
