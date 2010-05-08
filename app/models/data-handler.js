@@ -49,28 +49,29 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 	this.currentMode = "card";
 	this.rate = parseInt(prefs.get().cardPollSpeed) * 1000;
 	
+	
 	this.tempGraph = new lineGraph
 	(
 		this.mainAssistant.controller.get('tempCanvas'),
 		{
-			height: 30,
-			width: 320
+			renderWidth: 320,
+			renderHeight: 30
 		}
 	)
 	this.freqGraph = new lineGraph
 	(
 		this.mainAssistant.controller.get('freqCanvas'),
 		{
-			height: 30,
-			width: 320
+			renderWidth: 320,
+			renderHeight: 30
 		}
 	);
 	this.loadGraph = new lineGraph
 	(
 		this.mainAssistant.controller.get('loadCanvas'),
 		{
-			height: 30,
-			width: 320
+			renderWidth: 320,
+			renderHeight: 30
 		}
 	);
 	this.timeGraph = new barGraph
@@ -90,14 +91,14 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 	(
 		this.graphAssistant.controller.get('graphCanvas'),
 		{
-			height: 452,
-			width: 320,
-			paddingLeft: 50,
-			paddingTop: 52,
-			paddingBottom: 30,
-			leftScale: true,
-			bottomScale: true,
-			bottomValue: this.graphAssistant.display == 'load' ? 0 : 999999
+			renderWidth: 320,
+			renderHeight: 452,
+			padding:
+			{
+				top:	52,
+				bottom:	30,
+				left:	50
+			}
 		}
 	);
 }
@@ -380,10 +381,6 @@ dataHandlerModel.prototype.renderGraph = function()
 		this.freqGraph.clearLines();
 		this.loadGraph.clearLines();
 		
-		this.tempGraph.resetTopBottomValue();
-		this.freqGraph.resetTopBottomValue();
-		this.loadGraph.resetTopBottomValue();
-		
 		var tempData = [];
 		var freqData = [];
 		var loadData = [];
@@ -394,38 +391,28 @@ dataHandlerModel.prototype.renderGraph = function()
 		var keys = this.lineData.keys();
 		var start = 0;
 		if (keys.length > points) start = keys.length - points;
-		if (start == 0)
-		{
-			for (var s = 0; s < (points - keys.length); s++)
-			{
-				tempData.push(false);
-				freqData.push(false);
-				loadData.push(false);
-			}
-		}
 		for (var k = start; k < keys.length; k++)
 		{
 			var dataObj = this.lineData.get(keys[k]);
 			
 			if (dataObj.temp)
-				tempData.push({key: keys[k], value: dataObj.temp.value});
-			else
-				tempData.push(false);
+				tempData.push({x: keys[k], y: dataObj.temp.value});
 			
 			if (dataObj.freq)
-				freqData.push({key: keys[k], value: dataObj.freq.value});
-			else
-				freqData.push(false);
+				freqData.push({x: keys[k], y: dataObj.freq.value});
 			
 			if (dataObj.load)
-				loadData.push({key: keys[k], value: dataObj.load.value1});
-			else
-				loadData.push(false);
+				loadData.push({x: keys[k], y: dataObj.load.value1});
 		}
 		
-		this.tempGraph.setLine(tempData, {strokeStyle: "rgba(153, 205, 153, .4)", fillStyle: "rgba(153, 205, 153, .2)"});
-		this.freqGraph.setLine(freqData, {strokeStyle: "rgba(255, 153, 153, .4)", fillStyle: "rgba(255, 153, 153, .2)"});
-		this.loadGraph.setLine(loadData, {strokeStyle: "rgba(153, 153, 255, .4)", fillStyle: "rgba(153, 153, 255, .2)"});
+		var minX = Math.round(new Date().getTime()/1000.0) - (points * (this.rate / 1000));
+		this.tempGraph.options.xaxis.min = minX;
+		this.freqGraph.options.xaxis.min = minX;
+		this.loadGraph.options.xaxis.min = minX;
+		
+		this.tempGraph.addLine({data: tempData, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
+		this.freqGraph.addLine({data: freqData, stroke: "rgba(255, 153, 153, .4)", fill: "rgba(255, 153, 153, .2)"});
+		this.loadGraph.addLine({data: loadData, stroke: "rgba(153, 153, 255, .4)", fill: "rgba(153, 153, 255, .2)"});
 		
 		this.tempGraph.render();
 		this.freqGraph.render();
@@ -466,30 +453,30 @@ dataHandlerModel.prototype.renderGraph = function()
 			var dataObj = this.lineData.get(keys[k]);
 			
 			if (dataObj.temp && this.graphAssistant.display == "temp")
-				fullData.push({key: keys[k], value: dataObj.temp.value});
+				fullData.push({x: keys[k], y: dataObj.temp.value});
 			
 			if (dataObj.freq && this.graphAssistant.display == "freq")
-				fullData.push({key: keys[k], value: dataObj.freq.value});
+				fullData.push({x: keys[k], y: dataObj.freq.value});
 			
 			if (dataObj.load && this.graphAssistant.display == "load")
 			{
-				fullData.push({key: keys[k], value: dataObj.load.value1});
-				fullData2.push({key: keys[k], value: dataObj.load.value5});
-				fullData3.push({key: keys[k], value: dataObj.load.value15});
+				fullData.push({x: keys[k], y: dataObj.load.value1});
+				fullData2.push({x: keys[k], y: dataObj.load.value5});
+				fullData3.push({x: keys[k], y: dataObj.load.value15});
 			}
 		}
 		
 		if (this.graphAssistant.display == "temp")
-			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(153, 205, 153, .4)", fillStyle: "rgba(153, 205, 153, .2)"});
+			this.fullGraph.addLine({data: fullData, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
 		
 		if (this.graphAssistant.display == "freq")
-			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(205, 153, 153, .4)", fillStyle: "rgba(205, 153, 153, .2)"});
+			this.fullGraph.addLine({data: fullData, stroke: "rgba(205, 153, 153, .4)", fill: "rgba(205, 153, 153, .2)"});
 		
 		if (this.graphAssistant.display == "load")
 		{
-			this.fullGraph.setLine(fullData3, {strokeStyle: "rgba(75, 75, 205, .4)"/*, fillStyle: "rgba(75, 75, 205, .2)"*/});
-			this.fullGraph.setLine(fullData2, {strokeStyle: "rgba(105, 105, 205, .4)"/*, fillStyle: "rgba(105, 105, 205, .2)"*/});
-			this.fullGraph.setLine(fullData, {strokeStyle: "rgba(135, 135, 205, .4)", fillStyle: "rgba(135, 135, 205, .2)"});
+			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
+			this.fullGraph.addLine({data: fullData2, stroke: "rgba(105, 105, 205, .4)"});
+			this.fullGraph.addLine({data: fullData, stroke: "rgba(135, 135, 205, .4)", fill: "rgba(135, 135, 205, .2)"});
 		}
 				
 		this.fullGraph.render();
