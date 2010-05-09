@@ -134,18 +134,56 @@ function profileModel(params)
 	this.settingsStandard =	params.settingsStandard;
 	this.settingsSpecific =	params.settingsSpecific;
 }
+profileModel.prototype.apply = function()
+{
+	var params = [];
+	params.push({name:'scaling_governor', value:this.governor});
+	
+	for (var s = 0; s < this.settingsStandard.length; s++)
+	{
+		params.push(this.settingsStandard[s]);
+	}
+	
+	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), params);
+	
+	
+	var params = [];
+	
+	for (var s = 0; s < this.settingsSpecific.length; s++)
+	{
+		params.push(this.settingsSpecific[s]);
+	}
+	
+	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), params, this.governor);
+}
+profileModel.prototype.applyComplete = function(payload)
+{
+	alert('===========');
+	for (p in payload) alert(p+' : '+payload[p]);
+}
 profileModel.prototype.getListObject = function()
 {
+	var data = 'Governor: '+this.governor;
+	for (var s = 0; s < this.settingsStandard.length; s++)
+	{
+		data += '<br />'+this.settingsStandard[s].name+': '+this.settingsStandard[s].value;
+	}
+	for (var s = 0; s < this.settingsSpecific.length; s++)
+	{
+		data += '<br />'+this.settingsSpecific[s].name+': '+this.settingsSpecific[s].value;
+	}
+	
 	var obj =
 	{
 		key:	profiles.getProfileArrayKey(this.id),
 		id:		this.id,
-		name:	this.name
+		name:	this.name,
+		
+		data:	data
 	};
 	
 	return obj;
 }
-
 
 
 

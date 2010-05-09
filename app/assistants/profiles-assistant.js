@@ -77,7 +77,7 @@ ProfilesAssistant.prototype.updateList = function(skipUpdate)
 }
 ProfilesAssistant.prototype.listTapHandler = function(event)
 {
-	alert(event.item.key);
+	profiles.profiles[event.item.key].apply();
 }
 ProfilesAssistant.prototype.listDeleteHandler = function(event)
 {
