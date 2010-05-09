@@ -71,6 +71,8 @@ function GovernorAssistant(governor)
 	this.settingsModel = {};
 	this.settingsLocation = {};
 	
+	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
+	
 	this.scalingFrequencyChoices = [];
 	
 	this.samplingRates = {min:false, max:false}; 
@@ -115,7 +117,6 @@ GovernorAssistant.prototype.setup = function()
 	this.governorChange = this.governorChange.bindAsEventListener(this);
 	this.controller.listen('governor', Mojo.Event.propertyChange, this.governorChange);
 	
-	
 	this.controller.setupWidget
 	(
 		'saveButton',
@@ -133,17 +134,30 @@ GovernorAssistant.prototype.setup = function()
 	
 	this.controller.setupWidget
 	(
+		'profileName',
+		{
+			focus: false,
+			autoFocus: false,
+			modelProperty: 'name',
+			multiline: false,
+			enterSubmits: false,
+			changeOnKeyPress: true
+		},
+		this.profileModel
+	);
+	
+	this.controller.setupWidget
+	(
 		'saveAsProfileButton',
 		{
 			type: Mojo.Widget.activityButton
 		},
 		{
-			buttonLabel: 'Save As Profile'
+			buttonLabel: 'Save As New Profile'
 		}
 	);
 	this.saveAsProfileButtonElement = this.controller.get('saveAsProfileButton');
 	this.saveAsProfileButtonPressed = this.saveAsProfileButtonPressed.bindAsEventListener(this);
-    //this.saveAsProfileComplete = this.saveAsProfileComplete.bindAsEventListener(this);
 	this.controller.listen('saveAsProfileButton', Mojo.Event.tap, this.saveAsProfileButtonPressed);
 	
 	
@@ -405,7 +419,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 		}
 		
 		this.controller.instantiateChildWidgets(this.settingsForm);
-		
+		this.controller.get('profileName').mojo.blur();
 		
 		// update form styles so list looks OK
 		var rows = this.settingsForm.querySelectorAll('div.palm-row');
@@ -462,7 +476,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 		}
 	}
 	
-	service.set_cpufreq_params(this.saveComplete, params, this.governorModel.value);	
+	service.set_cpufreq_params(this.saveComplete, params, this.governorModel.value);
 }
 GovernorAssistant.prototype.saveComplete = function(payload)
 {
@@ -474,14 +488,32 @@ GovernorAssistant.prototype.saveComplete = function(payload)
 
 GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 {
-	this.saveAsProfileComplete();
-}
-GovernorAssistant.prototype.saveAsProfileComplete = function(payload)
-{
-	//alert('===========');
-	//for (p in payload) alert(p+' : '+payload[p]);
+	var params =
+	{
+		name: this.profileModel.name,
+		governor: this.governorModel.value,
+		settingsStandard: [],
+		settingsSpecific: []
+	};
+	
+	for (var m in this.settingsModel)
+	{
+		if (!this.settingsLocation[m])
+		{
+			params.settingsStandard.push({name:m, value:String(this.settingsModel[m])});
+		}
+		else if (this.settingsLocation[m])
+		{
+			params.settingsSpecific.push({name:m, value:String(this.settingsModel[m])});
+		}
+	}
+	
+	profiles.newProfile(params);
 	
 	this.saveAsProfileButtonElement.mojo.deactivate();
+	
+	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
+	this.controller.get('profileName').mojo.setValue('Profile ' + (profiles.cookieData.serial + 1));
 }
 
 GovernorAssistant.prototype.activate = function(event)
@@ -522,6 +554,8 @@ GovernorAssistant.prototype.cleanup = function(event)
 {
 	
 };
+
+
 
 // Local Variables:
 // tab-width: 4

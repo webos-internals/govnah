@@ -29,6 +29,17 @@ body.palm-dark .scene-fade-bottom
 {
 	background: url(../images/palm-dark/scrollFade-bottom.png) bottom center repeat-x;
 }
+.palm-separator
+{
+  height: 2px;
+ /* margin: 0 -18px;*/
+  background: url(../images/palm-default/list-separator-light.png) bottom left repeat-x;
+}
+body.palm-dark .palm-separator
+{
+  background: url(../images/palm-dark/list-separator-dark.png) bottom left repeat-x;
+}
+
 
 /*
  * Main Scene Styles
