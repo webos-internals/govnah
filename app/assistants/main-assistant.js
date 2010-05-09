@@ -49,6 +49,7 @@ MainAssistant.prototype.setup = function()
 	this.titleElement =		this.controller.get('main-title');
 	this.versionElement =	this.controller.get('version');
 	this.subTitleElement =	this.controller.get('subTitle');
+	this.profileRow =		this.controller.get('profileRow');
 	this.governorRow =		this.controller.get('governorRow');
 	this.governorCurrent =	this.controller.get('governorCurrent');
 	
@@ -68,9 +69,11 @@ MainAssistant.prototype.setup = function()
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 	
 	
+	this.profileTapHandler = this.profileTap.bindAsEventListener(this);
 	this.governorHandler = this.onGovernor.bindAsEventListener(this);
 	this.governorTapHandler = this.governorTap.bindAsEventListener(this);
 	
+	this.controller.listen(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
 	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
 	
 	this.controller.listen(this.freqRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq'));
@@ -88,6 +91,11 @@ MainAssistant.prototype.setup = function()
 	
 };
 
+
+MainAssistant.prototype.profileTap = function(event)
+{
+	this.controller.stageController.pushScene('profiles');
+}
 MainAssistant.prototype.onGovernor = function(payload)
 {
 	this.currentGovernor = trim(payload.value);
@@ -191,6 +199,7 @@ MainAssistant.prototype.handleCommand = function(event)
 
 MainAssistant.prototype.cleanup = function(event)
 {
+	this.controller.stopListening(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
 	this.controller.stopListening(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
 	
 	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
