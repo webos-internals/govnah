@@ -11,7 +11,7 @@ profilesModel.prototype.getProfileArrayKey = function(id)
 {
 	if (this.profiles.length > 0)
 	{
-		for (var pf = 0; p < this.profiles.length; p++)
+		for (var p = 0; p < this.profiles.length; p++)
 		{
 			if (this.profiles[p].id == id)
 			{
@@ -77,7 +77,6 @@ profilesModel.prototype.loadProfile = function(id)
 		{
 			profileParams.profiles = this;
 			var newProfile = new profileModel(profileParams);
-			if (update) newProfile.update();
 			this.profiles.push(newProfile);
 		}
 	} 
@@ -86,7 +85,7 @@ profilesModel.prototype.loadProfile = function(id)
 		Mojo.Log.logException(e, 'profiles#loadProfile');
 	}
 };
-profilesModel.prototype.newFriend = function(params)
+profilesModel.prototype.newProfile = function(params)
 {
 	try
 	{
@@ -105,7 +104,7 @@ profilesModel.prototype.newFriend = function(params)
 		Mojo.Log.logException(e, 'profiles#newProfile');
 	}
 }
-profilesModel.prototype.deleteFriend = function(id)
+profilesModel.prototype.deleteProfile = function(id)
 {
 	try
 	{
@@ -127,9 +126,13 @@ profilesModel.prototype.deleteFriend = function(id)
 
 function profileModel(params) 
 {
-    this.id =	params.id;
-	this.name =	params.name;
+    this.id =				params.id;
+	this.name =				params.name;
 	
+	this.governor =			params.governor;
+	
+	this.settingsStandard =	params.settingsStandard;
+	this.settingsSpecific =	params.settingsSpecific;
 }
 profileModel.prototype.getListObject = function()
 {
@@ -142,26 +145,8 @@ profileModel.prototype.getListObject = function()
 	
 	return obj;
 }
-profileModel.prototype.getEditObject = function()
-{
-	var obj = 
-	{
-		id:		this.id,
-		name:	this.name
-	};
-	return obj;
-}
-profileModel.prototype.saveInfo = function(params)
-{
-	if (profileModel.validateNewFriend(params, false, false)) 
-	{
-		//this.id =		params.id;
-		this.name =		params.name;
-		
-		var profileCookie = new Mojo.Model.Cookie('profile-' + this.id);
-		profileCookie.put(params);
-	}
-}
+
+
 
 
 // Local Variables:

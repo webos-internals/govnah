@@ -24,6 +24,10 @@
         "source": "app/assistants/governor-assistant.js"
     },
     {
+        "scenes": "profiles",
+        "source": "app/assistants/profiles-assistant.js"
+    },
+    {
         "scenes": "dashboard",
         "source": "app/assistants/dashboard-assistant.js"
     },
