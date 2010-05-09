@@ -116,7 +116,7 @@ GraphAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 	
-	graphHandler.renderGraph();
+	dataHandler.renderGraph();
 };
 GraphAssistant.prototype.deactivate = function(event)
 {
@@ -129,7 +129,7 @@ GraphAssistant.prototype.visible = function(event)
 		this.isVisible = true;
 	}
 	
-	graphHandler.renderGraph();
+	dataHandler.renderGraph();
 };
 GraphAssistant.prototype.invisible = function(event)
 {
