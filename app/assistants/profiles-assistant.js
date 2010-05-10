@@ -13,6 +13,10 @@ function ProfilesAssistant()
 		visible: true,
 		items:
 		[
+			{
+				label: $L("Help"),
+				command: 'do-help'
+			}
 		]
 	}
 }
@@ -91,6 +95,9 @@ ProfilesAssistant.prototype.handleCommand = function(event)
 	{
 		switch (event.command)
 		{
+			case 'do-help':
+				this.controller.stageController.pushScene('help');
+				break;
 		}
 	}
 }
