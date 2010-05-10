@@ -83,6 +83,7 @@ ProfilesAssistant.prototype.updateList = function(skipUpdate)
 ProfilesAssistant.prototype.listTapHandler = function(event)
 {
 	profiles.profiles[event.item.key].apply();
+	this.controller.stageController.popScene();
 }
 ProfilesAssistant.prototype.listDeleteHandler = function(event)
 {
