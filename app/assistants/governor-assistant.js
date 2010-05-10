@@ -13,55 +13,6 @@ function GovernorAssistant()
 		]
 	};
 	
-	
-	
-	this.settings = 
-	{
-		'scaling_min_freq':
-		{
-			nice: 'min freq',
-			type: 'listFreq',
-		},
-		'scaling_max_freq':
-		{
-			nice: 'max freq',
-			type: 'listFreq',
-		},
-		'scaling_setspeed':
-		{
-			nice: 'setspeed',
-			type: 'listFreq',
-		},
-		'up_threshold':
-		{
-			type: 'listPcnt',
-		},
-		'down_threshold':
-		{
-			type: 'listPcnt',
-		},
-		'freq_step':
-		{
-			type: 'listPcnt',
-		},
-		'sampling_rate':
-		{
-			type: 'listSamp',
-		},
-		'sampling_down_factor':
-		{
-			type: 'listSampDown',
-		},
-		'powersave_bias':
-		{
-			type: 'listPowr',
-		},
-		'ignore_nice_load':
-		{
-			type: 'toggleTF',
-		}
-	};
-	
 	this.governorModel = 
 	{
 		value: dataHandler.governor,
@@ -256,9 +207,9 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 				//alert('-----');
 				//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
 				
-				if (this.settings[tmpParam.name] && !prefs.get().manualEntry)
+				if (profilesModel.settings[tmpParam.name] && !prefs.get().manualEntry)
 				{
-					switch(this.settings[tmpParam.name].type)
+					switch(profilesModel.settings[tmpParam.name].type)
 					{
 						case 'listFreq':
 							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
@@ -268,7 +219,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
 									choices: this.scalingFrequencyChoices
 								},
@@ -283,7 +234,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
 									choices: this.percentChoices
 								},
@@ -298,7 +249,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
 									choices: this.powersaveChoices
 								},
@@ -351,7 +302,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
 									choices: samplingChoices
 								},
@@ -366,7 +317,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
 									modelProperty: tmpParam.name,
 									choices: this.samplingDownChoices
 								},
@@ -375,7 +326,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							break;
 							
 						case 'toggleTF':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {label:(this.settings[tmpParam.name].nice ? this.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							this.settingsForm.innerHTML += Mojo.View.render({object: {label:(profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")), id: tmpParam.name}, template: 'governor/toggle-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = payload.governor;
 							this.controller.setupWidget

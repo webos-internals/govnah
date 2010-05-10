@@ -23,10 +23,10 @@
 
 profilesModel.defaultProfiles = [
 
-	// the stock pre settings
+	// the stock palm settings
 	{
 		version:	1,
-		name:		'Stock',
+		name:		'Palm Default',
 		locked:		true,			// don't lock any other profiles but this one
 		governor:	'userspace',
 		settingsStandard: [
