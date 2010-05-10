@@ -261,14 +261,16 @@ profileModel.prototype.getListObject = function()
 }
 profileModel.prototype.getDataString = function()
 {
-	var data = 'Governor: '+this.governor;
+	var data = '<span class="name">Governor</span><span class="value">' + this.governor + '</span>';
 	for (var s = 0; s < this.settingsStandard.length; s++)
 	{
-		data += '<br />' + this.getDataSettingString(this.settingsStandard[s].name, this.settingsStandard[s].value);
+		var row = this.getDataSettingString(this.settingsStandard[s].name, this.settingsStandard[s].value);
+		data += '<br /><span class="name">' + row[0] + '</span><span class="value">' + row[1] + '</span>';
 	}
 	for (var s = 0; s < this.settingsSpecific.length; s++)
 	{
-		data += '<br />' + this.getDataSettingString(this.settingsSpecific[s].name, this.settingsSpecific[s].value);
+		var row = this.getDataSettingString(this.settingsSpecific[s].name, this.settingsSpecific[s].value);
+		data += '<br /><span class="name">' + row[0] + '</span><span class="value">' + row[1] + '</span>';
 	}
 	return data;
 }
@@ -279,13 +281,13 @@ profileModel.prototype.getDataSettingString = function(name, value)
 		switch(profilesModel.settings[name].type)
 		{
 			case 'listFreq':
-				return profilesModel.settingLabel(name) + ': ' + (parseInt(value)/1000) + ' MHz';
+				return [profilesModel.settingLabel(name), (parseInt(value)/1000) + ' MHz'];
 				break;
 			case 'listPcnt':
-				return profilesModel.settingLabel(name) + ': ' + value + ' %';
+				return [profilesModel.settingLabel(name), value + ' %'];
 				break;
 			case 'listPowr':
-				return profilesModel.settingLabel(name) + ': ' + value;
+				return [profilesModel.settingLabel(name), value];
 				break;
 			case 'listSamp':
 				var min = 0;
@@ -300,21 +302,20 @@ profileModel.prototype.getDataSettingString = function(name, value)
 				if (min > 1) display += 's ';
 				else display += ' ';
 				if (sec > 0) display += sec+' Seconds';
-				
-				return profilesModel.settingLabel(name) + ': ' + display;
+				return [profilesModel.settingLabel(name), display];
 				break;
 			case 'listSampDown':
-				return profilesModel.settingLabel(name) + ': ' + value;
+				return [profilesModel.settingLabel(name), value];
 				break;
 				
 			case 'toggleTF':
-				return profilesModel.settingLabel(name) + ': ' + (value ? 'true' : 'false');
+				return [profilesModel.settingLabel(name), (value ? 'true' : 'false')];
 				break;
 		}
 	}
 	else
 	{
-		return tmpParam.name.replace(/_/g, " ") + ': ' + value;
+		return [tmpParam.name.replace(/_/g, " "), value];
 	}
 }
 

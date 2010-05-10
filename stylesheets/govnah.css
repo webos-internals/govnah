@@ -176,6 +176,25 @@ body.palm-dark .palm-separator
 
 
 /*
+ * Profile Scene Styles
+ */
+.profiles .palm-row .sub
+{
+	padding-bottom: 16px;
+}
+.profiles .palm-row .sub .name
+{
+	padding-left: 10px;
+	text-transform: capitalize;
+}
+.profiles .palm-row .sub .value
+{
+	float: right;
+	padding-right: 10px;
+}
+
+
+/*
  * Dashboard Scene Styles
  */
 .dashboard .palm-dashboard-icon
