@@ -247,27 +247,75 @@ profileModel.prototype.applyComplete = function(payload)
 }
 profileModel.prototype.getListObject = function()
 {
-	var data = 'Governor: '+this.governor;
-	for (var s = 0; s < this.settingsStandard.length; s++)
-	{
-		data += '<br />'+this.settingsStandard[s].name+': '+this.settingsStandard[s].value;
-	}
-	for (var s = 0; s < this.settingsSpecific.length; s++)
-	{
-		data += '<br />'+this.settingsSpecific[s].name+': '+this.settingsSpecific[s].value;
-	}
-	
 	var obj =
 	{
 		key:	profiles.getProfileArrayKey(this.id),
 		id:		this.id,
-		name:	(this.locked ? '<b>'+this.name+'</b>' : this.name),
+		name:	(this.locked ? '<b>' + this.name + '</b>' : this.name),
 		locked:	this.locked,
 		
-		data:	data
+		data:	this.getDataString()
 	};
 	
 	return obj;
+}
+profileModel.prototype.getDataString = function()
+{
+	var data = 'Governor: '+this.governor;
+	for (var s = 0; s < this.settingsStandard.length; s++)
+	{
+		data += '<br />' + this.getDataSettingString(this.settingsStandard[s].name, this.settingsStandard[s].value);
+	}
+	for (var s = 0; s < this.settingsSpecific.length; s++)
+	{
+		data += '<br />' + this.getDataSettingString(this.settingsSpecific[s].name, this.settingsSpecific[s].value);
+	}
+	return data;
+}
+profileModel.prototype.getDataSettingString = function(name, value)
+{
+	if (profilesModel.settings[name])
+	{
+		switch(profilesModel.settings[name].type)
+		{
+			case 'listFreq':
+				return profilesModel.settingLabel(name) + ': ' + (parseInt(value)/1000) + ' MHz';
+				break;
+			case 'listPcnt':
+				return profilesModel.settingLabel(name) + ': ' + value + ' %';
+				break;
+			case 'listPowr':
+				return profilesModel.settingLabel(name) + ': ' + value;
+				break;
+			case 'listSamp':
+				var min = 0;
+				var sec = (parseInt(value) / 1000000);
+				if (sec / 60 >= 1)
+				{
+					min = Math.floor(sec / 60);
+					sec = (sec % 60);
+				}
+				var display = '';
+				if (min > 0) display += min+' Minute';
+				if (min > 1) display += 's ';
+				else display += ' ';
+				if (sec > 0) display += sec+' Seconds';
+				
+				return profilesModel.settingLabel(name) + ': ' + display;
+				break;
+			case 'listSampDown':
+				return profilesModel.settingLabel(name) + ': ' + value;
+				break;
+				
+			case 'toggleTF':
+				return profilesModel.settingLabel(name) + ': ' + (value ? 'true' : 'false');
+				break;
+		}
+	}
+	else
+	{
+		return tmpParam.name.replace(/_/g, " ") + ': ' + value;
+	}
 }
 
 
