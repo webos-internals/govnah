@@ -247,11 +247,14 @@ profileModel.prototype.applyComplete = function(payload)
 }
 profileModel.prototype.getListObject = function()
 {
+	var tmpName = this.name;
+	if (dataHandler.profile && dataHandler.profile.name == this.name) tmpName = '<b>' + this.name + '</b>';
+	
 	var obj =
 	{
 		key:	profiles.getProfileArrayKey(this.id),
 		id:		this.id,
-		name:	(this.locked ? '<b>' + this.name + '</b>' : this.name),
+		name:	tmpName,
 		locked:	this.locked,
 		
 		governor: this.governor,
