@@ -44,3 +44,8 @@ profilesModel.settings =
 		type: 'toggleTF',
 	}
 };
+
+profilesModel.settingLabel = function(name)
+{
+	return (profilesModel.settings[name].nice ? profilesModel.settings[name].nice : name.replace(/_/g, " "));
+}

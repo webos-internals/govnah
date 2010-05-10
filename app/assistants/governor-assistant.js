@@ -219,7 +219,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: profilesModel.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.scalingFrequencyChoices
 								},
@@ -234,7 +234,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: profilesModel.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.percentChoices
 								},
@@ -249,7 +249,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: profilesModel.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.powersaveChoices
 								},
@@ -302,7 +302,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: profilesModel.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: samplingChoices
 								},
@@ -317,7 +317,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							(
 								tmpParam.name,
 								{
-									label: (profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")),
+									label: profilesModel.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.samplingDownChoices
 								},
@@ -326,7 +326,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 							break;
 							
 						case 'toggleTF':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {label:(profilesModel.settings[tmpParam.name].nice ? profilesModel.settings[tmpParam.name].nice : tmpParam.name.replace(/_/g, " ")), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							this.settingsForm.innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = payload.governor;
 							this.controller.setupWidget
