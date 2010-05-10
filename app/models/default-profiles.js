@@ -27,6 +27,7 @@ profilesModel.defaultProfiles = [
 	{
 		version:	1,
 		name:		'Stock',
+		locked:		true,	// don't use this on any other profiles but this one
 		governor:	'userspace',
 		settingsStandard: [
 			{name:	'scaling_min_freq',	value:	'125000'},

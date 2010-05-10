@@ -160,6 +160,9 @@ function profileModel(params)
     this.id =				params.id;
 	this.name =				params.name;
 	
+	this.version =			params.version;
+	this.locked =			params.locked;
+	
 	this.governor =			params.governor;
 	
 	this.settingsStandard =	params.settingsStandard;
@@ -209,6 +212,7 @@ profileModel.prototype.getListObject = function()
 		key:	profiles.getProfileArrayKey(this.id),
 		id:		this.id,
 		name:	this.name,
+		locked:	this.locked,
 		
 		data:	data
 	};

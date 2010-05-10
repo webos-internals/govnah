@@ -36,6 +36,7 @@ ProfilesAssistant.prototype.setup = function()
 		{
 			itemTemplate: "profiles/profile-row",
 			swipeToDelete: true,
+			preventDeleteProperty: 'locked',
 			reorderable: false
 		}, this.profileListModel);
 		Mojo.Event.listen(this.profileListElement, Mojo.Event.listTap, this.listTapHandler);
