@@ -261,7 +261,7 @@ profileModel.prototype.getListObject = function()
 	{
 		key:	profiles.getProfileArrayKey(this.id),
 		id:		this.id,
-		name:	this.name,
+		name:	(this.locked ? '<b>'+this.name+'</b>' : this.name),
 		locked:	this.locked,
 		
 		data:	data

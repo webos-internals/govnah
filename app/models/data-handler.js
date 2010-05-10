@@ -130,8 +130,8 @@ dataHandlerModel.prototype.updateParams = function(num)
 		
 		if (this.mainAssistant && this.mainAssistant.controller)
 		{
-			this.mainAssistant.profileCurrent.innerHTML = '...';
-			this.mainAssistant.governorCurrent.innerHTML = '...';
+			//this.mainAssistant.profileCurrent.innerHTML = '...';
+			//this.mainAssistant.governorCurrent.innerHTML = '...';
 		}
 		
 		service.get_cpufreq_params(this.getParamsHandler1);
