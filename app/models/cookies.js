@@ -13,6 +13,10 @@ preferenceCookie.prototype.get = function(reload)
 			// setup our default preferences
 			this.prefs = 
 			{
+				// Internal Group
+				// (not to be seen by the user)
+				defaultProfileVersion:	0,
+				
 				// Global Group
 				theme: 'palm-default',
 								

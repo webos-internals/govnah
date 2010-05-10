@@ -6,6 +6,8 @@ function profilesModel()
 	this.profiles =		[];
 	
 	this.load();
+	this.loadDefaults();
+	
 };
 profilesModel.prototype.getProfileArrayKey = function(id)
 {
@@ -35,6 +37,35 @@ profilesModel.prototype.getListObjects = function()
 		}
 	}
 	return returnArray;
+};
+profilesModel.prototype.loadDefaults = function()
+{
+	try
+	{
+		var highestVersion = prefs.get().defaultProfileVersion;
+		
+		for (var d = 0; d < profilesModel.defaultProfiles.length; d++)
+		{
+			if (profilesModel.defaultProfiles[d].version > prefs.get().defaultProfileVersion)
+			{
+				this.newProfile(profilesModel.defaultProfiles[d]);
+				
+				if (profilesModel.defaultProfiles[d].version > highestVersion)
+				{
+					highestVersion = profilesModel.defaultProfiles[d].version;
+				}
+			}
+		}
+		
+		if (highestVersion > prefs.get().defaultProfileVersion)
+		{
+			prefs.put('defaultProfileVersion', highestVersion);
+		}
+	} 
+	catch (e) 
+	{
+		Mojo.Log.logException(e, 'profiles#loadDefaults');
+	}
 };
 profilesModel.prototype.load = function()
 {
