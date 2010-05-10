@@ -254,6 +254,7 @@ profileModel.prototype.getListObject = function()
 		name:	(this.locked ? '<b>' + this.name + '</b>' : this.name),
 		locked:	this.locked,
 		
+		governor: this.governor,
 		data:	this.getDataString()
 	};
 	

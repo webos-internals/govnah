@@ -178,6 +178,16 @@ body.palm-dark .palm-separator
 /*
  * Profile Scene Styles
  */
+.profiles #profileList.governor .palm-row .sub,
+.profiles #profileList.name .palm-row .sub
+{
+	display: none;
+}
+.profiles #profileList.all .palm-row .right,
+.profiles #profileList.name .palm-row .right
+{
+	display: none;
+}
 .profiles .palm-row .sub
 {
 	padding-bottom: 16px;
@@ -190,6 +200,13 @@ body.palm-dark .palm-separator
 .profiles .palm-row .sub .value
 {
 	float: right;
+	padding-right: 10px;
+}
+.profiles .palm-row .right
+{
+	padding-top: 12px;
+	float: right;
+	color: #999;
 	padding-right: 10px;
 }
 

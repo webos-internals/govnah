@@ -25,8 +25,8 @@ ProfilesAssistant.prototype.setup = function()
 {
 	try
 	{
-		// set theme
-		this.controller.document.body.className = prefs.get().theme;
+		// set view
+		this.controller.get('profileList').className = prefs.get().profileList;
 		
 		this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 		

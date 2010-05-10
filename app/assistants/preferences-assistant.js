@@ -23,8 +23,6 @@ PreferencesAssistant.prototype.setup = function()
 {
 	try
 	{
-		this.controller.get('preferences-global').innerHTML = $L('Global');
-
 		// setup menu
 		this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 		
@@ -145,6 +143,25 @@ PreferencesAssistant.prototype.setup = function()
 		this.controller.listen('dashIconUpdate', Mojo.Event.propertyChange, this.toggleChangeHandler);
 		
 		
+		
+		// Profiles Group
+		this.controller.setupWidget
+		(
+			'profileList',
+			{
+				label: $L('Profile List'),
+				choices:
+				[
+					{label:$L('Name Only'),		value:'name'},
+					{label:$L('Governor'),		value:'governor'},
+					{label:$L('All Data'),		value:'all'}
+				],
+				modelProperty: 'profileList'
+			},
+			this.prefs
+		);
+		
+		this.controller.listen('profileList', Mojo.Event.propertyChange, this.listChangedHandler);
 		
 		
 		
