@@ -83,6 +83,11 @@ body.palm-dark .palm-separator
 	margin-top: 0px;
 }
 
+.main .palm-row .title.right .unknown
+{
+	color: #aaa;
+}
+
 .main #graph
 {
 	position: relative;
@@ -157,6 +162,7 @@ body.palm-dark .palm-separator
 	z-index: -5;
 	top: 22px;
 }
+
 
 
 

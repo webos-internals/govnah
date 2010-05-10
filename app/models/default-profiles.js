@@ -27,15 +27,14 @@ profilesModel.defaultProfiles = [
 	{
 		version:	1,
 		name:		'Stock',
-		locked:		true,	// don't use this on any other profiles but this one
+		locked:		true,			// don't lock any other profiles but this one
 		governor:	'userspace',
 		settingsStandard: [
 			{name:	'scaling_min_freq',	value:	'125000'},
-			{name:	'scaling_max_freq',	value:	'800000'}
-		],
-		settingsSpecific: [
+			{name:	'scaling_max_freq',	value:	'800000'},
 			{name:	'scaling_setspeed',	value:	'500000'}
-		]
+		],
+		settingsSpecific: []
 	}
 
 ];

@@ -9,6 +9,56 @@ function profilesModel()
 	this.loadDefaults();
 	
 };
+profilesModel.prototype.findProfile = function(governor, settingsStandard, settingsSpecific)
+{
+	if (this.profiles.length > 0)
+	{
+		for (var p = 0; p < this.profiles.length; p++)
+		{
+			if (this.profiles[p]) 
+			{
+				if (this.profiles[p].governor == governor &&
+					this.profiles[p].settingsStandard.length == settingsStandard.length &&
+					this.profiles[p].settingsSpecific.length == settingsSpecific.length)
+				{
+					var match = true;
+					
+					if (this.profiles[p].settingsStandard.length > 0)
+					{
+						for (var s = 0; s < this.profiles[p].settingsStandard.length; s++)
+						{
+							if (this.profiles[p].settingsStandard[s].name != settingsStandard[s].name ||
+								this.profiles[p].settingsStandard[s].value != settingsStandard[s].value)
+							{
+								match = false;
+							}
+						}
+					}
+					if (this.profiles[p].settingsSpecific.length > 0)
+					{
+						for (var s = 0; s < this.profiles[p].settingsSpecific.length; s++)
+						{
+							if (this.profiles[p].settingsSpecific[s].name != settingsSpecific[s].name ||
+								this.profiles[p].settingsSpecific[s].value != settingsSpecific[s].value)
+							{
+								match = false;
+							}
+						}
+					}
+					
+					if (match)
+					{
+						return this.profiles[p];
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		return false;
+	}
+};
 profilesModel.prototype.getProfileArrayKey = function(id)
 {
 	if (this.profiles.length > 0)

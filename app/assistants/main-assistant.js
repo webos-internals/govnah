@@ -35,8 +35,6 @@ function MainAssistant()
 	};
 	
 	this.isVisible = false;
-	
-	this.currentGovernor = '';
 };
 
 MainAssistant.prototype.setup = function()
@@ -50,6 +48,7 @@ MainAssistant.prototype.setup = function()
 	this.versionElement =	this.controller.get('version');
 	this.subTitleElement =	this.controller.get('subTitle');
 	this.profileRow =		this.controller.get('profileRow');
+	this.profileCurrent =	this.controller.get('profileCurrent');
 	this.governorRow =		this.controller.get('governorRow');
 	this.governorCurrent =	this.controller.get('governorCurrent');
 	
@@ -70,7 +69,6 @@ MainAssistant.prototype.setup = function()
 	
 	
 	this.profileTapHandler = this.profileTap.bindAsEventListener(this);
-	this.governorHandler = this.onGovernor.bindAsEventListener(this);
 	this.governorTapHandler = this.governorTap.bindAsEventListener(this);
 	
 	this.controller.listen(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
@@ -96,14 +94,9 @@ MainAssistant.prototype.profileTap = function(event)
 {
 	this.controller.stageController.pushScene('profiles');
 }
-MainAssistant.prototype.onGovernor = function(payload)
-{
-	this.currentGovernor = trim(payload.value);
-	this.governorCurrent.innerHTML = this.currentGovernor;
-}
 MainAssistant.prototype.governorTap = function(event)
 {
-	this.controller.stageController.pushScene('governor', this.currentGovernor);
+	this.controller.stageController.pushScene('governor');
 }
 MainAssistant.prototype.graphTap = function(event, display)
 {
@@ -119,17 +112,14 @@ MainAssistant.prototype.activate = function(event)
 	
 	if (this.firstActivate)
 	{
-		
+		dataHandler.updateParams();
+		dataHandler.renderGraph();
 	}
 	else
 	{
 		
 	}
 	this.firstActivate = true;
-	
-	service.get_scaling_governor(this.governorHandler);
-	
-	dataHandler.renderGraph();
 };
 MainAssistant.prototype.deactivate = function(event)
 {
@@ -141,8 +131,7 @@ MainAssistant.prototype.visible = function(event)
 		this.isVisible = true;
 	}
 	
-	service.get_scaling_governor(this.governorHandler);
-	
+	dataHandler.updateParams();
 	dataHandler.renderGraph();
 };
 MainAssistant.prototype.invisible = function(event)

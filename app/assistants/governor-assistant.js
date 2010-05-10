@@ -1,4 +1,4 @@
-function GovernorAssistant(governor)
+function GovernorAssistant()
 {
 	// setup menu
 	this.menuModel =
@@ -64,7 +64,7 @@ function GovernorAssistant(governor)
 	
 	this.governorModel = 
 	{
-		value: governor,
+		value: dataHandler.governor,
 		choices: []
 	};
 	

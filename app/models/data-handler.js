@@ -7,6 +7,11 @@ function dataHandlerModel()
 	
 	this.currentMode = "card";
 	
+	this.governor = false;
+	this.profile = false;
+	this.settingsStandard = [];
+	this.settingsSpecific = [];
+	
 	this.iconDirty = false;
 	
 	this.lineData = $H();
@@ -34,6 +39,11 @@ function dataHandlerModel()
 	
 	//service.get_trans_table(this.transHandler);
 	//service.get_total_trans(this.transHandler);
+	
+    this.getParamsHandler1 = this.getParamsHandler.bindAsEventListener(this, 1);
+    this.getParamsHandler2 = this.getParamsHandler.bindAsEventListener(this, 2);
+	
+	//this.updateParams();
 	
 };
 
@@ -109,6 +119,80 @@ dataHandlerModel.prototype.setDashAssistant = function(assistant)
 	this.rate = parseInt(prefs.get().dashPollSpeed) * 1000;
 }
 
+dataHandlerModel.prototype.updateParams = function(num)
+{
+	if (!num)
+	{
+		this.governor = false;
+		this.profile = false;
+		this.settingsStandard = [];
+		this.settingsSpecific = [];
+		
+		if (this.mainAssistant && this.mainAssistant.controller)
+		{
+			this.mainAssistant.profileCurrent.innerHTML = '...';
+			this.mainAssistant.governorCurrent.innerHTML = '...';
+		}
+		
+		service.get_cpufreq_params(this.getParamsHandler1);
+	}
+	else if (num == 1)
+	{
+		service.get_cpufreq_params(this.getParamsHandler2, this.governor);
+	}
+	else if (num == 2)
+	{
+		this.profile = profiles.findProfile(this.governor, this.settingsStandard, this.settingsSpecific);
+		if (this.mainAssistant && this.mainAssistant.controller)
+		{
+			if (this.profile)
+			{
+				this.mainAssistant.profileCurrent.innerHTML = this.profile.name;
+			}
+			else
+			{
+				this.mainAssistant.profileCurrent.innerHTML = '<span class="unknown">Unknown</span>';
+			}
+		}
+	}
+}
+dataHandlerModel.prototype.getParamsHandler = function(payload, num)
+{
+	if (payload.params)
+	{
+		for (var param = 0; param < payload.params.length; param++)
+		{
+			tmpParam = payload.params[param];
+			
+			if (tmpParam.name == 'scaling_governor')
+			{
+				this.governor = trim(tmpParam.value);
+				if (this.mainAssistant && this.mainAssistant.controller)
+				{
+					this.mainAssistant.governorCurrent.innerHTML = this.governor;
+				}
+			}
+			else if (tmpParam.writeable)
+			{
+				if (num == 1)
+				{
+					this.settingsStandard.push({name:tmpParam.name, value:String(tmpParam.value)});
+				}
+				else if (num == 2)
+				{
+					this.settingsSpecific.push({name:tmpParam.name, value:String(tmpParam.value)});
+				}
+			}
+		}
+	}
+	else
+	{
+		//error
+	}
+	
+	this.updateParams(num);
+	
+};
 
 dataHandlerModel.prototype.openDash = function(skipBanner)
 {
