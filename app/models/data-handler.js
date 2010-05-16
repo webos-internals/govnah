@@ -34,6 +34,11 @@ function dataHandlerModel()
 	this.loadGraph = false;
 	this.timeGraph = false;
 	
+	this.tempReq = false;
+	this.freqReq = false;
+	this.loadReq = false;
+	this.timeReq = false;
+	
 	this.fullGraph = false;
 	
 	
@@ -264,6 +269,10 @@ dataHandlerModel.prototype.closeDash = function(skipBanner)
 
 dataHandlerModel.prototype.timerFunction = function()
 {
+	if (this.tempReq) this.tempReq.cancel();
+	if (this.freqReq) this.freqReq.cancel();
+	if (this.loadReq) this.loadReq.cancel();
+	if (this.timeReq) this.timeReq.cancel();
 
 	var keys = this.lineData.keys();
 	if (keys.length > this.cutoff)
@@ -276,13 +285,13 @@ dataHandlerModel.prototype.timerFunction = function()
 	
 	this.renderGraph();
 	
-	service.get_omap34xx_temp(this.tempHandler);
+	this.tempReq = service.get_omap34xx_temp(this.tempHandler);
 	
 	if (this.currentMode == "card")
 	{ // we really only need these when in card mode...
-		service.get_scaling_cur_freq(this.freqHandler);
-		service.get_proc_loadavg(this.loadHandler);
-		service.get_time_in_state(this.timeHandler);
+		this.freqReq = service.get_scaling_cur_freq(this.freqHandler);
+		this.loadReq = service.get_proc_loadavg(this.loadHandler);
+		this.timeReq = service.get_time_in_state(this.timeHandler);
 	}
 	
 	this.timer = setTimeout(this.timerHandler, this.rate);
