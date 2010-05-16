@@ -73,6 +73,34 @@ profilesModel.prototype.getProfileArrayKey = function(id)
 	}
 	return false;
 };
+profilesModel.prototype.getProfileFromId = function(id)
+{
+	if (this.profiles.length > 0)
+	{
+		for (var p = 0; p < this.profiles.length; p++)
+		{
+			if (this.profiles[p].id == id)
+			{
+				return this.profiles[p];
+			}
+		}
+	}
+	return false;
+};
+profilesModel.prototype.getProfileFromName = function(name)
+{
+	if (this.profiles.length > 0)
+	{
+		for (var p = 0; p < this.profiles.length; p++)
+		{
+			if (this.profiles[p].name == name)
+			{
+				return this.profiles[p];
+			}
+		}
+	}
+	return false;
+};
 profilesModel.prototype.getListObjects = function()
 {
 	var returnArray = [];
