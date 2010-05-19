@@ -120,6 +120,9 @@ GovernorAssistant.prototype.setup = function()
 	service.get_cpufreq_params(this.onGetParams);
 	service.get_cpufreq_params(this.onGetParams, this.governorModel.value);
 	
+	
+	// make it so nothing is selected by default
+	this.controller.setInitialFocusedElement(null);
 };
 
 
@@ -370,7 +373,6 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 		}
 		
 		this.controller.instantiateChildWidgets(this.settingsForm);
-		this.controller.get('profileName').mojo.blur();
 		
 		// update form styles so list looks OK
 		var rows = this.settingsForm.querySelectorAll('div.palm-row');
