@@ -5,7 +5,6 @@ var prefs = new preferenceCookie();
 var mainStageName = 'govnah-main';
 var dashStageName = 'govnah-dash';
 
-var prefs = new preferenceCookie();
 var dataHandler = new dataHandlerModel();
 var profiles = new profilesModel();
 

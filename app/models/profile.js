@@ -270,8 +270,8 @@ profileModel.prototype.apply = function()
 }
 profileModel.prototype.applyComplete = function(payload)
 {
-	alert('===========');
-	for (p in payload) alert(p+' : '+payload[p]);
+	//alert('===========');
+	//for (p in payload) alert(p+' : '+payload[p]);
 }
 profileModel.prototype.getListObject = function()
 {
