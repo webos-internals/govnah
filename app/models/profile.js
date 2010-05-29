@@ -341,7 +341,7 @@ profileModel.prototype.getDataSettingString = function(name, value)
 				break;
 				
 			case 'toggleTF':
-				return [profilesModel.settingLabel(name), (value ? 'true' : 'false')];
+				return [profilesModel.settingLabel(name), (value == 1 ? 'true' : 'false')];
 				break;
 		}
 	}
