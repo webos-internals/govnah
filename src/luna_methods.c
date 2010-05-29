@@ -713,6 +713,163 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 }
 
 //
+// Write upstart script to make cpufreq params "sticky"
+//
+bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  bool error = false;
+  char *governor = NULL;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the genericParams argument from the message
+  json_t *genericParams = json_find_first_label(object, "genericParams");
+  if (!genericParams || (genericParams->child->type != JSON_ARRAY)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing genericParams array\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  // Extract the governorParams argument from the message
+  json_t *governorParams = json_find_first_label(object, "governorParams");
+  if (!governorParams || (governorParams->child->type != JSON_ARRAY)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing governorParams array\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-settings");
+  FILE *fp = fopen(filename, "w");
+  if (!fp) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  error = false;
+  if (fputs("description \"Govnah Settings\"\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("start on stopped finish\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("script\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevBootPanicked`\" = \"false\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevShutdownClean`\" = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m -n com.palm.system last_umount_clean`\"  = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+ 
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  sprintf(directory, "%s", cpufreqdir);
+  json_t *genericEntry = genericParams->child->child;
+  while (genericEntry) {
+    if (genericEntry->type != JSON_OBJECT) continue;
+    json_t *name = json_find_first_label(genericEntry, "name");
+    if (!name || (name->child->type != JSON_STRING) ||
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) continue;
+    json_t *value = json_find_first_label(genericEntry, "value");
+    if (!value || (value->child->type != JSON_STRING) ||
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text)))  continue;
+
+    if (!strcmp(name->child->text, "scaling_governor")) {
+      governor = value->child->text;
+    }
+
+    fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+    sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
+
+    if (fputs(line, fp) < 0) {
+      (void)fclose(fp);
+      (void)unlink(filename);
+      sprintf(buffer,
+	      "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	      filename);
+      if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+      return true;
+    }
+      
+    genericEntry = genericEntry->next;
+  }
+
+  if (governor != NULL) {
+
+    sprintf(directory, "%s/%s", cpufreqdir, governor);
+    json_t *governorEntry = governorParams->child->child;
+    while (governorEntry) {
+      if (governorEntry->type != JSON_OBJECT) continue;
+      json_t *name = json_find_first_label(governorEntry, "name");
+      if (!name || (name->child->type != JSON_STRING) ||
+	  (strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) continue;
+      json_t *value = json_find_first_label(governorEntry, "value");
+      if (!value || (value->child->type != JSON_STRING) ||
+	  (strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) continue;
+
+      fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+      sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
+
+      if (fputs(line, fp) < 0) {
+	(void)fclose(fp);
+	(void)unlink(filename);
+	sprintf(buffer,
+		"{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+		filename);
+	if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+	return true;
+      }
+      
+      governorEntry = governorEntry->next;
+    }
+  }
+
+  error = false;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("end script\n", fp) < 0) error = true;
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  if (fclose(fp)) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
 // Read time_in_state
 //
 bool get_time_in_state_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -745,6 +902,7 @@ LSMethod luna_methods[] = {
   { "get_scaling_governor",     get_scaling_governor_method },
   { "get_cpufreq_params",	get_cpufreq_params_method },
   { "set_cpufreq_params",	set_cpufreq_params_method },
+  { "stick_cpufreq_params",	stick_cpufreq_params_method },
   { "get_time_in_state",	get_time_in_state_method },
   { "get_total_trans",		get_total_trans_method },
   { "get_trans_table",		get_trans_table_method },

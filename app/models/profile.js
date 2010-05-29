@@ -265,6 +265,7 @@ profileModel.prototype.apply = function()
 	}
 	
 	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
+	service.stick_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
 }
 profileModel.prototype.applyComplete = function(payload)
 {

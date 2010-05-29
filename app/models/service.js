@@ -82,6 +82,21 @@ service.set_cpufreq_params = function(callback, genericParams, governorParams)
 	});
 	return request;
 };
+service.stick_cpufreq_params = function(callback, genericParams, governorParams)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'stick_cpufreq_params',
+		parameters:
+		{
+			genericParams: genericParams,
+			governorParams: governorParams
+		},
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 
 service.get_time_in_state = function(callback)
 {
