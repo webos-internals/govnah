@@ -67,15 +67,15 @@ service.get_cpufreq_params = function(callback, governor)
 	});
 	return request;
 };
-service.set_cpufreq_params = function(callback, params, governor)
+service.set_cpufreq_params = function(callback, genericParams, governorParams)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'set_cpufreq_params',
 		parameters:
 		{
-			params: params,
-			governor: governor
+			genericParams: genericParams,
+			governorParams: governorParams
 		},
 		onSuccess: callback,
 		onFailure: callback

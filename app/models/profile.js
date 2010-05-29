@@ -248,25 +248,23 @@ function profileModel(params)
 }
 profileModel.prototype.apply = function()
 {
-	var params = [];
-	params.push({name:'scaling_governor', value:this.governor});
+	var genericParams = [];
+
+	genericParams.push({name:'scaling_governor', value:this.governor});
 	
 	for (var s = 0; s < this.settingsStandard.length; s++)
 	{
-		params.push(this.settingsStandard[s]);
+		genericParams.push(this.settingsStandard[s]);
 	}
 	
-	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), params);
-	
-	
-	var params = [];
+	var governorParams = [];
 	
 	for (var s = 0; s < this.settingsSpecific.length; s++)
 	{
-		params.push(this.settingsSpecific[s]);
+		governorParams.push(this.settingsSpecific[s]);
 	}
 	
-	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), params, this.governor);
+	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
 }
 profileModel.prototype.applyComplete = function(payload)
 {

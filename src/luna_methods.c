@@ -562,55 +562,56 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   bool error = false;
   char *governor = NULL;
 
+  sprintf(buffer, "{\"returnValue\": true }");
+
   json_t *object = LSMessageGetPayloadJSON(message);
 
-  // Extract the governor argument from the message
-  json_t *param = json_find_first_label(object, "governor");
-  if (param && (param->child->type == JSON_STRING)) {
-    governor = param->child->text;
-  }
-
-  if (governor) {
-    sprintf(directory, "%s/%s", cpufreqdir, governor);
-    sprintf(buffer, "{\"returnValue\": true, \"governor\": \"%s\"}", governor);
-  }
-  else {
-    sprintf(directory, "%s", cpufreqdir);
-    sprintf(buffer, "{\"returnValue\": true }");
-  }
-
-  // Extract the params argument from the message
-  json_t *params = json_find_first_label(object, "params");
-  if (!params || (params->child->type != JSON_ARRAY)) {
+  // Extract the genericParams argument from the message
+  json_t *genericParams = json_find_first_label(object, "genericParams");
+  if (!genericParams || (genericParams->child->type != JSON_ARRAY)) {
     if (!LSMessageReply(lshandle, message,
-			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing params array\"}",
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing genericParams array\"}",
 			&lserror)) goto error;
     return true;
   }
 
-  json_t *entry = params->child->child;
-  while (entry) {
-    if (entry->type != JSON_OBJECT) {
+  // Extract the governorParams argument from the message
+  json_t *governorParams = json_find_first_label(object, "governorParams");
+  if (!governorParams || (governorParams->child->type != JSON_ARRAY)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing governorParams array\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(directory, "%s", cpufreqdir);
+  json_t *genericEntry = genericParams->child->child;
+  while (genericEntry) {
+    if (genericEntry->type != JSON_OBJECT) {
       if (!LSMessageReply(lshandle, message,
-			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing params array element\"}",
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing genericParams array element\"}",
 			  &lserror)) goto error;
       return true;
     }
-    json_t *name = json_find_first_label(entry, "name");
+    json_t *name = json_find_first_label(genericEntry, "name");
     if (!name || (name->child->type != JSON_STRING) ||
 	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) {
       if (!LSMessageReply(lshandle, message,
-			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing name entry\"}",
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing name genericEntry\"}",
 			  &lserror)) goto error;
       return true;
     }
-    json_t *value = json_find_first_label(entry, "value");
+    json_t *value = json_find_first_label(genericEntry, "value");
     if (!value || (value->child->type != JSON_STRING) ||
 	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) {
       if (!LSMessageReply(lshandle, message,
-			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value entry\"}",
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value genericEntry\"}",
 			  &lserror)) goto error;
       return true;
+    }
+
+    if (!strcmp(name->child->text, "scaling_governor")) {
+      governor = value->child->text;
     }
 
     sprintf(filename, "%s/%s", directory, name->child->text);
@@ -639,7 +640,65 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
       break;
     }
     
-    entry = entry->next;
+    genericEntry = genericEntry->next;
+  }
+
+  if (governor != NULL) {
+
+    sprintf(directory, "%s/%s", cpufreqdir, governor);
+    json_t *governorEntry = governorParams->child->child;
+    while (governorEntry) {
+      if (governorEntry->type != JSON_OBJECT) {
+	if (!LSMessageReply(lshandle, message,
+			    "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing governorParams array element\"}",
+			    &lserror)) goto error;
+	return true;
+      }
+      json_t *name = json_find_first_label(governorEntry, "name");
+      if (!name || (name->child->type != JSON_STRING) ||
+	  (strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) {
+	if (!LSMessageReply(lshandle, message,
+			    "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing name governorEntry\"}",
+			    &lserror)) goto error;
+	return true;
+      }
+      json_t *value = json_find_first_label(governorEntry, "value");
+      if (!value || (value->child->type != JSON_STRING) ||
+	  (strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) {
+	if (!LSMessageReply(lshandle, message,
+			    "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value governorEntry\"}",
+			    &lserror)) goto error;
+	return true;
+      }
+
+      sprintf(filename, "%s/%s", directory, name->child->text);
+
+      fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+
+      FILE *fp = fopen(filename, "w");
+      if (!fp) {
+	sprintf(errorText, "Unable to open %s", filename);
+	error = true;
+      }
+      else {
+	if (fputs(value->child->text, fp) < 0) {
+	  sprintf(errorText, "Unable to write to %s", filename);
+	  error = true;
+	}
+	if (fclose(fp)) {
+	  sprintf(errorText, "Unable to close %s", filename);
+	  error = true;
+	}
+      }
+      
+      if (error) {
+	sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+		errorText);
+	break;
+      }
+    
+      governorEntry = governorEntry->next;
+    }
   }
 
   // fprintf(stderr, "Message is %s\n", buffer);

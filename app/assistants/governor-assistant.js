@@ -133,7 +133,7 @@ GovernorAssistant.prototype.governorChange = function(event)
 	
 	//alert(event.value);
 	this.governorModel.value = event.value;
-	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}]);
+	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
 }
 
 GovernorAssistant.prototype.onGetParams = function(payload)
@@ -407,29 +407,29 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	//for (var m in this.settingsModel) alert(m+" : "+this.settingsModel[m]);
 	//for (var m in this.settingsLocation) alert(m+" : "+this.settingsLocation[m]);
 	
-	var params = [];
+	var genericParams = [];
 	
+	genericParams.push({name:"scaling_governor", value:this.governorModel.value});
+
 	for (var m in this.settingsModel)
 	{
 		if (!this.settingsLocation[m])
 		{
-			params.push({name:m, value:String(this.settingsModel[m])});
+			genericParams.push({name:m, value:String(this.settingsModel[m])});
 		}
 	}
 	
-	service.set_cpufreq_params(this.saveComplete, params);
-	
-	var params = [];
+	var governorParams = [];
 	
 	for (var m in this.settingsModel)
 	{
 		if (this.settingsLocation[m])
 		{
-			params.push({name:m, value:String(this.settingsModel[m])});
+			governorParams.push({name:m, value:String(this.settingsModel[m])});
 		}
 	}
 	
-	service.set_cpufreq_params(this.saveComplete, params, this.governorModel.value);
+	service.set_cpufreq_params(this.saveComplete, genericParams, governorParams);
 }
 GovernorAssistant.prototype.saveComplete = function(payload)
 {
