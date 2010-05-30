@@ -10,6 +10,10 @@
     {"source": "app/models/data-handler.js"},
     {"source": "app/assistants/app-assistant.js"},
     {
+        "scenes": "startup",
+        "source": "app/assistants/startup-assistant.js"
+    },
+    {
         "scenes": "main",
         "source": "app/assistants/main-assistant.js"
     },

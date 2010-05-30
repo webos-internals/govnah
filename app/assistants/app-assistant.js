@@ -1,5 +1,6 @@
 // get the cookies
 var prefs = new preferenceCookie();
+var vers =  new versionCookie();
 
 // stage names
 var mainStageName = 'govnah-main';
@@ -88,7 +89,13 @@ AppAssistant.prototype.handleLaunch = function(params)
 
 AppAssistant.prototype.launchFirstScene = function(controller)
 {
-	controller.pushScene('main');
+    vers.init();
+    if (vers.showStartupScene()) {
+		controller.pushScene('startup');
+    }
+    else {
+		controller.pushScene('main');
+	}
 };
 
 AppAssistant.prototype.cleanup = function(event)
