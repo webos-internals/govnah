@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.4.1', log: [ 'Added the startup splash screen and some initial default profiles' ] },
 	 { version: '0.4.0', log: [ 'Select a profile to have it automatically reapplied on each clean reboot' ] },
 	 { version: '0.3.1', log: [ 'Added support for launch parameters',
 				    'Fixed ignore_nice_load always shows true on profile screen bug' ] },
