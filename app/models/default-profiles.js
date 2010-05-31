@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 1
+ * 	Highest Version: 2
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -23,7 +23,59 @@
 
 profilesModel.defaultProfiles = [
 
-	// the stock palm settings
+	// Screenstate 500/800
+	{
+		version:	2,
+		name:		'Screenstate 500/800',
+		locked:		false,
+		governor:	'screenstate',
+		settingsStandard: [
+			{name:	'scaling_min_freq',	value:	'500000'},
+			{name:	'scaling_max_freq',	value:	'800000'},
+		],
+		settingsSpecific: []
+	},
+
+	// Fixed Speed 800
+	{
+		version:	2,
+		name:		'Fixed Speed 800',
+		locked:		false,
+		governor:	'performance',
+		settingsStandard: [
+			{name:	'scaling_min_freq',	value:	'500000'},
+			{name:	'scaling_max_freq',	value:	'800000'},
+		],
+		settingsSpecific: []
+	},
+
+	// Fixed Speed 720
+	{
+		version:	2,
+		name:		'Fixed Speed 720',
+		locked:		false,
+		governor:	'performance',
+		settingsStandard: [
+			{name:	'scaling_min_freq',	value:	'500000'},
+			{name:	'scaling_max_freq',	value:	'720000'},
+		],
+		settingsSpecific: []
+	},
+
+	// Fixed Speed 600
+	{
+		version:	2,
+		name:		'Fixed Speed 600',
+		locked:		false,
+		governor:	'performance',
+		settingsStandard: [
+			{name:	'scaling_min_freq',	value:	'500000'},
+			{name:	'scaling_max_freq',	value:	'600000'},
+		],
+		settingsSpecific: []
+	},
+
+	// The stock palm settings
 	{
 		version:	1,
 		name:		'Palm Default',
