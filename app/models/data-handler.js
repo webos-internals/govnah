@@ -7,6 +7,8 @@ function dataHandlerModel()
 	
 	this.currentMode = "card";
 	
+	this.updatingParams = false;
+	
 	this.governor = false;
 	this.profile = false;
 	this.settingsStandard = [];
@@ -128,18 +130,23 @@ dataHandlerModel.prototype.updateParams = function(num)
 {
 	if (!num)
 	{
-		this.governor = false;
-		this.profile = false;
-		this.settingsStandard = [];
-		this.settingsSpecific = [];
-		
-		if (this.mainAssistant && this.mainAssistant.controller)
+		if (!this.updatingParams)
 		{
-			//this.mainAssistant.profileCurrent.innerHTML = '...';
-			//this.mainAssistant.governorCurrent.innerHTML = '...';
+			this.updatingParams = true;
+			
+			this.governor = false;
+			this.profile = false;
+			this.settingsStandard = [];
+			this.settingsSpecific = [];
+			
+			if (this.mainAssistant && this.mainAssistant.controller)
+			{
+				//this.mainAssistant.profileCurrent.innerHTML = '...';
+				//this.mainAssistant.governorCurrent.innerHTML = '...';
+			}
+			
+			service.get_cpufreq_params(this.getParamsHandler1);
 		}
-		
-		service.get_cpufreq_params(this.getParamsHandler1);
 	}
 	else if (num == 1)
 	{
@@ -159,6 +166,8 @@ dataHandlerModel.prototype.updateParams = function(num)
 				this.mainAssistant.profileCurrent.innerHTML = '<span class="unknown">Unknown</span>';
 			}
 		}
+		
+		this.updatingParams = false;
 	}
 }
 dataHandlerModel.prototype.getParamsHandler = function(payload, num)
