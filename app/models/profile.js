@@ -245,6 +245,8 @@ function profileModel(params)
 	
 	this.settingsStandard =	params.settingsStandard;
 	this.settingsSpecific =	params.settingsSpecific;
+
+	this.settingsCompcache = params.settingsCompcache || [];
 }
 profileModel.prototype.apply = function()
 {
@@ -266,6 +268,16 @@ profileModel.prototype.apply = function()
 	
 	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
 	service.stick_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
+
+	var compcacheConfig = [];
+	
+	for (var s = 0; s < this.settingsCompcache.length; s++)
+	{
+		compcacheConfig.push(this.settingsCompcache[s]);
+	}
+	
+	service.set_compcache_config(this.applyComplete.bindAsEventListener(this), compcacheConfig);
+	service.stick_compcache_config(this.applyComplete.bindAsEventListener(this), compcacheConfig);
 }
 profileModel.prototype.applyComplete = function(payload)
 {

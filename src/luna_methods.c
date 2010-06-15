@@ -912,7 +912,16 @@ bool get_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   // fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
-  // lsmod | grep ramzswap
+  strcpy(run_command_buffer, "");
+  if (run_command("grep ramzswap /proc/modules", false)) {
+    sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": true, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": 20480, \"writeable\": true}], \"returnValue\": true }");
+  }
+  else {
+    sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": false, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": 20480, \"writeable\": true}], \"returnValue\": true }");
+  }
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
   return true;
  error:
@@ -936,12 +945,37 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   json_t *object = LSMessageGetPayloadJSON(message);
 
   // Extract the enable argument from the message
-  bool enable = false;
-  if (!json_get_bool(object, "enable", &enable)) {
+  bool enabled = false;
+  char *memlimit = "20480";
+
+  // Extract the compcacheConfig argument from the message
+  json_t *compcacheConfig = json_find_first_label(object, "compcacheConfig");
+  if (!compcacheConfig || (compcacheConfig->child->type != JSON_ARRAY)) {
     if (!LSMessageReply(lshandle, message,
-			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing enable flag\"}",
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing compcacheConfig array\"}",
 			&lserror)) goto error;
     return true;
+  }
+
+  json_t *entry = compcacheConfig->child->child;
+  while (entry) {
+    if (entry->type != JSON_OBJECT) continue;
+    json_t *name = json_find_first_label(entry, "name");
+    if (!name || (name->child->type != JSON_STRING) ||
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) continue;
+    json_t *value = json_find_first_label(entry, "value");
+    if (!value || (value->child->type != JSON_STRING) ||
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text)))  continue;
+
+    if (!strcmp(name->child->text, "compcache_enabled")) {
+      enabled = strcmp(value->child->text, "1")?false:true;
+    }
+
+    if (!strcmp(name->child->text, "compcache_memlimit")) {
+      memlimit = value->child->text;
+    }
+
+    entry = entry->next;
   }
 
   strcpy(run_command_buffer, "/lib/modules/");
@@ -953,7 +987,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   }
   strcpy(directory, run_command_buffer);
 
-  if (enable) {
+  if (enabled) {
     strcpy(command, "/sbin/swapoff -a 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
@@ -968,7 +1002,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
       return true;
     }
-    sprintf(command, "/sbin/insmod %s/extra/ramzswap.ko backing_swap=/dev/mapper/store-swap memlimit_kb=20480 2>&1", directory);
+    sprintf(command, "/sbin/insmod %s/extra/ramzswap.ko backing_swap=/dev/mapper/store-swap memlimit_kb=%s 2>&1", directory, memlimit);
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
       strcat(run_command_buffer, "]");

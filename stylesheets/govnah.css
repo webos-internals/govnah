@@ -183,6 +183,7 @@ body.palm-dark .palm-separator
 .main canvas#freqCanvas,
 .main canvas#tempCanvas,
 .main canvas#loadCanvas,
+.main canvas#memCanvas,
 .main canvas#timeCanvas
 {
 	position: absolute;

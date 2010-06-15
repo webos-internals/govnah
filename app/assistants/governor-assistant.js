@@ -49,6 +49,13 @@ function GovernorAssistant()
 	{
 		this.powersaveChoices.push({label:x, value:x});
 	}
+
+	this.memoryChoices = [];
+	for (var x = 10; x <= 30; x = x + 5)
+	{
+		this.memoryChoices.push({label:x + "MB", value:x*1024});
+	}
+			
 };
 
 GovernorAssistant.prototype.setup = function()
@@ -114,12 +121,14 @@ GovernorAssistant.prototype.setup = function()
 	
 	this.settingsForm = this.controller.get('settings');
 	
-    this.onGetParams = this.onGetParams.bindAsEventListener(this);
+    this.onGetParamsGeneric   = this.onGetParams.bindAsEventListener(this, "generic");
+    this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "governor");
+    this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
     this.onSetParams = this.onSetParams.bindAsEventListener(this);
 	
-	service.get_cpufreq_params(this.onGetParams);
-	service.get_cpufreq_params(this.onGetParams, this.governorModel.value);
-	
+	service.get_cpufreq_params(this.onGetParamsGeneric);
+	service.get_cpufreq_params(this.onGetParamsSpecfic, this.governorModel.value);
+	service.get_compcache_config(this.onGetParamsCompcache);
 	
 	// make it so nothing is selected by default
 	this.controller.setInitialFocusedElement(null);
@@ -134,9 +143,9 @@ GovernorAssistant.prototype.governorChange = function(event)
 	//alert(event.value);
 	this.governorModel.value = event.value;
 	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
-}
+};
 
-GovernorAssistant.prototype.onGetParams = function(payload)
+GovernorAssistant.prototype.onGetParams = function(payload, location)
 {
 	if (payload.params)
 	{
@@ -217,7 +226,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 						case 'listFreq':
 							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
-							this.settingsLocation[tmpParam.name] = payload.governor;
+							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
 							(
 								tmpParam.name,
@@ -232,7 +241,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 						case 'listPcnt':
 							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
-							this.settingsLocation[tmpParam.name] = payload.governor;
+							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
 							(
 								tmpParam.name,
@@ -247,7 +256,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 						case 'listPowr':
 							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
-							this.settingsLocation[tmpParam.name] = payload.governor;
+							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
 							(
 								tmpParam.name,
@@ -262,7 +271,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 						case 'listSamp':
 							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
-							this.settingsLocation[tmpParam.name] = payload.governor;
+							this.settingsLocation[tmpParam.name] = location;
 							var samplingChoices = [];
 							if (this.samplingRates.max !== false && this.samplingRates.min !== false)
 							{
@@ -315,7 +324,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 						case 'listSampDown':
 							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
-							this.settingsLocation[tmpParam.name] = payload.governor;
+							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
 							(
 								tmpParam.name,
@@ -327,11 +336,26 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 								this.settingsModel
 							);
 							break;
+						case 'listMem':
+							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: profilesModel.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: this.memoryChoices
+								},
+								this.settingsModel
+							);
+							break;
 							
 						case 'toggleTF':
 							this.settingsForm.innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
-							this.settingsLocation[tmpParam.name] = payload.governor;
+							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
 							(
 								tmpParam.name,
@@ -351,7 +375,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 				{
 					this.settingsForm.innerHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'governor/textfield-widget'});
 					this.settingsModel[tmpParam.name] = tmpParam.value;
-					this.settingsLocation[tmpParam.name] = payload.governor;
+					this.settingsLocation[tmpParam.name] = location;
 					this.controller.setupWidget
 					(
 						tmpParam.name,
@@ -387,7 +411,7 @@ GovernorAssistant.prototype.onGetParams = function(payload)
 	{
 		//error
 	}
-}
+};
 GovernorAssistant.prototype.onSetParams = function(payload)
 {
 	//alert('===========');
@@ -397,9 +421,10 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	this.settingsModel = {};
 	this.settingsLocation = {};
 	
-	service.get_cpufreq_params(this.onGetParams);
-	service.get_cpufreq_params(this.onGetParams, this.governorModel.value);
-}
+	service.get_cpufreq_params(this.onGetParamsGeneric);
+	service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
+	service.get_compcache_config(this.onGetParamsCompcache);
+};
 
 GovernorAssistant.prototype.saveButtonPressed = function(event)
 {
@@ -413,7 +438,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 
 	for (var m in this.settingsModel)
 	{
-		if (!this.settingsLocation[m])
+		if (this.settingsLocation[m] == "generic")
 		{
 			genericParams.push({name:m, value:String(this.settingsModel[m])});
 		}
@@ -423,21 +448,33 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	
 	for (var m in this.settingsModel)
 	{
-		if (this.settingsLocation[m])
+		if (this.settingsLocation[m] == "governor")
 		{
 			governorParams.push({name:m, value:String(this.settingsModel[m])});
 		}
 	}
 	
 	service.set_cpufreq_params(this.saveComplete, genericParams, governorParams);
-}
+
+	var compcacheConfig = [];
+	
+	for (var m in this.settingsModel)
+	{
+		if (this.settingsLocation[m] == "compcache")
+		{
+			compcacheConfig.push({name:m, value:String(this.settingsModel[m])});
+		}
+	}
+
+	service.set_compcache_config(this.saveComplete, compcacheConfig);
+};
 GovernorAssistant.prototype.saveComplete = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
 	this.saveButtonElement.mojo.deactivate();
-}
+};
 
 GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 {
@@ -446,18 +483,23 @@ GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 		name: this.profileModel.name,
 		governor: this.governorModel.value,
 		settingsStandard: [],
-		settingsSpecific: []
+		settingsSpecific: [],
+		settingsCompcache: []
 	};
 	
 	for (var m in this.settingsModel)
 	{
-		if (!this.settingsLocation[m])
+		if (this.settingsLocation[m] == "generic")
 		{
 			params.settingsStandard.push({name:m, value:String(this.settingsModel[m])});
 		}
-		else if (this.settingsLocation[m])
+		else if (this.settingsLocation[m] == "govnernor")
 		{
 			params.settingsSpecific.push({name:m, value:String(this.settingsModel[m])});
+		}
+		else if (this.settingsLocation[m] == "compcache")
+		{
+			params.settingsCompcache.push({name:m, value:String(this.settingsModel[m])});
 		}
 	}
 	
@@ -467,7 +509,7 @@ GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 	
 	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
 	this.controller.get('profileName').mojo.setValue('Profile ' + (profiles.cookieData.serial + 1));
-}
+};
 
 GovernorAssistant.prototype.activate = function(event)
 {

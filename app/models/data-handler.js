@@ -28,17 +28,20 @@ function dataHandlerModel()
 	this.tempHandler =  this.tempHandler.bindAsEventListener(this);
     this.freqHandler =  this.freqHandler.bindAsEventListener(this);
     this.loadHandler =  this.loadHandler.bindAsEventListener(this);
+    this.memHandler  =  this.memHandler.bindAsEventListener(this);
     this.timeHandler =  this.timeHandler.bindAsEventListener(this);
     this.transHandler = this.transHandler.bindAsEventListener(this);
 	
 	this.tempGraph = false;
 	this.freqGraph = false;
 	this.loadGraph = false;
+	this.memGraph  = false;
 	this.timeGraph = false;
 	
 	this.tempReq = false;
 	this.freqReq = false;
 	this.loadReq = false;
+	this.memReq  = false;
 	this.timeReq = false;
 	
 	this.fullGraph = false;
@@ -86,6 +89,14 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 	this.loadGraph = new lineGraph
 	(
 		this.mainAssistant.controller.get('loadCanvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 30
+		}
+	);
+	this.memGraph = new lineGraph
+	(
+		this.mainAssistant.controller.get('memCanvas'),
 		{
 			renderWidth: 320,
 			renderHeight: 30
@@ -281,6 +292,7 @@ dataHandlerModel.prototype.timerFunction = function()
 	if (this.tempReq) this.tempReq.cancel();
 	if (this.freqReq) this.freqReq.cancel();
 	if (this.loadReq) this.loadReq.cancel();
+	if (this.memReq)  this.memReq.cancel();
 	if (this.timeReq) this.timeReq.cancel();
 
 	var keys = this.lineData.keys();
@@ -300,6 +312,7 @@ dataHandlerModel.prototype.timerFunction = function()
 	{ // we really only need these when in card mode...
 		this.freqReq = service.get_scaling_cur_freq(this.freqHandler);
 		this.loadReq = service.get_proc_loadavg(this.loadHandler);
+		this.memReq  = service.get_proc_meminfo(this.memHandler);
 		this.timeReq = service.get_time_in_state(this.timeHandler);
 	}
 	
@@ -404,6 +417,52 @@ dataHandlerModel.prototype.loadHandler = function(payload)
 		this.lineData.set(timestamp, dataObj);
 	}
 }
+dataHandlerModel.prototype.memHandler = function(payload)
+{
+	if (payload.returnValue) 
+	{
+		var timestamp = Math.round(new Date().getTime()/1000.0);
+		var MemTotal = 0;
+		var MemFree = 0;
+		var SwapTotal = 0;
+		var SwapFree = 0;
+		for (var line = 0; line < payload.stdOut.length; line++) {
+			var items = payload.stdOut[line].split(":");
+			if (items[0] == "MemTotal") {
+				MemTotal = parseInt(items[1]);
+			}
+			else if (items[0] == "MemFree") {
+				MemFree = parseInt(items[1]);
+			}
+			else if (items[0] == "SwapTotal") {
+				SwapTotal = parseInt(items[1]);
+			}
+			else if (items[0] == "SwapFree") {
+				SwapFree = parseInt(items[1]);
+			}
+		}
+		var value = MemTotal - MemFree + SwapTotal - SwapFree;
+		
+		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
+		{
+			this.mainAssistant.memCurrent.innerHTML = Math.floor((MemTotal-MemFree)/1024) + " / " + Math.floor((SwapTotal-SwapFree)/1024) + '<div class="unit">MB</div>';
+		}
+		
+		var dataObj = this.lineData.get(timestamp)
+		if (!dataObj) dataObj = {};
+		if (!dataObj.mem)
+		{
+			dataObj.mem =  {total:  value,  count:  1, value:  value};
+		}
+		if (dataObj.mem && dataObj.mem.count)
+		{
+			dataObj.mem.total =  dataObj.mem.total  + value;
+			dataObj.mem.count++;
+			dataObj.mem.value =  (dataObj.mem.total  / dataObj.mem.count);
+		}
+		this.lineData.set(timestamp, dataObj);
+	}
+}
 dataHandlerModel.prototype.timeHandler = function(payload)
 {
 	if (payload.returnValue) 
@@ -482,10 +541,12 @@ dataHandlerModel.prototype.renderGraph = function()
 		this.tempGraph.clearLines();
 		this.freqGraph.clearLines();
 		this.loadGraph.clearLines();
+		this.memGraph.clearLines();
 		
 		var tempData = [];
 		var freqData = [];
 		var loadData = [];
+		var memData = [];
 		
 		var avg = 1;
 		var points = 80;
@@ -505,20 +566,26 @@ dataHandlerModel.prototype.renderGraph = function()
 			
 			if (dataObj.load)
 				loadData.push({x: keys[k], y: dataObj.load.value1});
+
+			if (dataObj.mem)
+				memData.push({x: keys[k], y: dataObj.mem.value});
 		}
 		
 		var minX = Math.round(new Date().getTime()/1000.0) - (points * (this.rate / 1000));
 		this.tempGraph.options.xaxis.min = minX;
 		this.freqGraph.options.xaxis.min = minX;
 		this.loadGraph.options.xaxis.min = minX;
+		this.memGraph.options.xaxis.min = minX;
 		
 		this.tempGraph.addLine({data: tempData, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
 		this.freqGraph.addLine({data: freqData, stroke: "rgba(255, 153, 153, .4)", fill: "rgba(255, 153, 153, .2)"});
 		this.loadGraph.addLine({data: loadData, stroke: "rgba(153, 153, 255, .4)", fill: "rgba(153, 153, 255, .2)"});
+		this.memGraph.addLine( {data: memData,  stroke: "rgba(153, 153, 255, .4)", fill: "rgba(153, 153, 255, .2)"});
 		
 		this.tempGraph.render();
 		this.freqGraph.render();
 		this.loadGraph.render();
+		this.memGraph.render();
 		
 		var timeData = [];
 		
@@ -566,6 +633,11 @@ dataHandlerModel.prototype.renderGraph = function()
 				fullData2.push({x: keys[k], y: dataObj.load.value5});
 				fullData3.push({x: keys[k], y: dataObj.load.value15});
 			}
+
+			if (dataObj.mem && this.graphAssistant.display == "mem")
+			{
+				fullData.push({x: keys[k], y: dataObj.mem.value});
+			}
 		}
 		
 		if (this.graphAssistant.display == "temp")
@@ -579,6 +651,11 @@ dataHandlerModel.prototype.renderGraph = function()
 			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
 			this.fullGraph.addLine({data: fullData2, stroke: "rgba(105, 105, 205, .4)"});
 			this.fullGraph.addLine({data: fullData, stroke: "rgba(135, 135, 205, .4)", fill: "rgba(135, 135, 205, .2)"});
+		}
+				
+		if (this.graphAssistant.display == "mem")
+		{
+			this.fullGraph.addLine({data: fullData, stroke: "rgba(75, 75, 205, .4)"});
 		}
 				
 		this.fullGraph.render();

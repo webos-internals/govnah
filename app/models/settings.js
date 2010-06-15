@@ -42,6 +42,14 @@ profilesModel.settings =
 	'ignore_nice_load':
 	{
 		type: 'toggleTF',
+	},
+	'compcache_enabled':
+	{
+		type: 'toggleTF',
+	},
+	'compcache_memlimit':
+	{
+		type: 'listMem',
 	}
 };
 

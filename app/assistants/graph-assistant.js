@@ -31,6 +31,8 @@ GraphAssistant.prototype.setup = function()
 		this.titleElement.innerHTML = $L('Frequency Graph');
 	if (this.display == 'load')
 		this.titleElement.innerHTML = $L('Load Average Graph');
+	if (this.display == 'mem')
+		this.titleElement.innerHTML = $L('Memory Usage Graph');
 	
     this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
     this.gestureChangeHandler =	this.gestureChangeHandler.bindAsEventListener(this);
