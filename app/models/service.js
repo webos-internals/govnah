@@ -12,6 +12,16 @@ service.get_proc_cpuinfo = function(callback)
 	});
 	return request;
 };
+service.get_proc_meminfo = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_proc_meminfo',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 service.get_proc_loadavg = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
@@ -91,6 +101,45 @@ service.stick_cpufreq_params = function(callback, genericParams, governorParams)
 		{
 			genericParams: genericParams,
 			governorParams: governorParams
+		},
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+
+service.get_compcache_config = function(callback, governor)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_compcache_config',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.set_compcache_config = function(callback, compcacheConfig)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'set_compcache_config',
+		parameters:
+		{
+			compcacheConfig: compcacheConfig
+		},
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.stick_compcache_config = function(callback, compcacheConfig)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'stick_compcache_config',
+		parameters:
+		{
+			compcacheConfig: compcacheConfig
 		},
 		onSuccess: callback,
 		onFailure: callback

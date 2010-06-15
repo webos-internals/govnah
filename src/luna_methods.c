@@ -399,6 +399,13 @@ bool get_proc_cpuinfo_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 }
 
 //
+// Read /proc/meminfo
+//
+bool get_proc_meminfo_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message, "/bin/cat /proc/meminfo 2>&1");
+}
+
+//
 // Read /proc/loadavg
 //
 bool get_proc_loadavg_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -893,9 +900,254 @@ bool get_trans_table_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/trans_table 2>&1");
 }
 
+//
+// Read compcache configuration
+//
+bool get_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+  
+  sprintf(buffer, "{\"returnValue\": true }");
+  
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  // lsmod | grep ramzswap
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Write compcache configuration
+//
+bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  char command[MAXLINLEN];
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the enable argument from the message
+  bool enable = false;
+  if (!json_get_bool(object, "enable", &enable)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing enable flag\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  strcpy(run_command_buffer, "/lib/modules/");
+  if (!run_command("uname -r", false)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Unable to determine kernel version\"}",
+			&lserror)) goto error;
+    return true;
+  }
+  strcpy(directory, run_command_buffer);
+
+  if (enable) {
+    strcpy(command, "/sbin/swapoff -a 2>&1");
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command(command, true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
+    sprintf(command, "/sbin/insmod %s/extra/xvmalloc.ko 2>&1", directory);
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command(command, true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
+    sprintf(command, "/sbin/insmod %s/extra/ramzswap.ko backing_swap=/dev/mapper/store-swap memlimit_kb=20480 2>&1", directory);
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command(command, true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
+    strcpy(command, "/sbin/swapon /dev/ramzswap0 -p 0 2>&1");
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command(command, true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
+  }
+  else {
+    strcpy(command, "/sbin/swapoff -a 2>&1");
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command(command, true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
+    strcpy(command, "/sbin/rmmod ramzswap 2>&1");
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command(command, true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
+    strcpy(command, "/sbin/rmmod xvmalloc 2>&1");
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command("/sbin/rmmod xvmalloc", true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
+    strcpy(command, "/sbin/swapon /dev/mapper/store-swap -p 0 2>&1");
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command(command, true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
+  }
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Write upstart script to make compcache configuration "sticky"
+//
+bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  bool error = false;
+  char *governor = NULL;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the compcacheConfig argument from the message
+  json_t *compcacheConfig = json_find_first_label(object, "compcacheConfig");
+  if (!compcacheConfig || (compcacheConfig->child->type != JSON_OBJECT)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing compcacheConfig array\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  // Extract the enable argument from the message
+  json_t *enable = json_find_first_label(compcacheConfig, "enable");
+  if (!enable || ((enable->child->type != JSON_TRUE) && (enable->child->type != JSON_FALSE))) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing enable flag\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  // Extract the memlimit argument from the message
+  json_t *memlimit = json_find_first_label(compcacheConfig, "memlimit");
+  if (!memlimit || (memlimit->child->type != JSON_NUMBER)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing memlimit\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-compcache");
+
+  if (enable->child->type == JSON_FALSE) {
+    (void)unlink(filename);
+    // fprintf(stderr, "Message is %s\n", buffer);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  FILE *fp = fopen(filename, "w");
+  if (!fp) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  error = false;
+  if (fputs("description \"Govnah CompCache Configuration\"\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("start on stopped finish\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("script\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevBootPanicked`\" = \"false\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevShutdownClean`\" = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m -n com.palm.system last_umount_clean`\"  = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+ 
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  // grab memlimit
+  // insmod xvmalloc.ko
+  // swapoff -a
+  // insmod ramzswap.ko backing_swap=/dev/mapper/store-swap memlimit_kb=20480
+  // swapon /dev/ramzswap0 -p 1
+
+  error = false;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("end script\n", fp) < 0) error = true;
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  if (fclose(fp)) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
 LSMethod luna_methods[] = {
   { "status",			dummy_method },
   { "get_proc_cpuinfo",		get_proc_cpuinfo_method },
+  { "get_proc_meminfo",		get_proc_meminfo_method },
   { "get_proc_loadavg",		get_proc_loadavg_method },
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
   { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
@@ -906,6 +1158,9 @@ LSMethod luna_methods[] = {
   { "get_time_in_state",	get_time_in_state_method },
   { "get_total_trans",		get_total_trans_method },
   { "get_trans_table",		get_trans_table_method },
+  { "get_compcache_config",	get_compcache_config_method },
+  { "set_compcache_config",	set_compcache_config_method },
+  { "stick_compcache_config",	stick_compcache_config_method },
   { 0, 0 }
 };
 
