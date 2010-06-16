@@ -150,6 +150,10 @@ GovernorAssistant.prototype.governorChange = function(event)
 
 GovernorAssistant.prototype.onGetParams = function(payload, location)
 {
+	if (payload.errorCode != undefined) {
+		this.errorMessage("Govnah", payload.errorText + '<br>' + payload.stdErr?payload.stdErr.join('<br>'):"", function(){});
+	}
+		
 	if (payload.params)
 	{
 		// initial loop
@@ -420,6 +424,10 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
+	if (payload.errorCode != undefined) {
+		this.errorMessage("Govnah", payload.errorText + '<br>' + payload.stdErr?payload.stdErr.join('<br>'):"", function(){});
+	}
+		
 	this.settingsForm.innerHTML = '';
 	this.settingsModel = {};
 	this.settingsLocation = {};
@@ -478,7 +486,7 @@ GovernorAssistant.prototype.saveComplete = function(payload)
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
 	if (payload.errorCode != undefined) {
-		this.errorMessage('Govnah', payload.errorText + '<br>' + payload.stdErr.join('<br'), function(){});
+		this.errorMessage("Govnah", payload.errorText + '<br>' + payload.stdErr?payload.stdErr.join('<br>'):"", function(){});
 	}
 		
 	this.saveButtonElement.mojo.deactivate();
