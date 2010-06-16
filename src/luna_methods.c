@@ -464,88 +464,91 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   DIR *dp = opendir (directory);
   if (!dp) {
-    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", directory);
+    // Don't give an actual errorCode, since it's expected for some governors.
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false }", directory);
+    // fprintf(stderr, "Message is %s\n", buffer);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
   }
-  else {
-    struct dirent *ep;
-    bool first = true;
-    sprintf(buffer, "{\"params\": [");
+
+  struct dirent *ep;
+  bool first = true;
+  sprintf(buffer, "{\"params\": [");
   
-    while (ep = readdir (dp)) {
-      if (!strcmp(ep->d_name, ".") || !strcmp(ep->d_name, "..") ||
-	  !strcmp(ep->d_name, "stats") || !strcmp(ep->d_name, "affected_cpus") ||
-	  !strcmp(ep->d_name, "scaling_driver")) {
-	continue;
+  while (ep = readdir (dp)) {
+    if (!strcmp(ep->d_name, ".") || !strcmp(ep->d_name, "..") ||
+	!strcmp(ep->d_name, "stats") || !strcmp(ep->d_name, "affected_cpus") ||
+	!strcmp(ep->d_name, "scaling_driver")) {
+      continue;
+    }
+
+    sprintf(filename, "%s/%s", directory, ep->d_name);
+
+    bool writeable = false;
+    bool directory = false;
+
+    if (!stat(filename, &statbuf)) {
+      if (statbuf.st_mode & S_IWUSR) {
+	writeable = true;
       }
-
-      sprintf(filename, "%s/%s", directory, ep->d_name);
-
-      bool writeable = false;
-      bool directory = false;
-
-      if (!stat(filename, &statbuf)) {
-	if (statbuf.st_mode & S_IWUSR) {
-	  writeable = true;
-	}
-	if (statbuf.st_mode & S_IFDIR) {
-	  directory = true;
-	}
+      if (statbuf.st_mode & S_IFDIR) {
+	directory = true;
       }
+    }
       
-      strcpy(line,"");
+    strcpy(line,"");
 
-      if (directory) {
-	// Skip over other directories
-	continue;
+    if (directory) {
+      // Skip over other directories
+      continue;
+    }
+    else {
+      FILE *fp = fopen(filename, "r");
+      if (!fp) {
+	sprintf(errorText, "Unable to open %s", filename);
+	error = true;
       }
       else {
-	FILE *fp = fopen(filename, "r");
-	if (!fp) {
-	  sprintf(errorText, "Unable to open %s", filename);
+	if (!fgets(line, MAXLINLEN-1, fp)) {
+	  sprintf(errorText, "Unable to parse %s", filename);
 	  error = true;
 	}
 	else {
-	  if (!fgets(line, MAXLINLEN-1, fp)) {
-	    sprintf(errorText, "Unable to parse %s", filename);
-	    error = true;
-	  }
-	  else {
-	    line[strlen(line)-1] = '\0';
-	  }
-	  if (fclose(fp)) {
-	    sprintf(errorText, "Unable to close %s", filename);
-	    error = true;
-	  }
+	  line[strlen(line)-1] = '\0';
 	}
+	if (fclose(fp)) {
+	  sprintf(errorText, "Unable to close %s", filename);
+	  error = true;
+	}
+      }
 	
-	if (error) {
-	  sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
-		  errorText);
-	  break;
-	}
-	else {
-	  sprintf(buffer+strlen(buffer), "%s{\"name\": \"%s\", \"writeable\": %s, \"value\": \"%s\"}",
-		  (first ? "" : ", "), ep->d_name, (writeable ? "true" : "false"), json_escape_str(line));
-	  first = false;
-	}
+      if (error) {
+	sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+		errorText);
+	break;
+      }
+      else {
+	sprintf(buffer+strlen(buffer), "%s{\"name\": \"%s\", \"writeable\": %s, \"value\": \"%s\"}",
+		(first ? "" : ", "), ep->d_name, (writeable ? "true" : "false"), json_escape_str(line));
+	first = false;
       }
     }
-    if (closedir(dp)) {
-      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
-	      directory);
-      error = true;
-    }
+  }
+  if (closedir(dp)) {
+    sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    directory);
+    error = true;
+  }
 
-    if (!error) {
-      strcat(buffer, "], \"returnValue\": ");
-      strcat(buffer, error ? "false" : "true");
-      if (governor) {
-	strcat(buffer, ", \"governor\": \"");
-	strcat(buffer, governor);
-	strcat(buffer, "\"");
-      }
-      strcat(buffer, "}");
+  if (!error) {
+    strcat(buffer, "], \"returnValue\": ");
+    strcat(buffer, error ? "false" : "true");
+    if (governor) {
+      strcat(buffer, ", \"governor\": \"");
+      strcat(buffer, governor);
+      strcat(buffer, "\"");
     }
+    strcat(buffer, "}");
   }
 
   // fprintf(stderr, "Message is %s\n", buffer);
@@ -913,7 +916,7 @@ bool get_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
   strcpy(run_command_buffer, "");
-  if (run_command("grep MemLimit /proc/ramzswap | awk '{print $2}'", false) && run_command_buffer[0]) {
+  if (run_command("grep MemLimit /proc/ramzswap 2>/dev/null | awk '{print $2}'", false) && run_command_buffer[0]) {
     sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": true, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"%s\", \"writeable\": true}], \"returnValue\": true }", run_command_buffer);
   }
   else {
@@ -945,7 +948,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   json_t *object = LSMessageGetPayloadJSON(message);
 
   // Extract the enable argument from the message
-  bool enabled = false;
+  bool enable = false;
   char *memlimit = NULL;
 
   // Extract the compcacheConfig argument from the message
@@ -968,7 +971,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
 	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text)))  continue;
 
     if (!strcmp(name->child->text, "compcache_enabled")) {
-      enabled = strcmp(value->child->text, "1")?false:true;
+      enable = strcmp(value->child->text, "1")?false:true;
     }
 
     if (!strcmp(name->child->text, "compcache_memlimit")) {
@@ -994,7 +997,13 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   }
   strcpy(directory, run_command_buffer);
 
-  if (enabled) {
+  bool enabled = false;
+  strcpy(run_command_buffer, "");
+  if (run_command("grep MemLimit /proc/ramzswap 2>/dev/null | awk '{print $2}'", false) && run_command_buffer[0]) {
+    enabled = true;
+  }
+
+  if (!enabled && enable) {
     strcpy(command, "/sbin/swapoff -a 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
@@ -1024,37 +1033,35 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
       return true;
     }
   }
-  else {
-    bool error = false;
+  else if (enabled && !enable) {
     strcpy(command, "/sbin/swapoff -a 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
-      error = true;
       strcat(run_command_buffer, "]");
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
     }
     strcpy(command, "/sbin/rmmod ramzswap 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
-      error = true;
       strcat(run_command_buffer, "]");
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
     }
     strcpy(command, "/sbin/rmmod xvmalloc 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command("/sbin/rmmod xvmalloc", true)) {
-      error = true;
       strcat(run_command_buffer, "]");
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
     }
     strcpy(command, "/sbin/swapon /dev/mapper/store-swap -p 0 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
-      error = true;
       strcat(run_command_buffer, "]");
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
     }
-    if (error) return true;
   }
 
   // fprintf(stderr, "Message is %s\n", buffer);

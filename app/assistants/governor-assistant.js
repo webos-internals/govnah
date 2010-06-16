@@ -202,11 +202,11 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 					
 				case 'sampling_rate_max':
 					this.samplingRates.max = parseInt(trim(tmpParam.value));
-					alert(this.samplingRates.max);
+					//alert(this.samplingRates.max);
 					break;
 				case 'sampling_rate_min':
 					this.samplingRates.min = parseInt(trim(tmpParam.value));
-					alert(this.samplingRates.min);
+					//alert(this.samplingRates.min);
 					break;
 			}
 		}
@@ -471,11 +471,16 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 
 	service.set_compcache_config(this.saveComplete, compcacheConfig);
 };
+
 GovernorAssistant.prototype.saveComplete = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
+	if (payload.errorCode != undefined) {
+		this.errorMessage('Govnah', payload.errorText + '<br>' + payload.stdErr.join('<br'), function(){});
+	}
+		
 	this.saveButtonElement.mojo.deactivate();
 };
 
@@ -512,6 +517,19 @@ GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 	
 	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
 	this.controller.get('profileName').mojo.setValue('Profile ' + (profiles.cookieData.serial + 1));
+};
+
+GovernorAssistant.prototype.errorMessage = function(title, message, okFunction)
+{
+	this.controller.showAlertDialog(
+	{
+		allowHTMLMessage:	true,
+		preventCancel:		true,
+	    title:				title,
+	    message:			message,
+	    choices:			[{label:$L("Ok"), value:'ok'}],
+	    onChoose:			okFunction.bindAsEventListener(this)
+    });
 };
 
 GovernorAssistant.prototype.activate = function(event)
