@@ -913,11 +913,11 @@ bool get_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
   strcpy(run_command_buffer, "");
-  if (run_command("grep ramzswap /proc/modules", false)) {
-    sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": true, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": 20480, \"writeable\": true}], \"returnValue\": true }");
+  if (run_command("grep MemLimit /proc/ramzswap | awk '{print $2}'", false) && run_command_buffer[0]) {
+    sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": true, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"%s\", \"writeable\": true}], \"returnValue\": true }", run_command_buffer);
   }
   else {
-    sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": false, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": 20480, \"writeable\": true}], \"returnValue\": true }");
+    sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": false, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"16384\", \"writeable\": true}], \"returnValue\": true }");
   }
 
   // fprintf(stderr, "Message is %s\n", buffer);
@@ -946,7 +946,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
 
   // Extract the enable argument from the message
   bool enabled = false;
-  char *memlimit = "20480";
+  char *memlimit = NULL;
 
   // Extract the compcacheConfig argument from the message
   json_t *compcacheConfig = json_find_first_label(object, "compcacheConfig");
@@ -976,6 +976,13 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
     }
 
     entry = entry->next;
+  }
+
+  if (!memlimit) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing memlimit\"}",
+			&lserror)) goto error;
+    return true;
   }
 
   strcpy(run_command_buffer, "/lib/modules/");
@@ -1018,34 +1025,36 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
     }
   }
   else {
+    bool error = false;
     strcpy(command, "/sbin/swapoff -a 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
+      error = true;
       strcat(run_command_buffer, "]");
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
-      return true;
     }
     strcpy(command, "/sbin/rmmod ramzswap 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
+      error = true;
       strcat(run_command_buffer, "]");
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
-      return true;
     }
     strcpy(command, "/sbin/rmmod xvmalloc 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command("/sbin/rmmod xvmalloc", true)) {
+      error = true;
       strcat(run_command_buffer, "]");
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
-      return true;
     }
     strcpy(command, "/sbin/swapon /dev/mapper/store-swap -p 0 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
+      error = true;
       strcat(run_command_buffer, "]");
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
-      return true;
     }
+    if (error) return true;
   }
 
   // fprintf(stderr, "Message is %s\n", buffer);

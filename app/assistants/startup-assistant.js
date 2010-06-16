@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.4.4', log: [ 'Report correct compcache memory limit' ] },
 	 { version: '0.4.3', log: [ 'Added memory usage and compcache control' ] },
 	 { version: '0.4.2', log: [ 'Fixed the unknown profile problem' ] },
 	 { version: '0.4.1', log: [ 'Added the startup splash screen and some initial default profiles' ] },

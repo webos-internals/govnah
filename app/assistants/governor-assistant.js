@@ -51,10 +51,13 @@ function GovernorAssistant()
 	}
 
 	this.memoryChoices = [];
-	for (var x = 10; x <= 30; x = x + 5)
-	{
-		this.memoryChoices.push({label:x + "MB", value:x*1024});
-	}
+	this.memoryChoices.push({label: "16MB", value: 16*1024});
+	this.memoryChoices.push({label: "24MB", value: 24*1024});
+	this.memoryChoices.push({label: "32MB", value: 32*1024});
+	this.memoryChoices.push({label: "48MB", value: 48*1024});
+	this.memoryChoices.push({label: "64MB", value: 64*1024});
+	this.memoryChoices.push({label: "96MB", value: 96*1024});
+	this.memoryChoices.push({label:"128MB", value:128*1024});
 			
 };
 
