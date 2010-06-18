@@ -1038,6 +1038,13 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
       if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
       return true;
     }
+    sprintf(command, "/bin/sleep 3 2>&1");
+    strcpy(run_command_buffer, "{\"stdOut\": [");
+    if (!run_command(command, true)) {
+      strcat(run_command_buffer, "]");
+      if (!report_command_failure(lshandle, message, command, run_command_buffer+11, NULL)) goto error;
+      return true;
+    }
     strcpy(command, "/sbin/swapon /dev/ramzswap0 -p 0 2>&1");
     strcpy(run_command_buffer, "{\"stdOut\": [");
     if (!run_command(command, true)) {
@@ -1170,9 +1177,10 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
   }
   
   // grab memlimit
-  // insmod xvmalloc.ko
   // swapoff -a
+  // insmod xvmalloc.ko
   // insmod ramzswap.ko backing_swap=/dev/mapper/store-swap memlimit_kb=20480
+  // sleep 3
   // swapon /dev/ramzswap0 -p 1
 
   error = false;
