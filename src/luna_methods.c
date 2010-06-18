@@ -910,17 +910,30 @@ bool get_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   LSError lserror;
   LSErrorInit(&lserror);
   
+  char command[MAXLINLEN];
+
   sprintf(buffer, "{\"returnValue\": true }");
   
-  // fprintf(stderr, "Message is %s\n", buffer);
-  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
-
+  strcpy(run_command_buffer, "/lib/modules/");
+  if (!run_command("/bin/uname -r", false)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Unable to determine kernel version\"}",
+			&lserror)) goto error;
+    return true;
+  }
+  sprintf(command, "/usr/bin/test -f %s/extra/ramzswap.ko", run_command_buffer);
   strcpy(run_command_buffer, "");
-  if (run_command("grep MemLimit /proc/ramzswap 2>/dev/null | awk '{print $2}'", false) && run_command_buffer[0]) {
-    sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": true, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"%s\", \"writeable\": true}], \"returnValue\": true }", run_command_buffer);
+  if (!run_command(command, false)) {
+    sprintf(buffer, "{\"params\": [], \"returnValue\": true }");
   }
   else {
-    sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": false, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"16384\", \"writeable\": true}], \"returnValue\": true }");
+    strcpy(run_command_buffer, "");
+    if (run_command("/bin/grep MemLimit /proc/ramzswap 2>/dev/null | awk '{print $2}'", false) && run_command_buffer[0]) {
+      sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": true, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"%s\", \"writeable\": true}], \"returnValue\": true }", run_command_buffer);
+    }
+    else {
+      sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": false, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"16384\", \"writeable\": true}], \"returnValue\": true }");
+    }
   }
 
   // fprintf(stderr, "Message is %s\n", buffer);
@@ -989,7 +1002,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   }
 
   strcpy(run_command_buffer, "/lib/modules/");
-  if (!run_command("uname -r", false)) {
+  if (!run_command("/bin/uname -r", false)) {
     if (!LSMessageReply(lshandle, message,
 			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Unable to determine kernel version\"}",
 			&lserror)) goto error;
@@ -999,7 +1012,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
 
   bool enabled = false;
   strcpy(run_command_buffer, "");
-  if (run_command("grep MemLimit /proc/ramzswap 2>/dev/null | awk '{print $2}'", false) && run_command_buffer[0]) {
+  if (run_command("/bin/grep MemLimit /proc/ramzswap 2>/dev/null | awk '{print $2}'", false) && run_command_buffer[0]) {
     enabled = true;
   }
 
