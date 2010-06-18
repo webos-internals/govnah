@@ -9,7 +9,8 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
-	 { version: '0.4.7', log: [ 'Added Pixi temperature and available frequency support' ] },
+	 { version: '0.4.7', log: [ 'Added Pixi temperature and available frequency support',
+				    'Created default and fixed speed 600 profiles for Pixi'] },
 	 { version: '0.4.6', log: [ 'Now detects whether configurable compcache support is available' ] },
 	 { version: '0.4.5', log: [ 'Added error reporting for compcache configuration' ] },
 	 { version: '0.4.4', log: [ 'Report correct compcache memory limit' ] },

@@ -14,79 +14,120 @@
  * 
  ********
  * 
- * 	Highest Version: 2
+ * 	Highest Version: 3
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
  */
 
 
-profilesModel.defaultProfiles = [
+profilesModel.defaultProfiles = [];
 
-	// Screenstate 500/800
-	{
-		version:	2,
-		name:		'Screenstate 500/800',
-		locked:		false,
-		governor:	'screenstate',
-		settingsStandard: [
-			{name:	'scaling_min_freq',	value:	'500000'},
-			{name:	'scaling_max_freq',	value:	'800000'},
-		],
-		settingsSpecific: []
-	},
+if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
+    profilesModel.defaultProfiles.push
+	(
+	 // Screenstate 500/800
+	 {
+	     version:	2,
+		 name:		'Screenstate 500/800',
+		 locked:		false,
+		 governor:	'screenstate',
+		 settingsStandard: [
+				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_max_freq',	value:	'800000'},
+				    ],
+		 settingsSpecific: []
+		 },
+	 
+	 // Fixed Speed 800
+	 {
+	     version:	2,
+		 name:		'Fixed Speed 800',
+		 locked:		false,
+		 governor:	'performance',
+		 settingsStandard: [
+				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_max_freq',	value:	'800000'},
+				    ],
+		 settingsSpecific: []
+		 },
+	 
+	 // Fixed Speed 720
+	 {
+	     version:	2,
+		 name:		'Fixed Speed 720',
+		 locked:		false,
+		 governor:	'performance',
+		 settingsStandard: [
+				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_max_freq',	value:	'720000'},
+				    ],
+		 settingsSpecific: []
+		 },
+	 
+	 // Fixed Speed 600
+	 {
+	     version:	2,
+		 name:		'Fixed Speed 600',
+		 locked:		false,
+		 governor:	'performance',
+		 settingsStandard: [
+				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_max_freq',	value:	'600000'},
+				    ],
+		 settingsSpecific: []
+		 },
+	 
+	 // The stock palm settings
+	 {
+	     version:	1,
+		 name:		'Palm Default',
+		 locked:		true,			// don't lock any other profiles but this one
+		 governor:	'userspace',
+		 settingsStandard: [
+				    {name:	'scaling_min_freq',	value:	'125000'},
+				    {name:	'scaling_max_freq',	value:	'800000'},
+				    {name:	'scaling_setspeed',	value:	'500000'}
+				    ],
+		 settingsSpecific: []
+		 }
+	 );
+}	 
 
-	// Fixed Speed 800
-	{
-		version:	2,
-		name:		'Fixed Speed 800',
-		locked:		false,
-		governor:	'performance',
-		settingsStandard: [
-			{name:	'scaling_min_freq',	value:	'500000'},
-			{name:	'scaling_max_freq',	value:	'800000'},
-		],
-		settingsSpecific: []
-	},
-
-	// Fixed Speed 720
-	{
-		version:	2,
-		name:		'Fixed Speed 720',
-		locked:		false,
-		governor:	'performance',
-		settingsStandard: [
-			{name:	'scaling_min_freq',	value:	'500000'},
-			{name:	'scaling_max_freq',	value:	'720000'},
-		],
-		settingsSpecific: []
-	},
-
-	// Fixed Speed 600
-	{
-		version:	2,
-		name:		'Fixed Speed 600',
-		locked:		false,
-		governor:	'performance',
-		settingsStandard: [
-			{name:	'scaling_min_freq',	value:	'500000'},
-			{name:	'scaling_max_freq',	value:	'600000'},
-		],
-		settingsSpecific: []
-	},
-
-	// The stock palm settings
-	{
-		version:	1,
-		name:		'Palm Default',
-		locked:		true,			// don't lock any other profiles but this one
-		governor:	'userspace',
-		settingsStandard: [
-			{name:	'scaling_min_freq',	value:	'125000'},
-			{name:	'scaling_max_freq',	value:	'800000'},
-			{name:	'scaling_setspeed',	value:	'500000'}
-		],
-		settingsSpecific: []
-	}
-
-];
+if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
+    profilesModel.defaultProfiles.push
+	(
+	 // Fixed Speed 600
+	 {
+	     version:	3,
+		 name:		'Fixed Speed 600',
+		 locked:		false,
+		 governor:	'performance',
+		 settingsStandard: [
+				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_max_freq',	value:	'600000'},
+				    ],
+		 settingsSpecific: []
+		 },
+	 
+	 // The stock palm settings
+	 {
+	     version:	3,
+		 name:		'Palm Default',
+		 locked:		true,			// don't lock any other profiles but this one
+		 governor:	'ondemandtcl',
+		 settingsStandard: [
+				    {name:	'scaling_min_freq',	value:	'122880'},
+				    {name:	'scaling_max_freq',	value:	'600000'},
+				    ],
+		 settingsSpecific: [
+				    {name:	'ignore_nice_load',	value:	'0'},
+				    {name:	'max_floor_window',	value:	'3000'},
+				    {name:	'max_tickle_window',	value:	'3000'},
+				    {name:	'powersave_bias',	value:	'0'},
+				    {name:	'sampling_rate',	value:	'200000'},
+				    {name:	'up_threshold',		value:	'80'},
+				    ]
+		 }
+	 );
+}	 
