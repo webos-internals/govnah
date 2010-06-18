@@ -413,10 +413,17 @@ bool get_proc_loadavg_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 }
 
 //
-// Read omap34xx_temp
+// Read omap34xx_temp (Pre)
 //
 bool get_omap34xx_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   return read_single_integer(lshandle, message, "/sys/devices/platform/omap34xx_temp/temp1_input");
+}
+
+//
+// Read tmp105_temp (Pixi)
+//
+bool get_tmp105_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return read_single_integer(lshandle, message, "/sys/devices/platform/tmp105/celsius");
 }
 
 //
@@ -1221,6 +1228,7 @@ LSMethod luna_methods[] = {
   { "get_proc_meminfo",		get_proc_meminfo_method },
   { "get_proc_loadavg",		get_proc_loadavg_method },
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
+  { "get_tmp105_temp",		get_tmp105_temp_method },
   { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
   { "get_scaling_governor",     get_scaling_governor_method },
   { "get_cpufreq_params",	get_cpufreq_params_method },

@@ -306,7 +306,12 @@ dataHandlerModel.prototype.timerFunction = function()
 	
 	this.renderGraph();
 	
-	this.tempReq = service.get_omap34xx_temp(this.tempHandler);
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
+		this.tempReq = service.get_tmp105_temp(this.tempHandler);
+	}
+	else {
+		this.tempReq = service.get_omap34xx_temp(this.tempHandler);
+	}
 	
 	if (this.currentMode == "card")
 	{ // we really only need these when in card mode...

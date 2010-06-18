@@ -42,6 +42,16 @@ service.get_omap34xx_temp = function(callback)
 	});
 	return request;
 };
+service.get_tmp105_temp = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_tmp105_temp',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 service.get_scaling_cur_freq = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
