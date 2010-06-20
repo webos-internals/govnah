@@ -43,6 +43,14 @@ profilesModel.settings =
 	{
 		type: 'toggleTF',
 	},
+	'max_tickle_window':
+	{
+		type: 'listWindow',
+	},
+	'max_floor_window':
+	{
+		type: 'listWindow',
+	},
 	'compcache_enabled':
 	{
 		type: 'toggleTF',

@@ -30,7 +30,6 @@ function dataHandlerModel()
     this.loadHandler =  this.loadHandler.bindAsEventListener(this);
     this.memHandler  =  this.memHandler.bindAsEventListener(this);
     this.timeHandler =  this.timeHandler.bindAsEventListener(this);
-    this.transHandler = this.transHandler.bindAsEventListener(this);
 	
 	this.tempGraph = false;
 	this.freqGraph = false;
@@ -46,9 +45,6 @@ function dataHandlerModel()
 	
 	this.fullGraph = false;
 	
-	
-	//service.get_trans_table(this.transHandler);
-	//service.get_total_trans(this.transHandler);
 	
     this.getParamsHandler1 = this.getParamsHandler.bindAsEventListener(this, 1);
     this.getParamsHandler2 = this.getParamsHandler.bindAsEventListener(this, 2);
@@ -110,7 +106,7 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			width: 320
 		}
 	);
-}
+};
 dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 {
 	this.graphAssistant = assistant;
@@ -129,13 +125,13 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 			}
 		}
 	);
-}
+};
 dataHandlerModel.prototype.setDashAssistant = function(assistant)
 {
 	this.dashAssistant = assistant;
 	this.currentMode = "dash";
 	this.rate = parseInt(prefs.get().dashPollSpeed) * 1000;
-}
+};
 
 dataHandlerModel.prototype.updateParams = function(num)
 {
@@ -180,7 +176,7 @@ dataHandlerModel.prototype.updateParams = function(num)
 		
 		this.updatingParams = false;
 	}
-}
+};
 dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 {
 	if (payload.params)
@@ -254,11 +250,11 @@ dataHandlerModel.prototype.openDash = function(skipBanner)
 	{
 		Mojo.Log.logException(e, "dataHandlerModel#openDash");
 	}
-}
+};
 dataHandlerModel.prototype.openDashCallback = function(controller)
 {
 	controller.pushScene('dashboard', this);
-}
+};
 dataHandlerModel.prototype.closeDash = function(skipBanner)
 {
 	Mojo.Controller.appController.removeBanner('govnahBanner');
@@ -285,7 +281,7 @@ dataHandlerModel.prototype.closeDash = function(skipBanner)
 		}
 	}
 	Mojo.Controller.appController.closeStage(dashStageName);
-}
+};
 
 dataHandlerModel.prototype.timerFunction = function()
 {
@@ -383,7 +379,7 @@ dataHandlerModel.prototype.freqHandler = function(payload)
 		}
 		this.lineData.set(timestamp, dataObj);
 	}
-}
+};
 dataHandlerModel.prototype.loadHandler = function(payload)
 {
 	if (payload.returnValue) 
@@ -421,7 +417,7 @@ dataHandlerModel.prototype.loadHandler = function(payload)
 		}
 		this.lineData.set(timestamp, dataObj);
 	}
-}
+};
 dataHandlerModel.prototype.memHandler = function(payload)
 {
 	if (payload.returnValue) 
@@ -467,7 +463,7 @@ dataHandlerModel.prototype.memHandler = function(payload)
 		}
 		this.lineData.set(timestamp, dataObj);
 	}
-}
+};
 dataHandlerModel.prototype.timeHandler = function(payload)
 {
 	if (payload.returnValue) 
@@ -484,18 +480,7 @@ dataHandlerModel.prototype.timeHandler = function(payload)
 		}
 		this.barData.time = dataHash;
 	}
-}
-dataHandlerModel.prototype.transHandler = function(payload)
-{
-	if (payload.returnValue) 
-	{
-		
-	}
-	
-	alert('===============');
-	for (var p in payload) alert(p+' : '+payload[p]);
-	alert('===============');
-}
+};
 
 dataHandlerModel.prototype.updateIcon = function(temp)
 {
@@ -521,7 +506,7 @@ dataHandlerModel.prototype.updateIcon = function(temp)
 		this.iconDirty = false;
 		this.resetIcon();
 	}
-}
+};
 dataHandlerModel.prototype.resetIcon = function()
 {
 	var r = new Mojo.Service.Request
@@ -536,7 +521,7 @@ dataHandlerModel.prototype.resetIcon = function()
 			}
 		}
 	);
-}
+};
 
 dataHandlerModel.prototype.renderGraph = function()
 {

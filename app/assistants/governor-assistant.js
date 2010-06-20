@@ -26,11 +26,11 @@ function GovernorAssistant()
 	
 	this.scalingFrequencyChoices = [];
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
-		this.scalingFrequencyChoices.push({label:'125 MHz', value:122880});
-		this.scalingFrequencyChoices.push({label:'250 MHz', value:245760});
-		this.scalingFrequencyChoices.push({label:'320 MHz', value:320000});
-		this.scalingFrequencyChoices.push({label:'480 MHz', value:480000});
-		this.scalingFrequencyChoices.push({label:'600 MHz', value:600000});
+		this.scalingFrequencyChoices.push({label:'122.88 MHz', value:122880});
+		this.scalingFrequencyChoices.push({label:'245.76 MHz', value:245760});
+		this.scalingFrequencyChoices.push({label:'320.00 MHz', value:320000});
+		this.scalingFrequencyChoices.push({label:'480.00 MHz', value:480000});
+		this.scalingFrequencyChoices.push({label:'600.00 MHz', value:600000});
 	}
 	
 	this.samplingRates = {min:false, max:false}; 
@@ -65,6 +65,12 @@ function GovernorAssistant()
 	this.memoryChoices.push({label: "64MB", value: 64*1024});
 	this.memoryChoices.push({label: "96MB", value: 96*1024});
 	this.memoryChoices.push({label:"128MB", value:128*1024});
+			
+	this.windowChoices = [];
+	for (var x = 1; x <= 10; x++)
+	{
+		this.windowChoices.push({label:x + " Sec", value:x*1000});
+	}
 			
 };
 
@@ -137,7 +143,7 @@ GovernorAssistant.prototype.setup = function()
     this.onSetParams = this.onSetParams.bindAsEventListener(this);
 	
 	service.get_cpufreq_params(this.onGetParamsGeneric);
-	service.get_cpufreq_params(this.onGetParamsSpecfic, this.governorModel.value);
+	service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
 	service.get_compcache_config(this.onGetParamsCompcache);
 	
 	// make it so nothing is selected by default
@@ -160,7 +166,7 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 	if (payload.errorCode != undefined) {
 		this.errorMessage("Govnah", payload.errorText + '<br>' + payload.stdErr?payload.stdErr.join('<br>'):"", function(){});
 	}
-		
+	
 	if (payload.params)
 	{
 		// initial loop
@@ -292,15 +298,13 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 								for (var s = this.samplingRates.min; s <= 2000000; s = s + 100000)
 								{
 									var sec = (s / 1000000);
-									var display = sec+' Second';
-									if (sec < 1 || sec > 1) display += 's';
+									var display = sec+' Sec';
 									samplingChoices.push({label:display, value:s});
 								}
 								for (var s = 3000000; s <= 10000000; s = s + 1000000)
 								{
 									var sec = (s / 1000000);
-									var display = sec+' Second';
-									if (sec < 1 || sec > 1) display += 's';
+									var display = sec+' Sec';
 									samplingChoices.push({label:display, value:s});
 								}
 								for (var s = 20000000; s <= this.samplingRates.max; s = s + 10000000)
@@ -313,10 +317,9 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 										sec = (sec % 60);
 									}
 									var display = '';
-									if (min > 0) display += min+' Minute';
-									if (min > 1) display += 's ';
-									else display += ' ';
-									if (sec > 0) display += sec+' Seconds';
+									if (min > 0) display += min+' Min';
+									display += ' ';
+									if (sec > 0) display += sec+' Sec';
 									samplingChoices.push({label:display, value:s});
 								}
 							}
@@ -383,6 +386,22 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 								this.settingsModel
 							);
 							break;
+
+						case 'listWindow':
+							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: profilesModel.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: this.windowChoices
+								},
+								this.settingsModel
+							);
+							break;
 					}
 				}
 				else
@@ -425,6 +444,7 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 	{
 		//error
 	}
+
 };
 GovernorAssistant.prototype.onSetParams = function(payload)
 {

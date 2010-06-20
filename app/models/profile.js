@@ -341,14 +341,17 @@ profileModel.prototype.getDataSettingString = function(name, value)
 					sec = (sec % 60);
 				}
 				var display = '';
-				if (min > 0) display += min+' Minute';
+				if (min > 0) display += min+' Min';
 				if (min > 1) display += 's ';
 				else display += ' ';
-				if (sec > 0) display += sec+' Seconds';
+				if (sec > 0) display += sec+' Sec';
 				return [profilesModel.settingLabel(name), display];
 				break;
 			case 'listSampDown':
 				return [profilesModel.settingLabel(name), value];
+				break;
+			case 'listWindow':
+				return [profilesModel.settingLabel(name), value/1000 + ' Sec'];
 				break;
 				
 			case 'toggleTF':

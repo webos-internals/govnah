@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.4.8', log: [ 'Robustified parameter display and profile handling' ] },
 	 { version: '0.4.7', log: [ 'Added Pixi temperature and available frequency support',
 				    'Created default and fixed speed 600 profiles for Pixi'] },
 	 { version: '0.4.6', log: [ 'Now detects whether configurable compcache support is available' ] },

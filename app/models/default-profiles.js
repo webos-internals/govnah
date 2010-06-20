@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 3
+ * 	Highest Version: 4
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -104,7 +104,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 		 locked:		false,
 		 governor:	'performance',
 		 settingsStandard: [
-				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_min_freq',	value:	'122880'},
 				    {name:	'scaling_max_freq',	value:	'600000'},
 				    ],
 		 settingsSpecific: []
@@ -112,7 +112,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 	 
 	 // The stock palm settings
 	 {
-	     version:	3,
+	     version:	4,
 		 name:		'Palm Default',
 		 locked:		true,			// don't lock any other profiles but this one
 		 governor:	'ondemandtcl',
@@ -121,12 +121,12 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 				    {name:	'scaling_max_freq',	value:	'600000'},
 				    ],
 		 settingsSpecific: [
-				    {name:	'ignore_nice_load',	value:	'0'},
-				    {name:	'max_floor_window',	value:	'3000'},
-				    {name:	'max_tickle_window',	value:	'3000'},
-				    {name:	'powersave_bias',	value:	'0'},
 				    {name:	'sampling_rate',	value:	'200000'},
 				    {name:	'up_threshold',		value:	'80'},
+				    {name:	'ignore_nice_load',	value:	'0'},
+				    {name:	'powersave_bias',	value:	'0'},
+				    {name:	'max_tickle_window',	value:	'3000'},
+				    {name:	'max_floor_window',	value:	'3000'},
 				    ]
 		 }
 	 );
