@@ -212,7 +212,7 @@ profilesModel.prototype.newProfile = function(params)
 	{
 		Mojo.Log.logException(e, 'profiles#newProfile');
 	}
-}
+};
 profilesModel.prototype.deleteProfile = function(id)
 {
 	try
@@ -230,7 +230,7 @@ profilesModel.prototype.deleteProfile = function(id)
 	{
 		Mojo.Log.logException(e, 'profiles#deleteProfile');
 	}
-}
+};
 
 
 function profileModel(params) 
@@ -243,47 +243,43 @@ function profileModel(params)
 	
 	this.governor =			params.governor;
 	
-	this.settingsStandard =	params.settingsStandard;
-	this.settingsSpecific =	params.settingsSpecific;
+	this.settingsStandard  = params.settingsStandard  || [];
+	this.settingsSpecific  = params.settingsSpecific  || [];
 
 	this.settingsCompcache = params.settingsCompcache || [];
-}
+};
 profileModel.prototype.apply = function()
 {
 	var genericParams = [];
+	var governorParams = [];
 
 	genericParams.push({name:'scaling_governor', value:this.governor});
 	
-	for (var s = 0; s < this.settingsStandard.length; s++)
-	{
+	for (var s = 0; s < this.settingsStandard.length; s++) {
 		genericParams.push(this.settingsStandard[s]);
 	}
 	
-	var governorParams = [];
-	
-	for (var s = 0; s < this.settingsSpecific.length; s++)
-	{
+	for (var s = 0; s < this.settingsSpecific.length; s++) {
 		governorParams.push(this.settingsSpecific[s]);
 	}
-	
+
 	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
 	service.stick_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
 
-	var compcacheConfig = [];
-	
-	for (var s = 0; s < this.settingsCompcache.length; s++)
-	{
-		compcacheConfig.push(this.settingsCompcache[s]);
+	if (this.settingsCompcache.length) {
+		var compcacheConfig = [];
+		for (var s = 0; s < this.settingsCompcache.length; s++) {
+			compcacheConfig.push(this.settingsCompcache[s]);
+		}
+		service.set_compcache_config(this.applyComplete.bindAsEventListener(this), compcacheConfig);
+		service.stick_compcache_config(this.applyComplete.bindAsEventListener(this), compcacheConfig);
 	}
-	
-	service.set_compcache_config(this.applyComplete.bindAsEventListener(this), compcacheConfig);
-	service.stick_compcache_config(this.applyComplete.bindAsEventListener(this), compcacheConfig);
-}
+};
 profileModel.prototype.applyComplete = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
-}
+};
 profileModel.prototype.getListObject = function()
 {
 	var tmpName = this.name;
@@ -301,7 +297,7 @@ profileModel.prototype.getListObject = function()
 	};
 	
 	return obj;
-}
+};
 profileModel.prototype.getDataString = function()
 {
 	var data = '<span class="name">Governor</span><span class="value">' + this.governor + '</span>';
@@ -316,7 +312,7 @@ profileModel.prototype.getDataString = function()
 		data += '<br /><span class="name">' + row[0] + '</span><span class="value">' + row[1] + '</span>';
 	}
 	return data;
-}
+};
 profileModel.prototype.getDataSettingString = function(name, value)
 {
 	if (profilesModel.settings[name])
@@ -363,7 +359,7 @@ profileModel.prototype.getDataSettingString = function(name, value)
 	{
 		return [tmpParam.name.replace(/_/g, " "), value];
 	}
-}
+};
 
 
 

@@ -471,6 +471,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	//for (var m in this.settingsLocation) alert(m+" : "+this.settingsLocation[m]);
 	
 	var genericParams = [];
+	var governorParams = [];
 	
 	genericParams.push({name:"scaling_governor", value:this.governorModel.value});
 
@@ -480,13 +481,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 		{
 			genericParams.push({name:m, value:String(this.settingsModel[m])});
 		}
-	}
-	
-	var governorParams = [];
-	
-	for (var m in this.settingsModel)
-	{
-		if (this.settingsLocation[m] == "governor")
+		else if (this.settingsLocation[m] == "governor")
 		{
 			governorParams.push({name:m, value:String(this.settingsModel[m])});
 		}
@@ -504,7 +499,9 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 		}
 	}
 
-	service.set_compcache_config(this.saveComplete, compcacheConfig);
+	if (compcacheConfig.length) {
+		service.set_compcache_config(this.saveComplete, compcacheConfig);
+	}
 };
 
 GovernorAssistant.prototype.saveComplete = function(payload)
