@@ -134,8 +134,9 @@ GovernorAssistant.prototype.setup = function()
 	this.saveAsProfileButtonPressed = this.saveAsProfileButtonPressed.bindAsEventListener(this);
 	this.controller.listen('saveAsProfileButton', Mojo.Event.tap, this.saveAsProfileButtonPressed);
 	
-	
-	this.settingsForm = this.controller.get('settings');
+	this.frequencyForm = this.controller.get('governor_freq');
+	this.settingsForm = this.controller.get('governor_params');
+	this.compcacheForm = this.controller.get('compcache_config');
 	
     this.onGetParamsGeneric   = this.onGetParams.bindAsEventListener(this, "generic");
     this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "governor");
@@ -176,7 +177,7 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 			
 			//alert('-----');
 			//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
-	
+
 			switch(tmpParam.name)
 			{
 				case 'scaling_available_governors':
@@ -244,7 +245,7 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 					switch(profilesModel.settings[tmpParam.name].type)
 					{
 						case 'listFreq':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.frequencyForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -262,6 +263,7 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
+
 							this.controller.setupWidget
 							(
 								tmpParam.name,
@@ -354,7 +356,12 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listMem':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							if (location=='compcache') {
+								this.compcacheForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							} else {
+								this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							}					
+
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -370,7 +377,12 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							break;
 							
 						case 'toggleTF':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							if (location=='compcache') {
+								this.compcacheForm.innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							} else {
+								this.settingsForm.innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							}
+
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -388,7 +400,11 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							break;
 
 						case 'listWindow':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							if (location=='compcache') {
+								this.compcacheForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							} else {
+								this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							}
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -428,8 +444,10 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 				}
 			}
 		}
-		
+
+		this.controller.instantiateChildWidgets(this.frequencyForm);		
 		this.controller.instantiateChildWidgets(this.settingsForm);
+		this.controller.instantiateChildWidgets(this.compcacheForm);
 		
 		// update form styles so list looks OK
 		var rows = this.settingsForm.querySelectorAll('div.palm-row');
