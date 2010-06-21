@@ -854,7 +854,6 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
     }
   }
 
-  error = false;
   if (fputs("\n", fp) < 0) error = true;
   if (fputs("end script\n", fp) < 0) error = true;
   if (error) {
@@ -967,7 +966,6 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
 
   json_t *object = LSMessageGetPayloadJSON(message);
 
-  // Extract the enable argument from the message
   bool enable = false;
   char *memlimit = NULL;
 
@@ -1116,27 +1114,40 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
 
   json_t *object = LSMessageGetPayloadJSON(message);
 
+  bool enable = false;
+  char *memlimit = NULL;
+
   // Extract the compcacheConfig argument from the message
   json_t *compcacheConfig = json_find_first_label(object, "compcacheConfig");
-  if (!compcacheConfig || (compcacheConfig->child->type != JSON_OBJECT)) {
+  if (!compcacheConfig || (compcacheConfig->child->type != JSON_ARRAY)) {
     if (!LSMessageReply(lshandle, message,
 			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing compcacheConfig array\"}",
 			&lserror)) goto error;
     return true;
   }
 
-  // Extract the enable argument from the message
-  json_t *enable = json_find_first_label(compcacheConfig, "enable");
-  if (!enable || ((enable->child->type != JSON_TRUE) && (enable->child->type != JSON_FALSE))) {
-    if (!LSMessageReply(lshandle, message,
-			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing enable flag\"}",
-			&lserror)) goto error;
-    return true;
+  json_t *entry = compcacheConfig->child->child;
+  while (entry) {
+    if (entry->type != JSON_OBJECT) continue;
+    json_t *name = json_find_first_label(entry, "name");
+    if (!name || (name->child->type != JSON_STRING) ||
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) continue;
+    json_t *value = json_find_first_label(entry, "value");
+    if (!value || (value->child->type != JSON_STRING) ||
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text)))  continue;
+
+    if (!strcmp(name->child->text, "compcache_enabled")) {
+      enable = strcmp(value->child->text, "1")?false:true;
+    }
+
+    if (!strcmp(name->child->text, "compcache_memlimit")) {
+      memlimit = value->child->text;
+    }
+
+    entry = entry->next;
   }
 
-  // Extract the memlimit argument from the message
-  json_t *memlimit = json_find_first_label(compcacheConfig, "memlimit");
-  if (!memlimit || (memlimit->child->type != JSON_NUMBER)) {
+  if (!memlimit) {
     if (!LSMessageReply(lshandle, message,
 			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing memlimit\"}",
 			&lserror)) goto error;
@@ -1145,7 +1156,7 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
 
   sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-compcache");
 
-  if (enable->child->type == JSON_FALSE) {
+  if (!enable) {
     (void)unlink(filename);
     // fprintf(stderr, "Message is %s\n", buffer);
     if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
@@ -1165,6 +1176,7 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
   if (fputs("description \"Govnah CompCache Configuration\"\n", fp) < 0) error = true;
   if (fputs("\n", fp) < 0) error = true;
   if (fputs("start on stopped finish\n", fp) < 0) error = true;
+  if (fputs("stop on runlevel [!2]\n", fp) < 0) error = true;
   if (fputs("\n", fp) < 0) error = true;
   if (fputs("script\n", fp) < 0) error = true;
   if (fputs("\n", fp) < 0) error = true;
@@ -1183,14 +1195,15 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
     return true;
   }
   
-  // grab memlimit
-  // swapoff -a
-  // insmod xvmalloc.ko
-  // insmod ramzswap.ko backing_swap=/dev/mapper/store-swap memlimit_kb=20480
-  // sleep 3
-  // swapon /dev/ramzswap0 -p 1
+  if (fputs("swapoff -a\n", fp) < 0) error = true;
+  if (fputs("insmod /lib/modules/`uname -r`/extra/xvmalloc.ko\n", fp) < 0) error = true;
+  sprintf(line,
+	  "insmod /lib/modules/`uname -r`/extra/ramzswap.ko memlimit_kb=%s backing_swap=/dev/mapper/store-swap\n",
+	  memlimit);
+  if (fputs(line, fp) < 0) error = true;
+  if (fputs("sleep 3\n", fp) < 0) error = true;
+  if (fputs("swapon /dev/ramzswap0 -p 1\n", fp) < 0) error = true;
 
-  error = false;
   if (fputs("\n", fp) < 0) error = true;
   if (fputs("end script\n", fp) < 0) error = true;
   if (error) {

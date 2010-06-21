@@ -536,7 +536,7 @@ GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 		{
 			params.settingsStandard.push({name:m, value:String(this.settingsModel[m])});
 		}
-		else if (this.settingsLocation[m] == "govnernor")
+		else if (this.settingsLocation[m] == "governor")
 		{
 			params.settingsSpecific.push({name:m, value:String(this.settingsModel[m])});
 		}
