@@ -165,7 +165,7 @@ GovernorAssistant.prototype.governorChange = function(event)
 GovernorAssistant.prototype.onGetParams = function(payload, location)
 {
 	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText + '<br>' + payload.stdErr?payload.stdErr.join('<br>'):"", function(){});
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
 	if (payload.params)
@@ -471,7 +471,7 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
 	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText + '<br>' + payload.stdErr?payload.stdErr.join('<br>'):"", function(){});
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 		
 	this.settingsForm.innerHTML = '';
@@ -493,6 +493,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	//for (var m in this.settingsLocation) alert(m+" : "+this.settingsLocation[m]);
 	
 	var genericParams = [];
+	var governorParams = [];
 	
 	genericParams.push({name:"scaling_governor", value:this.governorModel.value});
 
@@ -502,13 +503,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 		{
 			genericParams.push({name:m, value:String(this.settingsModel[m])});
 		}
-	}
-	
-	var governorParams = [];
-	
-	for (var m in this.settingsModel)
-	{
-		if (this.settingsLocation[m] == "governor")
+		else if (this.settingsLocation[m] == "governor")
 		{
 			governorParams.push({name:m, value:String(this.settingsModel[m])});
 		}
@@ -526,7 +521,9 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 		}
 	}
 
-	service.set_compcache_config(this.saveComplete, compcacheConfig);
+	if (compcacheConfig.length) {
+		service.set_compcache_config(this.saveComplete, compcacheConfig);
+	}
 };
 
 GovernorAssistant.prototype.saveComplete = function(payload)
@@ -535,7 +532,7 @@ GovernorAssistant.prototype.saveComplete = function(payload)
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
 	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText + '<br>' + payload.stdErr?payload.stdErr.join('<br>'):"", function(){});
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 		
 	this.saveButtonElement.mojo.deactivate();
@@ -576,8 +573,12 @@ GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 	this.controller.get('profileName').mojo.setValue('Profile ' + (profiles.cookieData.serial + 1));
 };
 
-GovernorAssistant.prototype.errorMessage = function(title, message, okFunction)
+GovernorAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
 {
+	if (stdErr && stdErr.length) {
+		message = message + '<br>' + stdErr.join('<br>');
+	}
+
 	this.controller.showAlertDialog(
 	{
 		allowHTMLMessage:	true,
