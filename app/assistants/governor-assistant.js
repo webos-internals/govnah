@@ -234,7 +234,7 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 		for (var param = 0; param < payload.params.length; param++)
 		{
 			tmpParam = payload.params[param];
-			
+
 			if (tmpParam.writeable && tmpParam.name != 'scaling_governor')
 			{
 				//alert('-----');
@@ -242,6 +242,7 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 				
 				if (profilesModel.settings[tmpParam.name] && !prefs.get().manualEntry)
 				{
+Mojo.Log.error(tmpParam.name+" "+location);
 					switch(profilesModel.settings[tmpParam.name].type)
 					{
 						case 'listFreq':
@@ -474,6 +475,9 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	}
 		
 	this.settingsForm.innerHTML = '';
+	this.frequencyForm.innerHTML = '';
+	this.compcacheForm.innerHTML = '';
+
 	this.settingsModel = {};
 	this.settingsLocation = {};
 	
