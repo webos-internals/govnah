@@ -103,7 +103,7 @@ GovernorAssistant.prototype.setup = function()
 	);
 	this.saveButtonElement = this.controller.get('saveButton');
 	this.saveButtonPressed = this.saveButtonPressed.bindAsEventListener(this);
-    this.saveComplete = this.saveComplete.bindAsEventListener(this);
+    	this.saveComplete = this.saveComplete.bindAsEventListener(this);
 	this.controller.listen('saveButton', Mojo.Event.tap, this.saveButtonPressed);
 	
 	this.controller.setupWidget
@@ -134,19 +134,26 @@ GovernorAssistant.prototype.setup = function()
 	this.saveAsProfileButtonPressed = this.saveAsProfileButtonPressed.bindAsEventListener(this);
 	this.controller.listen('saveAsProfileButton', Mojo.Event.tap, this.saveAsProfileButtonPressed);
 	
-	this.frequencyForm = this.controller.get('governor_freq');
-	this.settingsForm = this.controller.get('governor_params');
-	this.compcacheForm = this.controller.get('compcache_config');
-	
-    this.onGetParamsGeneric   = this.onGetParams.bindAsEventListener(this, "generic");
-    this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "governor");
-    this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
-    this.onSetParams = this.onSetParams.bindAsEventListener(this);
+        this.forms = new Array();
+	this.forms['generic'] = this.controller.get('governor_freq');
+	this.forms['governor'] = this.controller.get('governor_params');
+	this.forms['compcache'] = this.controller.get('compcache_config');
+
+        this.formCount = new Array();
+	this.formCount['generic'] = 0;
+	this.formCount['governor'] = 0;
+	this.formCount['compcache'] = 0;
+
+	this.onGetParamsGeneric   = this.onGetParams.bindAsEventListener(this, "generic");
+	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "governor");
+	this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
+
+	this.onSetParams = this.onSetParams.bindAsEventListener(this);
 	
 	service.get_cpufreq_params(this.onGetParamsGeneric);
 	service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
 	service.get_compcache_config(this.onGetParamsCompcache);
-	
+
 	// make it so nothing is selected by default
 	this.controller.setInitialFocusedElement(null);
 };
@@ -242,11 +249,11 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 				
 				if (profilesModel.settings[tmpParam.name] && !prefs.get().manualEntry)
 				{
-Mojo.Log.error(tmpParam.name+" "+location);
 					switch(profilesModel.settings[tmpParam.name].type)
 					{
 						case 'listFreq':
-							this.frequencyForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.formCount[location]++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -261,7 +268,8 @@ Mojo.Log.error(tmpParam.name+" "+location);
 							);
 							break;
 						case 'listPcnt':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.formCount[location]++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 
@@ -277,7 +285,8 @@ Mojo.Log.error(tmpParam.name+" "+location);
 							);
 							break;
 						case 'listPowr':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.formCount[location]++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -292,7 +301,8 @@ Mojo.Log.error(tmpParam.name+" "+location);
 							);
 							break;
 						case 'listSamp':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.formCount[location]++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							var samplingChoices = [];
@@ -342,7 +352,8 @@ Mojo.Log.error(tmpParam.name+" "+location);
 							);
 							break;
 						case 'listSampDown':
-							this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.formCount[location]++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -357,12 +368,8 @@ Mojo.Log.error(tmpParam.name+" "+location);
 							);
 							break;
 						case 'listMem':
-							if (location=='compcache') {
-								this.compcacheForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							} else {
-								this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							}					
-
+							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.formCount[location]++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -378,12 +385,8 @@ Mojo.Log.error(tmpParam.name+" "+location);
 							break;
 							
 						case 'toggleTF':
-							if (location=='compcache') {
-								this.compcacheForm.innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
-							} else {
-								this.settingsForm.innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
-							}
-
+							this.forms[location].innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							this.formCount[location]++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -401,11 +404,8 @@ Mojo.Log.error(tmpParam.name+" "+location);
 							break;
 
 						case 'listWindow':
-							if (location=='compcache') {
-								this.compcacheForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							} else {
-								this.settingsForm.innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							}
+							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							this.formCount[location]++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -423,7 +423,8 @@ Mojo.Log.error(tmpParam.name+" "+location);
 				}
 				else
 				{
-					this.settingsForm.innerHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'governor/textfield-widget'});
+					this.forms[location].innerHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'governor/textfield-widget'});
+					this.formCount[location]++;
 					this.settingsModel[tmpParam.name] = tmpParam.value;
 					this.settingsLocation[tmpParam.name] = location;
 					this.controller.setupWidget
@@ -446,18 +447,24 @@ Mojo.Log.error(tmpParam.name+" "+location);
 			}
 		}
 
-		this.controller.instantiateChildWidgets(this.frequencyForm);		
-		this.controller.instantiateChildWidgets(this.settingsForm);
-		this.controller.instantiateChildWidgets(this.compcacheForm);
+		this.controller.instantiateChildWidgets(this.forms['generic']);		
+		this.controller.instantiateChildWidgets(this.forms['governor']);
+		this.controller.instantiateChildWidgets(this.forms['compcache']);
 		
+		// hide empty sections
+		if (this.formCount['generic']==0)  { this.controller.get('frequency_group').style.display='none'; } else { this.controller.get('frequency_group').style.display='block'; }
+		if (this.formCount['governor']==0)  { this.controller.get('governor_group').style.display='none'; } else { this.controller.get('governor_group').style.display='block'; }
+		if (this.formCount['compcache']==0)  { this.controller.get('compcache_group').style.display='none'; } else { this.controller.get('compcache_group').style.display='block'; }
+
 		// update form styles so list looks OK
-		var rows = this.settingsForm.querySelectorAll('div.palm-row');
+		var rows = this.forms['governor'].querySelectorAll('div.palm-row');
 		for (var r = 0; r < rows.length; r++)
 		{
 			if (r == 0) rows[r].className = 'palm-row first';
 			else if (r == rows.length-1) rows[r].className = 'palm-row last';
 			else rows[r].className = 'palm-row';
 		}
+
 	}
 	else
 	{
@@ -474,9 +481,13 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 		
-	this.settingsForm.innerHTML = '';
-	this.frequencyForm.innerHTML = '';
-	this.compcacheForm.innerHTML = '';
+	this.forms["generic"].innerHTML = '';
+	this.forms["governor"].innerHTML = '';
+	this.forms["compcache"].innerHTML = '';
+
+	this.formCount['generic'] = 0;
+	this.formCount['governor'] = 0;
+	this.formCount['compcache'] = 0;
 
 	this.settingsModel = {};
 	this.settingsLocation = {};
