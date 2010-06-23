@@ -184,7 +184,7 @@ body.palm-dark .palm-separator
 .main canvas#tempCanvas,
 .main canvas#loadCanvas,
 .main canvas#memCanvas,
-.main canvas#timeCanvas
+.main canvas#stateCanvas
 {
 	position: absolute;
 	z-index: -5;

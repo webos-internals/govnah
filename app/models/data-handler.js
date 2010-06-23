@@ -25,23 +25,38 @@ function dataHandlerModel()
 	
 	this.timerHandler = this.timerFunction.bind(this);
 	
-	this.tempHandler =  this.tempHandler.bindAsEventListener(this);
-    this.freqHandler =  this.freqHandler.bindAsEventListener(this);
-    this.loadHandler =  this.loadHandler.bindAsEventListener(this);
-    this.memHandler  =  this.memHandler.bindAsEventListener(this);
-    this.timeHandler =  this.timeHandler.bindAsEventListener(this);
+    this.tempHandler  = this.tempHandler.bindAsEventListener(this);
+    this.freqHandler  = this.freqHandler.bindAsEventListener(this);
+    this.loadHandler  = this.loadHandler.bindAsEventListener(this);
+    this.memHandler   = this.memHandler.bindAsEventListener(this);
+    this.stateHandler = this.stateHandler.bindAsEventListener(this);
 	
-	this.tempGraph = false;
-	this.freqGraph = false;
-	this.loadGraph = false;
-	this.memGraph  = false;
-	this.timeGraph = false;
+	this.graphs = $H();
+	this.graphs["temp"] = false;
+	this.graphs["freq"] = false;
+	this.graphs["load"] = false;
+	this.graphs["mem"] = false;
+	this.graphs["state"] = false;
 	
-	this.tempReq = false;
-	this.freqReq = false;
-	this.loadReq = false;
-	this.memReq  = false;
-	this.timeReq = false;
+	this.strokes = $H();
+	this.strokes["temp"]  = "rgba(153, 205, 153, .4)";
+	this.strokes["freq"]  = "rgba(255, 153, 153, .4)";
+	this.strokes["load"]  = "rgba(153, 153, 255, .4)";
+	this.strokes["mem"]   = "rgba(153, 153, 255, .4)";
+	this.strokes["state"] = "rgba(153, 153, 153, .4)";
+
+	this.fills = $H();
+	this.fills["temp"]    = "rgba(153, 205, 153, .2)";
+	this.fills["freq"]    = "rgba(255, 153, 153, .2)";
+	this.fills["load"]    = "rgba(153, 153, 255, .2)";
+	this.fills["mem"]     = "rgba(153, 153, 255, .2)";
+	this.fills["state"]   = "rgba(153, 153, 153, .2)";
+
+	this.tempReq  = false;
+	this.freqReq  = false;
+	this.loadReq  = false;
+	this.memReq   = false;
+	this.stateReq = false;
 	
 	this.fullGraph = false;
 	
@@ -49,13 +64,10 @@ function dataHandlerModel()
     this.getParamsHandler1 = this.getParamsHandler.bindAsEventListener(this, 1);
     this.getParamsHandler2 = this.getParamsHandler.bindAsEventListener(this, 2);
 	
-	//this.updateParams();
-	
 };
 
 dataHandlerModel.prototype.start = function()
 {
-	//this.timer = setInterval(this.timerHandler, this.rate);
 	this.timerHandler();
 };
 
@@ -65,8 +77,7 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 	this.currentMode = "card";
 	this.rate = parseInt(prefs.get().cardPollSpeed) * 1000;
 	
-	
-	this.tempGraph = new lineGraph
+	this.graphs["temp"] = new lineGraph
 	(
 		this.mainAssistant.controller.get('tempCanvas'),
 		{
@@ -74,7 +85,7 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			renderHeight: 30
 		}
 	)
-	this.freqGraph = new lineGraph
+	this.graphs["freq"] = new lineGraph
 	(
 		this.mainAssistant.controller.get('freqCanvas'),
 		{
@@ -82,7 +93,7 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			renderHeight: 30
 		}
 	);
-	this.loadGraph = new lineGraph
+	this.graphs["load"] = new lineGraph
 	(
 		this.mainAssistant.controller.get('loadCanvas'),
 		{
@@ -90,7 +101,7 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			renderHeight: 30
 		}
 	);
-	this.memGraph = new lineGraph
+	this.graphs["mem"] = new lineGraph
 	(
 		this.mainAssistant.controller.get('memCanvas'),
 		{
@@ -98,9 +109,9 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			renderHeight: 30
 		}
 	);
-	this.timeGraph = new barGraph
+	this.graphs["state"] = new barGraph
 	(
-		this.mainAssistant.controller.get('timeCanvas'),
+		this.mainAssistant.controller.get('stateCanvas'),
 		{
 			height: 27,
 			width: 320
@@ -145,12 +156,6 @@ dataHandlerModel.prototype.updateParams = function(num)
 			this.profile = false;
 			this.settingsStandard = [];
 			this.settingsSpecific = [];
-			
-			if (this.mainAssistant && this.mainAssistant.controller)
-			{
-				//this.mainAssistant.profileCurrent.innerHTML = '...';
-				//this.mainAssistant.governorCurrent.innerHTML = '...';
-			}
 			
 			service.get_cpufreq_params(this.getParamsHandler1);
 		}
@@ -291,11 +296,11 @@ dataHandlerModel.prototype.delayedTimer = function(delay)
 
 dataHandlerModel.prototype.timerFunction = function()
 {
-	if (this.tempReq) this.tempReq.cancel();
-	if (this.freqReq) this.freqReq.cancel();
-	if (this.loadReq) this.loadReq.cancel();
-	if (this.memReq)  this.memReq.cancel();
-	if (this.timeReq) this.timeReq.cancel();
+	if (this.tempReq)  this.tempReq.cancel();
+	if (this.freqReq)  this.freqReq.cancel();
+	if (this.loadReq)  this.loadReq.cancel();
+	if (this.memReq)   this.memReq.cancel();
+	if (this.stateReq) this.stateReq.cancel();
 
 	var keys = this.lineData.keys();
 	if (keys.length > this.cutoff)
@@ -306,10 +311,6 @@ dataHandlerModel.prototype.timerFunction = function()
 		}
 	}
 	
-	// These will eventually be removed, once item-specific rendering is completed
-	// this.renderMiniGraph();
-	// this.renderFullGraph();
-	
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 		this.tempReq = service.get_tmp105_temp(this.tempHandler);
 	}
@@ -319,10 +320,10 @@ dataHandlerModel.prototype.timerFunction = function()
 	
 	if (this.currentMode == "card")
 	{ // we really only need these when in card mode...
-		this.freqReq = service.get_scaling_cur_freq(this.freqHandler);
-		this.loadReq = service.get_proc_loadavg(this.loadHandler);
-		this.memReq  = service.get_proc_meminfo(this.memHandler);
-		this.timeReq = service.get_time_in_state(this.timeHandler);
+		this.freqReq  = service.get_scaling_cur_freq(this.freqHandler);
+		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
+		this.memReq   = service.get_proc_meminfo(this.memHandler);
+		this.stateReq = service.get_time_in_state(this.stateHandler);
 	}
 	
 	this.delayedTimer(this.rate);
@@ -361,7 +362,7 @@ dataHandlerModel.prototype.tempHandler = function(payload)
 		this.lineData.set(timestamp, dataObj);
 	}
 
-	this.renderMiniGraph("temp");
+	this.renderMiniLine("temp");
 	this.renderFullGraph("temp");
 };
 dataHandlerModel.prototype.freqHandler = function(payload)
@@ -391,7 +392,7 @@ dataHandlerModel.prototype.freqHandler = function(payload)
 		this.lineData.set(timestamp, dataObj);
 	}
 
-	this.renderMiniGraph("freq");
+	this.renderMiniLine("freq");
 	this.renderFullGraph("freq");
 };
 dataHandlerModel.prototype.loadHandler = function(payload)
@@ -432,7 +433,7 @@ dataHandlerModel.prototype.loadHandler = function(payload)
 		this.lineData.set(timestamp, dataObj);
 	}
 
-	this.renderMiniGraph("load");
+	this.renderMiniLine("load");
 	this.renderFullGraph("load");
 };
 dataHandlerModel.prototype.memHandler = function(payload)
@@ -481,10 +482,10 @@ dataHandlerModel.prototype.memHandler = function(payload)
 		this.lineData.set(timestamp, dataObj);
 	}
 
-	this.renderMiniGraph("mem");
+	this.renderMiniLine("mem");
 	this.renderFullGraph("mem");
 };
-dataHandlerModel.prototype.timeHandler = function(payload)
+dataHandlerModel.prototype.stateHandler = function(payload)
 {
 	if (payload.returnValue) 
 	{
@@ -498,11 +499,11 @@ dataHandlerModel.prototype.timeHandler = function(payload)
 				dataHash.set(parseInt(dataArray[0]), parseInt(dataArray[1]));
 			}
 		}
-		this.barData.time = dataHash;
+		this.barData.state = dataHash;
 	}
 
-	this.renderMiniGraph("time");
-	this.renderFullGraph("time");
+	this.renderMiniBar("state");
+	this.renderFullGraph("state");
 };
 
 dataHandlerModel.prototype.updateIcon = function(temp)
@@ -546,19 +547,13 @@ dataHandlerModel.prototype.resetIcon = function()
 	);
 };
 
-dataHandlerModel.prototype.renderMiniGraph = function()
+dataHandlerModel.prototype.renderMiniLine = function(item)
 {
 	if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible) {
 
-		this.tempGraph.clearLines();
-		this.freqGraph.clearLines();
-		this.loadGraph.clearLines();
-		this.memGraph.clearLines();
+		this.graphs[item].clearLines();
 		
-		var tempData = [];
-		var freqData = [];
-		var loadData = [];
-		var memData = [];
+		var data = [];
 		
 		var avg = 1;
 		var points = 80;
@@ -569,47 +564,50 @@ dataHandlerModel.prototype.renderMiniGraph = function()
 		for (var k = start; k < keys.length; k++) {
 			var dataObj = this.lineData.get(keys[k]);
 			
-			if (dataObj.temp)
-				tempData.push({x: keys[k], y: dataObj.temp.value});
-			
-			if (dataObj.freq)
-				freqData.push({x: keys[k], y: dataObj.freq.value});
-			
-			if (dataObj.load)
-				loadData.push({x: keys[k], y: dataObj.load.value1});
-
-			if (dataObj.mem)
-				memData.push({x: keys[k], y: dataObj.mem.value});
+			if (item == "temp") {
+				if (dataObj.temp)
+					data.push({x: keys[k], y: dataObj.temp.value});
+			}
+			else if (item =="freq") {
+				if (dataObj.freq)
+					data.push({x: keys[k], y: dataObj.freq.value});
+			}
+			else if (item =="load") {
+				if (dataObj.load)
+					data.push({x: keys[k], y: dataObj.load.value1});
+			}
+			else if (item =="mem") {
+				if (dataObj.mem)
+					data.push({x: keys[k], y: dataObj.mem.value});
+			}
 		}
 		
 		var minX = Math.round(new Date().getTime()/1000.0) - (points * (this.rate / 1000));
-		this.tempGraph.options.xaxis.min = minX;
-		this.freqGraph.options.xaxis.min = minX;
-		this.loadGraph.options.xaxis.min = minX;
-		this.memGraph.options.xaxis.min = minX;
+		this.graphs[item].options.xaxis.min = minX;
 		
-		this.tempGraph.addLine({data: tempData, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
-		this.freqGraph.addLine({data: freqData, stroke: "rgba(255, 153, 153, .4)", fill: "rgba(255, 153, 153, .2)"});
-		this.loadGraph.addLine({data: loadData, stroke: "rgba(153, 153, 255, .4)", fill: "rgba(153, 153, 255, .2)"});
-		this.memGraph.addLine( {data: memData,  stroke: "rgba(153, 153, 255, .4)", fill: "rgba(153, 153, 255, .2)"});
+		this.graphs[item].addLine({data: data, stroke: this.strokes[item], fill: this.fills[item]});
 		
-		this.tempGraph.render();
-		this.freqGraph.render();
-		this.loadGraph.render();
-		this.memGraph.render();
+		this.graphs[item].render();
 		
-		var timeData = [];
+	}
+};
+
+dataHandlerModel.prototype.renderMiniBar = function(item)
+{
+	if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible) {
+
+		var data = [];
 		
-		if (this.barData.time) {
-			var keys = this.barData.time.keys();
+		if (this.barData.state) {
+			var keys = this.barData.state.keys();
 			for (var k = 0; k < keys.length; k++) {
-				var value = this.barData.time.get(keys[k]);
-				timeData.push({key: keys[k], value: value});
+				var value = this.barData.state.get(keys[k]);
+				data.push({key: keys[k], value: value});
 			}
 		
-			this.timeGraph.setData(timeData, {strokeStyle: "rgba(153, 153, 153, .4)", fillStyle: "rgba(153, 153, 153, .2)"});
+			this.graphs[item].setData(data, {strokeStyle: this.strokes[item], fillStyle: this.fills[item]});
 			
-			this.timeGraph.render();
+			this.graphs[item].render();
 		}
 	}
 };
@@ -620,7 +618,7 @@ dataHandlerModel.prototype.renderFullGraph = function()
 
 		this.fullGraph.clearLines();
 		
-		var fullData =  [];
+		var fullData1 = [];
 		var fullData2 = [];
 		var fullData3 = [];
 		
@@ -631,36 +629,36 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			var dataObj = this.lineData.get(keys[k]);
 			
 			if (dataObj.temp && this.graphAssistant.display == "temp")
-				fullData.push({x: keys[k], y: dataObj.temp.value});
+				fullData1.push({x: keys[k], y: dataObj.temp.value});
 			
 			if (dataObj.freq && this.graphAssistant.display == "freq")
-				fullData.push({x: keys[k], y: dataObj.freq.value});
+				fullData1.push({x: keys[k], y: dataObj.freq.value});
 			
 			if (dataObj.load && this.graphAssistant.display == "load") {
-				fullData.push({x: keys[k], y: dataObj.load.value1});
+				fullData1.push({x: keys[k], y: dataObj.load.value1});
 				fullData2.push({x: keys[k], y: dataObj.load.value5});
 				fullData3.push({x: keys[k], y: dataObj.load.value15});
 			}
 
 			if (dataObj.mem && this.graphAssistant.display == "mem") {
-				fullData.push({x: keys[k], y: dataObj.mem.value});
+				fullData1.push({x: keys[k], y: dataObj.mem.value});
 			}
 		}
 		
 		if (this.graphAssistant.display == "temp")
-			this.fullGraph.addLine({data: fullData, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
+			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
 		
 		if (this.graphAssistant.display == "freq")
-			this.fullGraph.addLine({data: fullData, stroke: "rgba(205, 153, 153, .4)", fill: "rgba(205, 153, 153, .2)"});
+			this.fullGraph.addLine({data: fullData1, stroke: "rgba(205, 153, 153, .4)", fill: "rgba(205, 153, 153, .2)"});
 		
 		if (this.graphAssistant.display == "load") {
 			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
 			this.fullGraph.addLine({data: fullData2, stroke: "rgba(105, 105, 205, .4)"});
-			this.fullGraph.addLine({data: fullData, stroke: "rgba(135, 135, 205, .4)", fill: "rgba(135, 135, 205, .2)"});
+			this.fullGraph.addLine({data: fullData1, stroke: "rgba(135, 135, 205, .4)", fill: "rgba(135, 135, 205, .2)"});
 		}
 				
 		if (this.graphAssistant.display == "mem") {
-			this.fullGraph.addLine({data: fullData, stroke: "rgba(75, 75, 205, .4)"});
+			this.fullGraph.addLine({data: fullData1, stroke: "rgba(75, 75, 205, .4)"});
 		}
 				
 		this.fullGraph.render();
