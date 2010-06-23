@@ -118,7 +118,7 @@ MainAssistant.prototype.activate = function(event)
 	if (this.firstActivate)
 	{
 		dataHandler.updateParams();
-		dataHandler.renderGraph();
+		dataHandler.renderMiniGraph();
 	}
 	else
 	{
@@ -137,7 +137,7 @@ MainAssistant.prototype.visible = function(event)
 	}
 	
 	dataHandler.updateParams();
-	dataHandler.renderGraph();
+	dataHandler.renderMiniGraph();
 };
 MainAssistant.prototype.invisible = function(event)
 {

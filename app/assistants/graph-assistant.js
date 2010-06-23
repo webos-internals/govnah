@@ -90,14 +90,14 @@ GraphAssistant.prototype.orientationChanged = function(orientation)
 		case 'right':
 			dataHandler.fullGraph.options.renderWidth = 480;
 			dataHandler.fullGraph.options.renderHeight = 320;
-			dataHandler.renderGraph();
+			dataHandler.renderFullGraph();
 			break;
 			
 		case 'up':
 		case 'down':
 			dataHandler.fullGraph.options.renderWidth = 320;
 			dataHandler.fullGraph.options.renderHeight = 452;
-			dataHandler.renderGraph();
+			dataHandler.renderFullGraph();
 			break;
 	}
 }
@@ -118,7 +118,7 @@ GraphAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 	
-	dataHandler.renderGraph();
+	dataHandler.renderFullGraph();
 };
 GraphAssistant.prototype.deactivate = function(event)
 {
@@ -131,7 +131,7 @@ GraphAssistant.prototype.visible = function(event)
 		this.isVisible = true;
 	}
 	
-	dataHandler.renderGraph();
+	dataHandler.renderFullGraph();
 };
 GraphAssistant.prototype.invisible = function(event)
 {

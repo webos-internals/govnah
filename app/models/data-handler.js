@@ -300,7 +300,8 @@ dataHandlerModel.prototype.timerFunction = function()
 		}
 	}
 	
-	this.renderGraph();
+	this.renderMiniGraph();
+	this.renderFullGraph();
 	
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 		this.tempReq = service.get_tmp105_temp(this.tempHandler);
@@ -523,11 +524,10 @@ dataHandlerModel.prototype.resetIcon = function()
 	);
 };
 
-dataHandlerModel.prototype.renderGraph = function()
+dataHandlerModel.prototype.renderMiniGraph = function()
 {
+	if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible) {
 
-	if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
-	{
 		this.tempGraph.clearLines();
 		this.freqGraph.clearLines();
 		this.loadGraph.clearLines();
@@ -544,8 +544,7 @@ dataHandlerModel.prototype.renderGraph = function()
 		var keys = this.lineData.keys();
 		var start = 0;
 		if (keys.length > points) start = keys.length - points;
-		for (var k = start; k < keys.length; k++)
-		{
+		for (var k = start; k < keys.length; k++) {
 			var dataObj = this.lineData.get(keys[k]);
 			
 			if (dataObj.temp)
@@ -579,11 +578,9 @@ dataHandlerModel.prototype.renderGraph = function()
 		
 		var timeData = [];
 		
-		if (this.barData.time)
-		{
+		if (this.barData.time) {
 			var keys = this.barData.time.keys();
-			for (var k = 0; k < keys.length; k++)
-			{
+			for (var k = 0; k < keys.length; k++) {
 				var value = this.barData.time.get(keys[k]);
 				timeData.push({key: keys[k], value: value});
 			}
@@ -593,11 +590,12 @@ dataHandlerModel.prototype.renderGraph = function()
 			this.timeGraph.render();
 		}
 	}
-	
-	
-	
-	if (this.graphAssistant && this.graphAssistant.controller && this.graphAssistant.isVisible)
-	{
+};
+
+dataHandlerModel.prototype.renderFullGraph = function()
+{
+	if (this.graphAssistant && this.graphAssistant.controller && this.graphAssistant.isVisible) {
+
 		this.fullGraph.clearLines();
 		
 		var fullData =  [];
@@ -607,8 +605,7 @@ dataHandlerModel.prototype.renderGraph = function()
 		var avg = 1;
 		
 		var keys = this.lineData.keys();
-		for (var k = 0; k < keys.length; k++)
-		{
+		for (var k = 0; k < keys.length; k++) {
 			var dataObj = this.lineData.get(keys[k]);
 			
 			if (dataObj.temp && this.graphAssistant.display == "temp")
@@ -617,15 +614,13 @@ dataHandlerModel.prototype.renderGraph = function()
 			if (dataObj.freq && this.graphAssistant.display == "freq")
 				fullData.push({x: keys[k], y: dataObj.freq.value});
 			
-			if (dataObj.load && this.graphAssistant.display == "load")
-			{
+			if (dataObj.load && this.graphAssistant.display == "load") {
 				fullData.push({x: keys[k], y: dataObj.load.value1});
 				fullData2.push({x: keys[k], y: dataObj.load.value5});
 				fullData3.push({x: keys[k], y: dataObj.load.value15});
 			}
 
-			if (dataObj.mem && this.graphAssistant.display == "mem")
-			{
+			if (dataObj.mem && this.graphAssistant.display == "mem") {
 				fullData.push({x: keys[k], y: dataObj.mem.value});
 			}
 		}
@@ -636,23 +631,18 @@ dataHandlerModel.prototype.renderGraph = function()
 		if (this.graphAssistant.display == "freq")
 			this.fullGraph.addLine({data: fullData, stroke: "rgba(205, 153, 153, .4)", fill: "rgba(205, 153, 153, .2)"});
 		
-		if (this.graphAssistant.display == "load")
-		{
+		if (this.graphAssistant.display == "load") {
 			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
 			this.fullGraph.addLine({data: fullData2, stroke: "rgba(105, 105, 205, .4)"});
 			this.fullGraph.addLine({data: fullData, stroke: "rgba(135, 135, 205, .4)", fill: "rgba(135, 135, 205, .2)"});
 		}
 				
-		if (this.graphAssistant.display == "mem")
-		{
+		if (this.graphAssistant.display == "mem") {
 			this.fullGraph.addLine({data: fullData, stroke: "rgba(75, 75, 205, .4)"});
 		}
 				
 		this.fullGraph.render();
 	}
-	
-	
-	
 };
 
 
