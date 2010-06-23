@@ -283,6 +283,12 @@ dataHandlerModel.prototype.closeDash = function(skipBanner)
 	Mojo.Controller.appController.closeStage(dashStageName);
 };
 
+dataHandlerModel.prototype.delayedTimer = function(delay)
+{
+	if (this.timer) clearTimeout(this.timer);
+	this.timer = setTimeout(this.timerHandler, delay);
+}
+
 dataHandlerModel.prototype.timerFunction = function()
 {
 	if (this.tempReq) this.tempReq.cancel();
@@ -300,8 +306,9 @@ dataHandlerModel.prototype.timerFunction = function()
 		}
 	}
 	
-	this.renderMiniGraph();
-	this.renderFullGraph();
+	// These will eventually be removed, once item-specific rendering is completed
+	// this.renderMiniGraph();
+	// this.renderFullGraph();
 	
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 		this.tempReq = service.get_tmp105_temp(this.tempHandler);
@@ -318,7 +325,7 @@ dataHandlerModel.prototype.timerFunction = function()
 		this.timeReq = service.get_time_in_state(this.timeHandler);
 	}
 	
-	this.timer = setTimeout(this.timerHandler, this.rate);
+	this.delayedTimer(this.rate);
 };
 
 dataHandlerModel.prototype.tempHandler = function(payload)
@@ -353,6 +360,9 @@ dataHandlerModel.prototype.tempHandler = function(payload)
 		}
 		this.lineData.set(timestamp, dataObj);
 	}
+
+	this.renderMiniGraph("temp");
+	this.renderFullGraph("temp");
 };
 dataHandlerModel.prototype.freqHandler = function(payload)
 {
@@ -380,6 +390,9 @@ dataHandlerModel.prototype.freqHandler = function(payload)
 		}
 		this.lineData.set(timestamp, dataObj);
 	}
+
+	this.renderMiniGraph("freq");
+	this.renderFullGraph("freq");
 };
 dataHandlerModel.prototype.loadHandler = function(payload)
 {
@@ -418,6 +431,9 @@ dataHandlerModel.prototype.loadHandler = function(payload)
 		}
 		this.lineData.set(timestamp, dataObj);
 	}
+
+	this.renderMiniGraph("load");
+	this.renderFullGraph("load");
 };
 dataHandlerModel.prototype.memHandler = function(payload)
 {
@@ -464,6 +480,9 @@ dataHandlerModel.prototype.memHandler = function(payload)
 		}
 		this.lineData.set(timestamp, dataObj);
 	}
+
+	this.renderMiniGraph("mem");
+	this.renderFullGraph("mem");
 };
 dataHandlerModel.prototype.timeHandler = function(payload)
 {
@@ -481,6 +500,9 @@ dataHandlerModel.prototype.timeHandler = function(payload)
 		}
 		this.barData.time = dataHash;
 	}
+
+	this.renderMiniGraph("time");
+	this.renderFullGraph("time");
 };
 
 dataHandlerModel.prototype.updateIcon = function(temp)
