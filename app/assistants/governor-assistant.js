@@ -134,12 +134,12 @@ GovernorAssistant.prototype.setup = function()
 	this.saveAsProfileButtonPressed = this.saveAsProfileButtonPressed.bindAsEventListener(this);
 	this.controller.listen('saveAsProfileButton', Mojo.Event.tap, this.saveAsProfileButtonPressed);
 	
-        this.forms = new Array();
+	this.forms = new Array();
 	this.forms['generic'] = this.controller.get('governor_freq');
 	this.forms['governor'] = this.controller.get('governor_params');
 	this.forms['compcache'] = this.controller.get('compcache_config');
 
-        this.formCount = new Array();
+	this.formCount = new Array();
 	this.formCount['generic'] = 0;
 	this.formCount['governor'] = 0;
 	this.formCount['compcache'] = 0;
