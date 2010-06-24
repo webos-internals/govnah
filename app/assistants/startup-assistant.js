@@ -9,6 +9,10 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.4.11',log: [ 'Updates settings screen after settings are applied',
+				    'Fixed serious bug in compcache enable handling',
+				    'Fixed some obscure error cases ' +
+				    '(new min greater than current max, new max less than current min)'] },
 	 { version: '0.4.10',log: [ 'Updates main screen values whenever the card is activated',
 				    'New visually segmented advanced settings screen' ] },
 	 { version: '0.4.9', log: [ 'Fixed the profile save bug, please recreate any custom profiles',

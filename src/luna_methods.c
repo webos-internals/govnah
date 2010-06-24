@@ -935,10 +935,10 @@ bool get_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   else {
     strcpy(run_command_buffer, "");
     if (run_command("/bin/grep MemLimit /proc/ramzswap 2>/dev/null | awk '{print $2}'", false) && run_command_buffer[0]) {
-      sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": true, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"%s\", \"writeable\": true}], \"returnValue\": true }", run_command_buffer);
+      sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": \"1\", \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"%s\", \"writeable\": true}], \"returnValue\": true }", run_command_buffer);
     }
     else {
-      sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": false, \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"16384\", \"writeable\": true}], \"returnValue\": true }");
+      sprintf(buffer, "{\"params\": [{\"name\":\"compcache_enabled\", \"value\": \"0\", \"writeable\": true}, {\"name\": \"compcache_memlimit\", \"value\": \"16384\", \"writeable\": true}], \"returnValue\": true }");
     }
   }
 

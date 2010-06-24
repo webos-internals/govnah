@@ -19,6 +19,8 @@ function GovernorAssistant()
 		choices: []
 	};
 	
+	this.currentLimits = {min:false, max:false}; 
+	
 	this.settingsModel = {};
 	this.settingsLocation = {};
 	
@@ -103,9 +105,8 @@ GovernorAssistant.prototype.setup = function()
 	);
 	this.saveButtonElement = this.controller.get('saveButton');
 	this.saveButtonPressed = this.saveButtonPressed.bindAsEventListener(this);
-    	this.saveComplete = this.saveComplete.bindAsEventListener(this);
 	this.controller.listen('saveButton', Mojo.Event.tap, this.saveButtonPressed);
-	
+
 	this.controller.setupWidget
 	(
 		'profileName',
@@ -135,24 +136,39 @@ GovernorAssistant.prototype.setup = function()
 	this.controller.listen('saveAsProfileButton', Mojo.Event.tap, this.saveAsProfileButtonPressed);
 	
 	this.forms = new Array();
-	this.forms['generic'] = this.controller.get('governor_freq');
-	this.forms['governor'] = this.controller.get('governor_params');
+	this.forms['standard']  = this.controller.get('governor_freq');
+	this.forms['specific']  = this.controller.get('governor_params');
 	this.forms['compcache'] = this.controller.get('compcache_config');
 
-	this.formCount = new Array();
-	this.formCount['generic'] = 0;
-	this.formCount['governor'] = 0;
-	this.formCount['compcache'] = 0;
+	this.groups = new Array();
+	this.groups['standard'] = this.controller.get('frequency_group');
+	this.groups['standard'].style.display = 'block';
+	this.groups['specific'] = this.controller.get('governor_group');
+	this.groups['specific'].style.display = 'none';
+	this.groups['compcache'] = this.controller.get('compcache_group');
+	this.groups['compcache'].style.display = 'none';
 
-	this.onGetParamsGeneric   = this.onGetParams.bindAsEventListener(this, "generic");
-	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "governor");
+	this.onGetParamsStandard  = this.onGetParams.bindAsEventListener(this, "standard");
+	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "specific");
 	this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
 
+	this.saveCompleteStandard  = this.saveComplete.bindAsEventListener(this, "standard");
+	this.saveCompleteSpecific  = this.saveComplete.bindAsEventListener(this, "specific");
+	this.saveCompleteCompcache = this.saveComplete.bindAsEventListener(this, "compcache");
+	
 	this.onSetParams = this.onSetParams.bindAsEventListener(this);
 	
-	service.get_cpufreq_params(this.onGetParamsGeneric);
-	service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
-	service.get_compcache_config(this.onGetParamsCompcache);
+	this.getRequests = new Array();
+	this.getRequests["governor"]  = false;
+	this.getRequests["standard"]  = service.get_cpufreq_params(this.onGetParamsStandard);
+	this.getRequests["specific"]  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
+	this.getRequests["compcache"] = service.get_compcache_config(this.onGetParamsCompcache);
+
+	this.setRequests = new Array();
+	this.setRequests["governor"]  = false;
+	this.setRequests["standard"]  = false;
+	this.setRequests["specific"]  = false;
+	this.setRequests["compcache"] = false;
 
 	// make it so nothing is selected by default
 	this.controller.setInitialFocusedElement(null);
@@ -166,15 +182,21 @@ GovernorAssistant.prototype.governorChange = function(event)
 	
 	//alert(event.value);
 	this.governorModel.value = event.value;
-	service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
+	if (this.setRequests['governor']) this.setRequests['governor'].cancel();
+	this.setRequests['governor'] = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
 };
 
 GovernorAssistant.prototype.onGetParams = function(payload, location)
 {
+	this.setRequests[location] = false;
+
 	if (payload.errorCode != undefined) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
+	var newHTML = '';
+	var newCount = 0;
+
 	if (payload.params)
 	{
 		// initial loop
@@ -207,6 +229,14 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 					this.governorModel.value = "";
 					this.governorModel.value = trim(tmpParam.value);
 					this.controller.modelChanged(this.governorModel);
+					break;
+				
+				case 'scaling_min_freq':
+					this.currentLimits.min = trim(tmpParam.value);
+					break;
+				
+				case 'scaling_max_freq':
+					this.currentLimits.max = trim(tmpParam.value);
 					break;
 				
 				case 'scaling_available_frequencies':
@@ -252,8 +282,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 					switch(profilesModel.settings[tmpParam.name].type)
 					{
 						case 'listFreq':
-							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							this.formCount[location]++;
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -268,8 +298,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listPcnt':
-							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							this.formCount[location]++;
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 
@@ -285,8 +315,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listPowr':
-							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							this.formCount[location]++;
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -301,8 +331,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listSamp':
-							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							this.formCount[location]++;
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							var samplingChoices = [];
@@ -352,8 +382,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listSampDown':
-							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							this.formCount[location]++;
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -368,8 +398,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listMem':
-							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							this.formCount[location]++;
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -385,8 +415,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							break;
 							
 						case 'toggleTF':
-							this.forms[location].innerHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
-							this.formCount[location]++;
+							newHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -404,8 +434,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 							break;
 
 						case 'listWindow':
-							this.forms[location].innerHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
-							this.formCount[location]++;
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.setupWidget
@@ -423,8 +453,8 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 				}
 				else
 				{
-					this.forms[location].innerHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'governor/textfield-widget'});
-					this.formCount[location]++;
+					newHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'governor/textfield-widget'});
+					newCount++;
 					this.settingsModel[tmpParam.name] = tmpParam.value;
 					this.settingsLocation[tmpParam.name] = location;
 					this.controller.setupWidget
@@ -446,32 +476,35 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 				}
 			}
 		}
-
-		this.controller.instantiateChildWidgets(this.forms['generic']);		
-		this.controller.instantiateChildWidgets(this.forms['governor']);
-		this.controller.instantiateChildWidgets(this.forms['compcache']);
-		
-		// hide empty sections
-		if (this.formCount['generic']==0)  { this.controller.get('frequency_group').style.display='none'; } else { this.controller.get('frequency_group').style.display='block'; }
-		if (this.formCount['governor']==0)  { this.controller.get('governor_group').style.display='none'; } else { this.controller.get('governor_group').style.display='block'; }
-		if (this.formCount['compcache']==0)  { this.controller.get('compcache_group').style.display='none'; } else { this.controller.get('compcache_group').style.display='block'; }
-
-		// update form styles so list looks OK
-		var rows = this.forms['governor'].querySelectorAll('div.palm-row');
-		for (var r = 0; r < rows.length; r++)
-		{
-			if (r == 0) rows[r].className = 'palm-row first';
-			else if (r == rows.length-1) rows[r].className = 'palm-row last';
-			else rows[r].className = 'palm-row';
-		}
-
 	}
-	else
-	{
-		//error
+
+	this.forms[location].innerHTML = newHTML;
+	this.groups[location].style.display = ((newCount == 0)?'none':'block');
+	this.controller.instantiateChildWidgets(this.forms[location]);		
+		
+	// update form styles so list looks OK
+	var rows = this.forms[location].querySelectorAll('div.palm-row');
+	for (var r = 0; r < rows.length; r++) {
+		if (r == 0) rows[r].className = 'palm-row first';
+		else if (r == rows.length-1) rows[r].className = 'palm-row last';
+		else rows[r].className = 'palm-row';
 	}
 
 };
+
+GovernorAssistant.prototype.reloadSettings = function()
+{
+	this.settingsModel = {};
+	this.settingsLocation = {};
+	
+	if (this.getRequests['standard']) this.getRequests['standard'].cancel();
+	this.getRequests["standard"]  = service.get_cpufreq_params(this.onGetParamsStandard);
+	if (this.getRequests['specific']) this.getRequests['specific'].cancel();
+	this.getRequests["specific"]  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
+	if (this.getRequests['compcache']) this.getRequests['compcache'].cancel();
+	this.getRequests["compcache"] = service.get_compcache_config(this.onGetParamsCompcache);
+};
+
 GovernorAssistant.prototype.onSetParams = function(payload)
 {
 	//alert('===========');
@@ -480,21 +513,8 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	if (payload.errorCode != undefined) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
-		
-	this.forms["generic"].innerHTML = '';
-	this.forms["governor"].innerHTML = '';
-	this.forms["compcache"].innerHTML = '';
 
-	this.formCount['generic'] = 0;
-	this.formCount['governor'] = 0;
-	this.formCount['compcache'] = 0;
-
-	this.settingsModel = {};
-	this.settingsLocation = {};
-	
-	service.get_cpufreq_params(this.onGetParamsGeneric);
-	service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
-	service.get_compcache_config(this.onGetParamsCompcache);
+	this.reloadSettings();
 };
 
 GovernorAssistant.prototype.saveButtonPressed = function(event)
@@ -503,24 +523,37 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	//for (var m in this.settingsModel) alert(m+" : "+this.settingsModel[m]);
 	//for (var m in this.settingsLocation) alert(m+" : "+this.settingsLocation[m]);
 	
-	var genericParams = [];
-	var governorParams = [];
+	var standardParams = [];
+	var specificParams = [];
 	
-	genericParams.push({name:"scaling_governor", value:this.governorModel.value});
+	standardParams.push({name:"scaling_governor", value:this.governorModel.value});
 
 	for (var m in this.settingsModel)
 	{
-		if (this.settingsLocation[m] == "generic")
+		if (this.settingsLocation[m] == "standard")
 		{
-			genericParams.push({name:m, value:String(this.settingsModel[m])});
+			if ((m == "scaling_min_freq") &&
+				(parseFloat(this.settingsModel[m]) > parseFloat(this.currentLimits.max))) {
+				alert("newmin: "+this.settingsModel[m]+" greater than oldmax: "+this.currentLimits.max);
+				// Push the max frequency first to allow for the new min
+				standardParams.push({name:"scaling_max_freq", value:String(this.settingsModel["scaling_max_freq"])});
+			}
+			if ((m == "scaling_max_freq") &&
+				(parseFloat(this.settingsModel[m]) < parseFloat(this.currentLimits.min))) {
+				alert("newmmax: "+this.settingsModel[m]+" less than oldmin: "+this.currentLimits.min);
+				// Push the min frequency first to allow for the new max
+				standardParams.push({name:"scaling_min_freq", value:String(this.settingsModel["scaling_min_freq"])});
+			}
+			standardParams.push({name:m, value:String(this.settingsModel[m])});
 		}
-		else if (this.settingsLocation[m] == "governor")
+		else if (this.settingsLocation[m] == "specific")
 		{
-			governorParams.push({name:m, value:String(this.settingsModel[m])});
+			specificParams.push({name:m, value:String(this.settingsModel[m])});
 		}
 	}
 	
-	service.set_cpufreq_params(this.saveComplete, genericParams, governorParams);
+	if (this.setRequests['standard']) this.setRequests['standard'].cancel();
+	this.setRequests["standard"]  = service.set_cpufreq_params(this.saveCompleteStandard, standardParams, specificParams);
 
 	var compcacheConfig = [];
 	
@@ -533,11 +566,14 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	}
 
 	if (compcacheConfig.length) {
-		service.set_compcache_config(this.saveComplete, compcacheConfig);
+		if (this.setRequests['compcache']) this.setRequests['compcache'].cancel();
+		this.setRequests["compcache"] = service.set_compcache_config(this.saveCompleteCompcache, compcacheConfig);
 	}
+
+	this.reloadSettings();
 };
 
-GovernorAssistant.prototype.saveComplete = function(payload)
+GovernorAssistant.prototype.saveComplete = function(payload, location)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
@@ -546,7 +582,13 @@ GovernorAssistant.prototype.saveComplete = function(payload)
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 		
-	this.saveButtonElement.mojo.deactivate();
+	this.setRequests[location] = false;
+
+	if (!this.setRequests["standard"] &&
+		!this.setRequests["specific"] &&
+		!this.setRequests["compcache"]) {
+		this.saveButtonElement.mojo.deactivate();
+	}
 };
 
 GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
@@ -562,11 +604,11 @@ GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
 	
 	for (var m in this.settingsModel)
 	{
-		if (this.settingsLocation[m] == "generic")
+		if (this.settingsLocation[m] == "standard")
 		{
 			params.settingsStandard.push({name:m, value:String(this.settingsModel[m])});
 		}
-		else if (this.settingsLocation[m] == "governor")
+		else if (this.settingsLocation[m] == "specific")
 		{
 			params.settingsSpecific.push({name:m, value:String(this.settingsModel[m])});
 		}
