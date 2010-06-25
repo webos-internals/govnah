@@ -1235,13 +1235,115 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
   return false;
 }
 
+//
+// Handler for the getProfiles service.
+//
+bool getProfiles_handler(LSHandle* lshandle, LSMessage *reply, void *ctx) {
+  bool retVal;
+  LSError lserror;
+  LSErrorInit(&lserror);
+  LSMessage* message = (LSMessage*)ctx;
+  retVal = LSMessageRespond(message, LSMessageGetPayload(reply), &lserror);
+  LSMessageUnref(message);
+  if (!retVal) {
+    LSErrorPrint(&lserror, stderr);
+    LSErrorFree(&lserror);
+  }
+  return retVal;
+}
+
+//
+// Call the getProfiles and return the output to webOS.
+//
+bool getProfiles_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the params argument from the message
+  json_t *id = json_find_first_label(object, "returnid");
+  if (!id || (id->child->type != JSON_STRING)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing returnid\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(line, "{\"id\":\"org.webosinternals.govnah\",\"params\":{\"type\":\"get-profiles\",\"returnid\":\"%s\"}}",
+	  id->child->text);
+
+  LSMessageRef(message);
+  if (!LSCall(priv_serviceHandle, "palm://com.palm.applicationManager/launch", line,
+	      getProfiles_handler, message, NULL, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Handler for the setProfile service.
+//
+bool setProfile_handler(LSHandle* lshandle, LSMessage *reply, void *ctx) {
+  bool retVal;
+  LSError lserror;
+  LSErrorInit(&lserror);
+  LSMessage* message = (LSMessage*)ctx;
+  retVal = LSMessageRespond(message, LSMessageGetPayload(reply), &lserror);
+  LSMessageUnref(message);
+  if (!retVal) {
+    LSErrorPrint(&lserror, stderr);
+    LSErrorFree(&lserror);
+  }
+  return retVal;
+}
+
+//
+// Call the setProfile and return the output to webOS.
+//
+bool setProfile_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the params argument from the message
+  json_t *id = json_find_first_label(object, "profileid");
+  if (!id || (id->child->type != JSON_NUMBER)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing profileid\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(line, "{\"id\":\"org.webosinternals.govnah\",\"params\":{\"type\":\"set-profile\",\"profileid\":%s}}",
+	  id->child->text);
+
+  LSMessageRef(message);
+  if (!LSCall(priv_serviceHandle, "palm://com.palm.applicationManager/launch", line,
+	      getProfiles_handler, message, NULL, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
 LSMethod luna_methods[] = {
   { "status",			dummy_method },
+
   { "get_proc_cpuinfo",		get_proc_cpuinfo_method },
   { "get_proc_meminfo",		get_proc_meminfo_method },
   { "get_proc_loadavg",		get_proc_loadavg_method },
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
   { "get_tmp105_temp",		get_tmp105_temp_method },
+
   { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
   { "get_scaling_governor",     get_scaling_governor_method },
   { "get_cpufreq_params",	get_cpufreq_params_method },
@@ -1250,9 +1352,13 @@ LSMethod luna_methods[] = {
   { "get_time_in_state",	get_time_in_state_method },
   { "get_total_trans",		get_total_trans_method },
   { "get_trans_table",		get_trans_table_method },
+
   { "get_compcache_config",	get_compcache_config_method },
   { "set_compcache_config",	set_compcache_config_method },
   { "stick_compcache_config",	stick_compcache_config_method },
+
+  { "getProfiles",		getProfiles_method },
+  { "setProfile",		setProfile_method },
   { 0, 0 }
 };
 
