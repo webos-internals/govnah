@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 4
+ * 	Highest Version: 5
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -80,13 +80,13 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // The stock palm settings
 	 {
-	     version:	1,
+	     version:	5,
 		 name:		'Palm Default',
 		 locked:		true,			// don't lock any other profiles but this one
 		 governor:	'userspace',
 		 settingsStandard: [
 				    {name:	'scaling_min_freq',	value:	'125000'},
-				    {name:	'scaling_max_freq',	value:	'800000'},
+				    {name:	'scaling_max_freq',	value:	'600000'},
 				    {name:	'scaling_setspeed',	value:	'500000'}
 				    ],
 		 settingsSpecific: []
