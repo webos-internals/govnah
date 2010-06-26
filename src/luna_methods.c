@@ -886,6 +886,29 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
 }
 
 //
+// Delete cpufreq params upstart script
+//
+bool unstick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-settings");
+  (void)unlink(filename);
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
 // Read time_in_state
 //
 bool get_time_in_state_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -1236,6 +1259,29 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
 }
 
 //
+// Delete compcache config upstart script
+//
+bool unstick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-compcache");
+  (void)unlink(filename);
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
 // Handler for the getProfiles service.
 //
 bool getProfiles_handler(LSHandle* lshandle, LSMessage *reply, void *ctx) {
@@ -1349,6 +1395,7 @@ LSMethod luna_methods[] = {
   { "get_cpufreq_params",	get_cpufreq_params_method },
   { "set_cpufreq_params",	set_cpufreq_params_method },
   { "stick_cpufreq_params",	stick_cpufreq_params_method },
+  { "unstick_cpufreq_params",	unstick_cpufreq_params_method },
   { "get_time_in_state",	get_time_in_state_method },
   { "get_total_trans",		get_total_trans_method },
   { "get_trans_table",		get_trans_table_method },
@@ -1356,6 +1403,7 @@ LSMethod luna_methods[] = {
   { "get_compcache_config",	get_compcache_config_method },
   { "set_compcache_config",	set_compcache_config_method },
   { "stick_compcache_config",	stick_compcache_config_method },
+  { "unstick_compcache_config",	unstick_compcache_config_method },
 
   { "getProfiles",		getProfiles_method },
   { "setProfile",		setProfile_method },
