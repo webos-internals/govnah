@@ -126,6 +126,12 @@ profilesModel.prototype.loadDefaults = function()
 		{
 			if (profilesModel.defaultProfiles[d].version > prefs.get().defaultProfileVersion)
 			{
+				var dup = this.getProfileFromName(profilesModel.defaultProfiles[d].name);
+
+				if (dup) {
+					this.deleteProfile(dup.id);
+				}
+
 				this.newProfile(profilesModel.defaultProfiles[d]);
 				
 				if (profilesModel.defaultProfiles[d].version > highestVersion)

@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.4.14',log: [ 'Fixed the duplicate profiles bug'] },
 	 { version: '0.4.13',log: [ 'Set the Palm Default profile back to 600MHz max'] },
 	 { version: '0.4.12',log: [ 'Added getProfiles and setProfile methods to the service'] },
 	 { version: '0.4.11',log: [ 'Updates settings screen after settings are applied',
