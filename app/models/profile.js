@@ -324,8 +324,8 @@ function profileModel(params)
 profileModel.prototype.apply = function()
 {
 	var standardParams  = [];
-	var specificParams  = false;
-	var compcacheConfig = false;
+	var specificParams  = [];
+	var compcacheConfig = [];
 
 	standardParams.push({name:'scaling_governor', value:this.governor});
 	
@@ -346,7 +346,6 @@ profileModel.prototype.apply = function()
 	}
 	
 	if (this.settingsSpecific) {
-		specificParams  = [];
 		for (var s = 0; s < this.settingsSpecific.length; s++) {
 			specificParams.push(this.settingsSpecific[s]);
 		}
@@ -358,7 +357,6 @@ profileModel.prototype.apply = function()
 	profiles.stickRequests['cpufreq'] = service.stick_cpufreq_params(profiles.stickCompleteCpufreq, standardParams, specificParams);
 	
 	if (this.settingsCompcache) {
-		var compcacheConfig = [];
 		for (var s = 0; s < this.settingsCompcache.length; s++) {
 			compcacheConfig.push(this.settingsCompcache[s]);
 		}
