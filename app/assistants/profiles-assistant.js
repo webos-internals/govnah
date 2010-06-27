@@ -55,12 +55,13 @@ ProfilesAssistant.prototype.setup = function()
 
 ProfilesAssistant.prototype.activate = function(event)
 {
-	if (this.alreadyActivated)
-	{
-		this.updateList();
-	}
-	
-	this.alreadyActivated = true;
+    profiles.controller = this.controller;
+
+    if (this.alreadyActivated) {
+	this.updateList();
+    }
+
+    this.alreadyActivated = true;
 }
 ProfilesAssistant.prototype.updateList = function(skipUpdate)
 {
@@ -83,7 +84,7 @@ ProfilesAssistant.prototype.updateList = function(skipUpdate)
 ProfilesAssistant.prototype.listTapHandler = function(event)
 {
 	profiles.profiles[event.item.key].apply();
-	this.controller.stageController.popScene();
+	// this.controller.stageController.popScene();
 }
 ProfilesAssistant.prototype.listDeleteHandler = function(event)
 {
@@ -103,7 +104,10 @@ ProfilesAssistant.prototype.handleCommand = function(event)
 	}
 }
 
-ProfilesAssistant.prototype.deactivate = function(event) {}
+ProfilesAssistant.prototype.deactivate = function(event)
+{
+    profiles.controller = false;
+}
 ProfilesAssistant.prototype.cleanup = function(event)
 {
 	Mojo.Event.stopListening(this.profileListElement, Mojo.Event.listTap, this.listTapHandler);

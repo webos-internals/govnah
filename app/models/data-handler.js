@@ -13,6 +13,7 @@ function dataHandlerModel()
 	this.profile = false;
 	this.settingsStandard = [];
 	this.settingsSpecific = [];
+	this.settingsCompcache = [];
 	
 	this.currentLimits = {min:false, max:false}; 
 	
@@ -63,8 +64,9 @@ function dataHandlerModel()
 	this.fullGraph = false;
 	
 	
-    this.getParamsHandler1 = this.getParamsHandler.bindAsEventListener(this, 1);
-    this.getParamsHandler2 = this.getParamsHandler.bindAsEventListener(this, 2);
+    this.getParamsStandard  = this.getParamsHandler.bindAsEventListener(this, 1);
+    this.getParamsSpecific  = this.getParamsHandler.bindAsEventListener(this, 2);
+    this.getParamsCompcache = this.getParamsHandler.bindAsEventListener(this, 3);
 	
 };
 
@@ -158,17 +160,25 @@ dataHandlerModel.prototype.updateParams = function(num)
 			this.profile = false;
 			this.settingsStandard = [];
 			this.settingsSpecific = [];
+			this.settingsCompcache = [];
 			
-			service.get_cpufreq_params(this.getParamsHandler1);
+			service.get_cpufreq_params(this.getParamsStandard);
 		}
 	}
 	else if (num == 1)
 	{
-		service.get_cpufreq_params(this.getParamsHandler2, this.governor);
+		service.get_cpufreq_params(this.getParamsSpecific, this.governor);
 	}
 	else if (num == 2)
 	{
-		this.profile = profiles.findProfile(this.governor, this.settingsStandard, this.settingsSpecific);
+		service.get_compcache_config(this.getParamsCompcache);
+	}
+	else if (num == 3)
+	{
+		this.profile = profiles.findProfile(this.governor,
+											this.settingsStandard,
+											this.settingsSpecific,
+											this.settingsCompcache);
 		if (this.mainAssistant && this.mainAssistant.controller)
 		{
 			if (this.profile)
@@ -215,6 +225,10 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 				else if (num == 2)
 				{
 					this.settingsSpecific.push({name:tmpParam.name, value:String(tmpParam.value)});
+				}
+				else if (num == 3)
+				{
+					this.settingsCompcache.push({name:tmpParam.name, value:String(tmpParam.value)});
 				}
 			}
 		}

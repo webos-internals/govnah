@@ -36,7 +36,6 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 				    {name:	'scaling_min_freq',	value:	'500000'},
 				    {name:	'scaling_max_freq',	value:	'800000'},
 				    ],
-		 settingsSpecific: []
 		 },
 	 
 	 // Fixed Speed 800
@@ -49,7 +48,6 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 				    {name:	'scaling_min_freq',	value:	'800000'},
 				    {name:	'scaling_max_freq',	value:	'800000'},
 				    ],
-		 settingsSpecific: []
 		 },
 	 
 	 // Fixed Speed 720
@@ -62,7 +60,6 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 				    {name:	'scaling_min_freq',	value:	'720000'},
 				    {name:	'scaling_max_freq',	value:	'720000'},
 				    ],
-		 settingsSpecific: []
 		 },
 	 
 	 // Fixed Speed 600
@@ -75,7 +72,6 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 				    {name:	'scaling_min_freq',	value:	'600000'},
 				    {name:	'scaling_max_freq',	value:	'600000'},
 				    ],
-		 settingsSpecific: []
 		 },
 	 
 	 // UberKernel Default
@@ -89,7 +85,6 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 				    {name:	'scaling_max_freq',	value:	'800000'},
 				    {name:	'scaling_setspeed',	value:	'500000'}
 				    ],
-		 settingsSpecific: []
 		 },
 
 	 // The stock palm settings
@@ -103,7 +98,6 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 				    {name:	'scaling_max_freq',	value:	'600000'},
 				    {name:	'scaling_setspeed',	value:	'500000'}
 				    ],
-		 settingsSpecific: []
 		 }
 	 );
 }	 
@@ -121,7 +115,6 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 				    {name:	'scaling_min_freq',	value:	'600000'},
 				    {name:	'scaling_max_freq',	value:	'600000'},
 				    ],
-		 settingsSpecific: []
 		 },
 	 
 	 // The stock palm settings

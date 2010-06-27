@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.4.17',log: [ 'Added Compcache configuration to saved profiles'] },
 	 { version: '0.4.16',log: [ 'Fixed the obscure bug in applying a profile ' +
 				    '(new min greater than current max, new max less than current min)'] },
 	 { version: '0.4.15',log: [ 'Added the UberKernel Default profile'] },
