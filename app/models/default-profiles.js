@@ -28,7 +28,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	(
 	 // Screenstate 500/800
 	 {
-	     version:	2,
+	     version:	5,
 		 name:		'Screenstate 500/800',
 		 locked:		false,
 		 governor:	'screenstate',
@@ -41,12 +41,12 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // Fixed Speed 800
 	 {
-	     version:	2,
+	     version:	5,
 		 name:		'Fixed Speed 800',
 		 locked:		false,
 		 governor:	'performance',
 		 settingsStandard: [
-				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_min_freq',	value:	'800000'},
 				    {name:	'scaling_max_freq',	value:	'800000'},
 				    ],
 		 settingsSpecific: []
@@ -54,12 +54,12 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // Fixed Speed 720
 	 {
-	     version:	2,
+	     version:	5,
 		 name:		'Fixed Speed 720',
 		 locked:		false,
 		 governor:	'performance',
 		 settingsStandard: [
-				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_min_freq',	value:	'720000'},
 				    {name:	'scaling_max_freq',	value:	'720000'},
 				    ],
 		 settingsSpecific: []
@@ -67,17 +67,31 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // Fixed Speed 600
 	 {
-	     version:	2,
+	     version:	5,
 		 name:		'Fixed Speed 600',
 		 locked:		false,
 		 governor:	'performance',
 		 settingsStandard: [
-				    {name:	'scaling_min_freq',	value:	'500000'},
+				    {name:	'scaling_min_freq',	value:	'600000'},
 				    {name:	'scaling_max_freq',	value:	'600000'},
 				    ],
 		 settingsSpecific: []
 		 },
 	 
+	 // UberKernel Default
+	 {
+	     version:	5,
+		 name:		'UberKernel Default',
+		 locked:		false,
+		 governor:	'userspace',
+		 settingsStandard: [
+				    {name:	'scaling_min_freq',	value:	'125000'},
+				    {name:	'scaling_max_freq',	value:	'800000'},
+				    {name:	'scaling_setspeed',	value:	'500000'}
+				    ],
+		 settingsSpecific: []
+		 },
+
 	 // The stock palm settings
 	 {
 	     version:	5,
@@ -99,12 +113,12 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 	(
 	 // Fixed Speed 600
 	 {
-	     version:	3,
+	     version:	5,
 		 name:		'Fixed Speed 600',
 		 locked:		false,
 		 governor:	'performance',
 		 settingsStandard: [
-				    {name:	'scaling_min_freq',	value:	'122880'},
+				    {name:	'scaling_min_freq',	value:	'600000'},
 				    {name:	'scaling_max_freq',	value:	'600000'},
 				    ],
 		 settingsSpecific: []
@@ -112,7 +126,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 	 
 	 // The stock palm settings
 	 {
-	     version:	4,
+	     version:	5,
 		 name:		'Palm Default',
 		 locked:		true,			// don't lock any other profiles but this one
 		 governor:	'ondemandtcl',
