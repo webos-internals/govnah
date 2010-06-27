@@ -14,6 +14,8 @@ function dataHandlerModel()
 	this.settingsStandard = [];
 	this.settingsSpecific = [];
 	
+	this.currentLimits = {min:false, max:false}; 
+	
 	this.iconDirty = false;
 	
 	this.lineData = $H();
@@ -202,6 +204,12 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 			{
 				if (num == 1)
 				{
+					if (tmpParam.name == 'scaling_min_freq') {
+						this.currentLimits.min = trim(tmpParam.value);
+					}
+					if (tmpParam.name == 'scaling_max_freq') {
+						this.currentLimits.max = trim(tmpParam.value);
+					}
 					this.settingsStandard.push({name:tmpParam.name, value:String(tmpParam.value)});
 				}
 				else if (num == 2)

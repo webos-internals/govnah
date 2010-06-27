@@ -256,21 +256,33 @@ function profileModel(params)
 };
 profileModel.prototype.apply = function()
 {
-	var genericParams = [];
-	var governorParams = [];
+	var standardParams = [];
+	var specificParams = [];
 
-	genericParams.push({name:'scaling_governor', value:this.governor});
+	standardParams.push({name:'scaling_governor', value:this.governor});
 	
 	for (var s = 0; s < this.settingsStandard.length; s++) {
-		genericParams.push(this.settingsStandard[s]);
+		if ((this.settingsStandard[s].name == "scaling_min_freq") &&
+			(parseFloat(this.settingsStandard[s].value) > parseFloat(dataHandler.currentLimits.max))) {
+			alert("newmin: "+this.settingsStandard[s].value+" greater than oldmax: "+dataHandler.currentLimits.max);
+			// Push the max frequency first to allow for the new min
+			standardParams.push({name:"scaling_max_freq", value:this.settingsStandard[s].value});
+		}
+		if ((this.settingsStandard[s].name == "scaling_max_freq") &&
+			(parseFloat(this.settingsStandard[s].value) < parseFloat(dataHandler.currentLimits.min))) {
+			alert("newmax: "+this.settingsStandard[s].value+" less than oldmin: "+dataHandler.currentLimits.min);
+			// Push the min frequency first to allow for the new max
+			standardParams.push({name:"scaling_min_freq", value:this.settingsStandard[s].value});
+		}
+		standardParams.push(this.settingsStandard[s]);
 	}
 	
 	for (var s = 0; s < this.settingsSpecific.length; s++) {
-		governorParams.push(this.settingsSpecific[s]);
+		specificParams.push(this.settingsSpecific[s]);
 	}
 
-	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
-	service.stick_cpufreq_params(this.applyComplete.bindAsEventListener(this), genericParams, governorParams);
+	service.set_cpufreq_params(this.applyComplete.bindAsEventListener(this), standardParams, specificParams);
+	service.stick_cpufreq_params(this.applyComplete.bindAsEventListener(this), standardParams, specificParams);
 
 	if (this.settingsCompcache.length) {
 		var compcacheConfig = [];

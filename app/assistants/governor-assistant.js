@@ -19,8 +19,6 @@ function GovernorAssistant()
 		choices: []
 	};
 	
-	this.currentLimits = {min:false, max:false}; 
-	
 	this.settingsModel = {};
 	this.settingsLocation = {};
 	
@@ -232,11 +230,11 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 					break;
 				
 				case 'scaling_min_freq':
-					this.currentLimits.min = trim(tmpParam.value);
+					dataHandler.currentLimits.min = trim(tmpParam.value);
 					break;
 				
 				case 'scaling_max_freq':
-					this.currentLimits.max = trim(tmpParam.value);
+					dataHandler.currentLimits.max = trim(tmpParam.value);
 					break;
 				
 				case 'scaling_available_frequencies':
@@ -533,14 +531,14 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 		if (this.settingsLocation[m] == "standard")
 		{
 			if ((m == "scaling_min_freq") &&
-				(parseFloat(this.settingsModel[m]) > parseFloat(this.currentLimits.max))) {
-				alert("newmin: "+this.settingsModel[m]+" greater than oldmax: "+this.currentLimits.max);
+				(parseFloat(this.settingsModel[m]) > parseFloat(dataHandler.currentLimits.max))) {
+				alert("newmin: "+this.settingsModel[m]+" greater than oldmax: "+dataHandler.currentLimits.max);
 				// Push the max frequency first to allow for the new min
 				standardParams.push({name:"scaling_max_freq", value:String(this.settingsModel["scaling_max_freq"])});
 			}
 			if ((m == "scaling_max_freq") &&
-				(parseFloat(this.settingsModel[m]) < parseFloat(this.currentLimits.min))) {
-				alert("newmmax: "+this.settingsModel[m]+" less than oldmin: "+this.currentLimits.min);
+				(parseFloat(this.settingsModel[m]) < parseFloat(dataHandler.currentLimits.min))) {
+				alert("newmmax: "+this.settingsModel[m]+" less than oldmin: "+dataHandler.currentLimits.min);
 				// Push the min frequency first to allow for the new max
 				standardParams.push({name:"scaling_min_freq", value:String(this.settingsModel["scaling_min_freq"])});
 			}
