@@ -427,85 +427,6 @@ bool get_tmp105_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 }
 
 //
-// Read /proc/sys/net/ipv4/tcp_congestion_control
-//
-bool get_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return simple_command(lshandle, message, "/bin/cat /proc/sys/net/ipv4/tcp_congestion_control 2>&1");
-}
-
-//
-// Write /proc/sys/net/ipv4/tcp_congestion_control
-//
-bool set_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  LSError lserror;
-  LSErrorInit(&lserror);
-
-  bool error = false;
-
-  sprintf(buffer, "{\"returnValue\": true }");
-
-  json_t *object = LSMessageGetPayloadJSON(message);
-
-  // Extract the genericParams argument from the message
-  json_t *value = json_find_first_label(object, "value");
-  if (!value || (value->child->type != JSON_STRING)) {
-    if (!LSMessageReply(lshandle, message,
-			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value\"}",
-			&lserror)) goto error;
-    return true;
-  }
-
-  sprintf(filename, "/proc/sys/net/ipv4/tcp_congestion_control");
-
-  fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
-
-  FILE *fp = fopen(filename, "w");
-  if (!fp) {
-    sprintf(errorText, "Unable to open %s", filename);
-    error = true;
-  }
-  else {
-    if (fputs(value->child->text, fp) < 0) {
-      sprintf(errorText, "Unable to write to %s", filename);
-      error = true;
-    }
-    if (fclose(fp)) {
-      sprintf(errorText, "Unable to close %s", filename);
-      error = true;
-    }
-  }
-      
-  if (error) {
-    sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
-	    errorText);
-  }
-  
-  // fprintf(stderr, "Message is %s\n", buffer);
-  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
-
-  return true;
- error:
-  LSErrorPrint(&lserror, stderr);
-  LSErrorFree(&lserror);
- end:
-  return false;
-}
-
-//
-// Read /proc/sys/net/ipv4/tcp_allowed_congestion_control
-//
-bool get_tcp_allowed_congestion_control_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return simple_command(lshandle, message, "/bin/cat /proc/sys/net/ipv4/tcp_allowed_congestion_control 2>&1");
-}
-
-//
-// Read /proc/sys/net/ipv4/tcp_available_congestion_control
-//
-bool get_tcp_available_congestion_control_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return simple_command(lshandle, message, "/bin/cat /proc/sys/net/ipv4/tcp_available_congestion_control 2>&1");
-}
-
-//
 // Read scaling_cur_freq
 //
 bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -1361,6 +1282,143 @@ bool unstick_compcache_config_method(LSHandle* lshandle, LSMessage *message, voi
 }
 
 //
+// Read /sys/block/mmcblk0/queue/scheduler
+//
+bool get_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message, "/bin/cat /sys/block/mmcblk0/queue/scheduler 2>&1");
+}
+
+//
+// Write /sys/block/mmcblk0/queue/scheduler
+//
+bool set_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  bool error = false;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the genericParams argument from the message
+  json_t *value = json_find_first_label(object, "value");
+  if (!value || (value->child->type != JSON_STRING)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(filename, "/sys/block/mmcblk0/queue/scheduler");
+
+  fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+
+  FILE *fp = fopen(filename, "w");
+  if (!fp) {
+    sprintf(errorText, "Unable to open %s", filename);
+    error = true;
+  }
+  else {
+    if (fputs(value->child->text, fp) < 0) {
+      sprintf(errorText, "Unable to write to %s", filename);
+      error = true;
+    }
+    if (fclose(fp)) {
+      sprintf(errorText, "Unable to close %s", filename);
+      error = true;
+    }
+  }
+      
+  if (error) {
+    sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    errorText);
+  }
+  
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Read /proc/sys/net/ipv4/tcp_available_congestion_control
+//
+bool get_tcp_available_congestion_control_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message, "/bin/cat /proc/sys/net/ipv4/tcp_available_congestion_control 2>&1");
+}
+
+//
+// Read /proc/sys/net/ipv4/tcp_congestion_control
+//
+bool get_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message, "/bin/cat /proc/sys/net/ipv4/tcp_congestion_control 2>&1");
+}
+
+//
+// Write /proc/sys/net/ipv4/tcp_congestion_control
+//
+bool set_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  bool error = false;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the genericParams argument from the message
+  json_t *value = json_find_first_label(object, "value");
+  if (!value || (value->child->type != JSON_STRING)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(filename, "/proc/sys/net/ipv4/tcp_congestion_control");
+
+  fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+
+  FILE *fp = fopen(filename, "w");
+  if (!fp) {
+    sprintf(errorText, "Unable to open %s", filename);
+    error = true;
+  }
+  else {
+    if (fputs(value->child->text, fp) < 0) {
+      sprintf(errorText, "Unable to write to %s", filename);
+      error = true;
+    }
+    if (fclose(fp)) {
+      sprintf(errorText, "Unable to close %s", filename);
+      error = true;
+    }
+  }
+      
+  if (error) {
+    sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    errorText);
+  }
+  
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
 // Handler for the getProfiles service.
 //
 bool getProfiles_handler(LSHandle* lshandle, LSMessage *reply, void *ctx) {
@@ -1469,11 +1527,6 @@ LSMethod luna_methods[] = {
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
   { "get_tmp105_temp",		get_tmp105_temp_method },
 
-  { "get_tcp_congestion_control", get_tcp_congestion_control_method },
-  { "set_tcp_congestion_control", set_tcp_congestion_control_method },
-  { "get_tcp_allowed_congestion_control", get_tcp_allowed_congestion_control_method },
-  { "get_tcp_available_congestion_control", get_tcp_available_congestion_control_method },
-
   { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
   { "get_scaling_governor",     get_scaling_governor_method },
   { "get_cpufreq_params",	get_cpufreq_params_method },
@@ -1488,6 +1541,13 @@ LSMethod luna_methods[] = {
   { "set_compcache_config",	set_compcache_config_method },
   { "stick_compcache_config",	stick_compcache_config_method },
   { "unstick_compcache_config",	unstick_compcache_config_method },
+
+  { "get_io_scheduler",		get_io_scheduler_method },
+  { "set_io_scheduler",		set_io_scheduler_method },
+
+  { "get_tcp_congestion_control", get_tcp_congestion_control_method },
+  { "set_tcp_congestion_control", set_tcp_congestion_control_method },
+  { "get_tcp_available_congestion_control", get_tcp_available_congestion_control_method },
 
   { "getProfiles",		getProfiles_method },
   { "setProfile",		setProfile_method },
