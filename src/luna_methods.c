@@ -427,10 +427,10 @@ bool get_tmp105_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 }
 
 //
-// Read current
+// Read current (amps)
 //
 bool get_curr_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/w1_bus_master1/32*/getcurrent");
+  return simple_command(lshandle, message, "/bin/cat /sys/devices/w1_bus_master1/32*/getcurrent 2>&1");
 }
 
 //
