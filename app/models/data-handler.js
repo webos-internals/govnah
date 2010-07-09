@@ -550,7 +550,7 @@ dataHandlerModel.prototype.currHandler = function(payload)
 	
 		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
-			this.mainAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">mA</div>';
+			this.mainAssistant.currCurrent.innerHTML = (value / 1000) + '<div class="unit">mA</div>';
 		}
 		
 		var dataObj = this.lineData.get(timestamp)
