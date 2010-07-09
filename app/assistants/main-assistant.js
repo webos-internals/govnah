@@ -7,6 +7,7 @@ function MainAssistant()
 		{weight: 30, text: $L('Take Control Of Your CPU')},
 		{weight: 15, text: $L('Much Better Than Arnie')},
 		{weight:  2, text: $L('Random Taglines Are Awesome')},
+		{weight:  2, text: $L('Nomnomnom')},
 		{weight:  2, text: $L('Now With More Cowbell')}
 	];
 	
@@ -60,6 +61,8 @@ MainAssistant.prototype.setup = function()
 	this.loadCurrent =		this.controller.get('loadCurrent');
 	this.memRow =			this.controller.get('memRow');
 	this.memCurrent =		this.controller.get('memCurrent');
+	this.currRow =			this.controller.get('currRow');
+	this.currCurrent =		this.controller.get('currCurrent');
 	
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
@@ -80,7 +83,7 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.tempRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'temp'));
 	this.controller.listen(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
 	this.controller.listen(this.memRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'mem' ));
-	
+	this.controller.listen(this.currRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr' ));	
 	
 	this.visible = this.visible.bindAsEventListener(this);
 	this.invisible = this.invisible.bindAsEventListener(this);

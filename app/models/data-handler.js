@@ -33,6 +33,7 @@ function dataHandlerModel()
     this.loadHandler  = this.loadHandler.bindAsEventListener(this);
     this.memHandler   = this.memHandler.bindAsEventListener(this);
     this.stateHandler = this.stateHandler.bindAsEventListener(this);
+    this.currHandler = this.currHandler.bindAsEventListener(this);
 	
 	this.graphs = $H();
 	this.graphs["temp"] = false;
@@ -40,6 +41,7 @@ function dataHandlerModel()
 	this.graphs["load"] = false;
 	this.graphs["mem"] = false;
 	this.graphs["state"] = false;
+	this.graphs["curr"] = false;
 	
 	this.strokes = $H();
 	this.strokes["temp"]  = "rgba(153, 205, 153, .4)";
@@ -47,6 +49,7 @@ function dataHandlerModel()
 	this.strokes["load"]  = "rgba(153, 153, 255, .4)";
 	this.strokes["mem"]   = "rgba(153, 153, 255, .4)";
 	this.strokes["state"] = "rgba(153, 153, 153, .4)";
+	this.strokes["curr"]  = "rgba(153, 205, 153, .4)";
 
 	this.fills = $H();
 	this.fills["temp"]    = "rgba(153, 205, 153, .2)";
@@ -54,15 +57,16 @@ function dataHandlerModel()
 	this.fills["load"]    = "rgba(153, 153, 255, .2)";
 	this.fills["mem"]     = "rgba(153, 153, 255, .2)";
 	this.fills["state"]   = "rgba(153, 153, 153, .2)";
+	this.fills["curr"]    = "rgba(153, 205, 153, .2)";
 
 	this.tempReq  = false;
 	this.freqReq  = false;
 	this.loadReq  = false;
 	this.memReq   = false;
 	this.stateReq = false;
+	this.currReq = false;
 	
 	this.fullGraph = false;
-	
 	
     this.getParamsStandard  = this.getParamsHandler.bindAsEventListener(this, 1);
     this.getParamsSpecific  = this.getParamsHandler.bindAsEventListener(this, 2);
@@ -88,7 +92,7 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			renderWidth: 320,
 			renderHeight: 30
 		}
-	)
+	);
 	this.graphs["freq"] = new lineGraph
 	(
 		this.mainAssistant.controller.get('freqCanvas'),
@@ -119,6 +123,14 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 		{
 			height: 27,
 			width: 320
+		}
+	);
+	this.graphs["curr"] = new lineGraph
+	(
+		this.mainAssistant.controller.get('currCanvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 30
 		}
 	);
 };
@@ -323,6 +335,7 @@ dataHandlerModel.prototype.timerFunction = function()
 	if (this.loadReq)  this.loadReq.cancel();
 	if (this.memReq)   this.memReq.cancel();
 	if (this.stateReq) this.stateReq.cancel();
+	if (this.currReq)  this.currReq.cancel();
 
 	var keys = this.lineData.keys();
 	if (keys.length > this.cutoff)
@@ -335,9 +348,11 @@ dataHandlerModel.prototype.timerFunction = function()
 	
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 		this.tempReq = service.get_tmp105_temp(this.tempHandler);
+		this.currReq = service.get_pixi_curr(this.currHandler);
 	}
 	else {
 		this.tempReq = service.get_omap34xx_temp(this.tempHandler);
+		this.currReq = service.get_pre_curr(this.currHandler);
 	}
 	
 	if (this.currentMode == "card")
@@ -527,6 +542,36 @@ dataHandlerModel.prototype.stateHandler = function(payload)
 	this.renderMiniBar("state");
 	this.renderFullGraph("state");
 };
+dataHandlerModel.prototype.currHandler = function(payload)
+{
+	if (payload.returnValue) 
+	{
+		var timestamp = Math.round(new Date().getTime()/1000.0);
+		var value = parseInt(payload.value);
+	
+		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
+		{
+			this.mainAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">mA</div>';
+		}
+		
+		var dataObj = this.lineData.get(timestamp)
+		if (!dataObj) dataObj = {};
+		if (!dataObj.curr)
+		{
+			dataObj.curr = {total:value, count:1, value:value};
+		}
+		if (dataObj.curr && dataObj.curr.count)
+		{
+			dataObj.curr.total = dataObj.curr.total + value;
+			dataObj.curr.count++;
+			dataObj.curr.value = (dataObj.curr.total / dataObj.curr.count);
+		}
+		this.lineData.set(timestamp, dataObj);
+	}
+
+	this.renderMiniLine("curr");
+	this.renderFullGraph("curr");
+};
 
 dataHandlerModel.prototype.updateIcon = function(temp)
 {
@@ -602,6 +647,10 @@ dataHandlerModel.prototype.renderMiniLine = function(item)
 				if (dataObj.mem)
 					data.push({x: keys[k], y: dataObj.mem.value});
 			}
+			else if (item =="curr") {
+				if (dataObj.curr)
+					data.push({x: keys[k], y: dataObj.curr.value});
+			}
 		}
 		
 		var minX = Math.round(new Date().getTime()/1000.0) - (points * (this.rate / 1000));
@@ -650,11 +699,13 @@ dataHandlerModel.prototype.renderFullGraph = function()
 		for (var k = 0; k < keys.length; k++) {
 			var dataObj = this.lineData.get(keys[k]);
 			
-			if (dataObj.temp && this.graphAssistant.display == "temp")
+			if (dataObj.temp && this.graphAssistant.display == "temp") {
 				fullData1.push({x: keys[k], y: dataObj.temp.value});
+			}
 			
-			if (dataObj.freq && this.graphAssistant.display == "freq")
+			if (dataObj.freq && this.graphAssistant.display == "freq") {
 				fullData1.push({x: keys[k], y: dataObj.freq.value});
+			}
 			
 			if (dataObj.load && this.graphAssistant.display == "load") {
 				fullData1.push({x: keys[k], y: dataObj.load.value1});
@@ -665,13 +716,19 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			if (dataObj.mem && this.graphAssistant.display == "mem") {
 				fullData1.push({x: keys[k], y: dataObj.mem.value});
 			}
+
+			if (dataObj.curr && this.graphAssistant.display == "curr") {
+				fullData1.push({x: keys[k], y: dataObj.curr.value});
+			}
 		}
 		
-		if (this.graphAssistant.display == "temp")
+		if (this.graphAssistant.display == "temp") {
 			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
+		}
 		
-		if (this.graphAssistant.display == "freq")
+		if (this.graphAssistant.display == "freq") {
 			this.fullGraph.addLine({data: fullData1, stroke: "rgba(205, 153, 153, .4)", fill: "rgba(205, 153, 153, .2)"});
+		}
 		
 		if (this.graphAssistant.display == "load") {
 			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
@@ -682,6 +739,10 @@ dataHandlerModel.prototype.renderFullGraph = function()
 		if (this.graphAssistant.display == "mem") {
 			this.fullGraph.addLine({data: fullData1, stroke: "rgba(75, 75, 205, .4)"});
 		}
+		
+		if (this.graphAssistant.display == "curr") {
+			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
+		}		
 				
 		this.fullGraph.render();
 	}

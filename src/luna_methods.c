@@ -427,6 +427,20 @@ bool get_tmp105_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 }
 
 //
+// Read current (Pre)
+//
+bool get_pre_curr_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return read_single_integer(lshandle, message, "/sys/devices/w1_bus_master1/32-0008408da3aa/getavgcurrent");
+}
+
+//
+// Read current (Pre)
+//
+bool get_pixi_curr_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return read_single_integer(lshandle, message, "/sys/devices/w1_bus_master1/32-000840aeaaf4/getavgcurrent");
+}
+
+//
 // Read scaling_cur_freq
 //
 bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -1526,6 +1540,8 @@ LSMethod luna_methods[] = {
   { "get_proc_loadavg",		get_proc_loadavg_method },
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
   { "get_tmp105_temp",		get_tmp105_temp_method },
+  { "get_pre_curr",			get_pixi_curr_method },
+  { "get_pixi_curr",		get_pixi_curr_method },
 
   { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
   { "get_scaling_governor",     get_scaling_governor_method },

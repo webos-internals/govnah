@@ -187,7 +187,26 @@ service.get_trans_table = function(callback)
 	});
 	return request;
 };
-
+service.get_pre_curr = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_pre_curr',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.get_pixi_curr = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_pixi_curr',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 
 
 // Local Variables:
