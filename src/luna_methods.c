@@ -32,13 +32,9 @@
 // We use static buffers instead of continually allocating and deallocating stuff,
 // since we're a long-running service, and do not want to leak anything.
 //
-static char line[MAXLINLEN];
-static char filename[MAXLINLEN];
-static char directory[MAXLINLEN];
 static char buffer[MAXBUFLEN];
 static char esc_buffer[MAXBUFLEN];
 static char run_command_buffer[MAXBUFLEN];
-static char errorText[MAXLINLEN];
 
 static char *cpufreqdir = "/sys/devices/system/cpu/cpu0/cpufreq";
 static char *battdir    = "/sys/devices/w1_bus_master1";
@@ -327,6 +323,8 @@ static bool read_single_line(LSHandle* lshandle, LSMessage *message, char *file)
   LSError lserror;
   LSErrorInit(&lserror);
 
+  char line[MAXLINLEN];
+
   FILE *fp = fopen(file, "r");
 
   if (!fp) {
@@ -434,6 +432,8 @@ bool get_battery_current_method(LSHandle* lshandle, LSMessage *message, void *ct
   LSError lserror;
   LSErrorInit(&lserror);
   
+  char directory[MAXLINLEN];
+  char filename[MAXLINLEN];
   char battname[MAXLINLEN];
   
   sprintf(buffer, "{\"returnValue\": true }");
@@ -452,7 +452,7 @@ bool get_battery_current_method(LSHandle* lshandle, LSMessage *message, void *ct
   
       /* Find the directory that starts with 32- */
       if (!strncmp(ep->d_name,"32-",3)) {
-          battname = ep->d_name;
+	strcpy(battname, ep->d_name);
       }
   }
   
@@ -508,6 +508,11 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   LSError lserror;
   LSErrorInit(&lserror);
   
+  char directory[MAXLINLEN];
+  char filename[MAXLINLEN];
+  char line[MAXLINLEN];
+  char errorText[MAXLINLEN];
+
   struct stat statbuf;
 
   bool error = false;
@@ -636,6 +641,10 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   LSError lserror;
   LSErrorInit(&lserror);
+
+  char directory[MAXLINLEN];
+  char filename[MAXLINLEN];
+  char errorText[MAXLINLEN];
 
   bool error = false;
   char *governor = NULL;
@@ -797,6 +806,10 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   LSError lserror;
   LSErrorInit(&lserror);
 
+  char directory[MAXLINLEN];
+  char filename[MAXLINLEN];
+  char line[MAXLINLEN];
+
   bool error = false;
   char *governor = NULL;
 
@@ -953,6 +966,8 @@ bool unstick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void 
   LSError lserror;
   LSErrorInit(&lserror);
 
+  char filename[MAXLINLEN];
+
   sprintf(buffer, "{\"returnValue\": true }");
 
   sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-settings");
@@ -1044,6 +1059,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   LSError lserror;
   LSErrorInit(&lserror);
 
+  char directory[MAXLINLEN];
   char command[MAXLINLEN];
 
   sprintf(buffer, "{\"returnValue\": true }");
@@ -1191,6 +1207,9 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
   LSError lserror;
   LSErrorInit(&lserror);
 
+  char filename[MAXLINLEN];
+  char line[MAXLINLEN];
+
   bool error = false;
   char *governor = NULL;
 
@@ -1326,6 +1345,8 @@ bool unstick_compcache_config_method(LSHandle* lshandle, LSMessage *message, voi
   LSError lserror;
   LSErrorInit(&lserror);
 
+  char filename[MAXLINLEN];
+
   sprintf(buffer, "{\"returnValue\": true }");
 
   sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-compcache");
@@ -1355,6 +1376,9 @@ bool get_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 bool set_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   LSError lserror;
   LSErrorInit(&lserror);
+
+  char filename[MAXLINLEN];
+  char errorText[MAXLINLEN];
 
   bool error = false;
 
@@ -1427,6 +1451,9 @@ bool get_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, v
 bool set_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   LSError lserror;
   LSErrorInit(&lserror);
+
+  char filename[MAXLINLEN];
+  char errorText[MAXLINLEN];
 
   bool error = false;
 
@@ -1514,11 +1541,11 @@ bool getProfiles_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
     return true;
   }
 
-  sprintf(line, "{\"id\":\"org.webosinternals.govnah\",\"params\":{\"type\":\"get-profiles\",\"returnid\":\"%s\"}}",
+  sprintf(buffer, "{\"id\":\"org.webosinternals.govnah\",\"params\":{\"type\":\"get-profiles\",\"returnid\":\"%s\"}}",
 	  id->child->text);
 
   LSMessageRef(message);
-  if (!LSCall(priv_serviceHandle, "palm://com.palm.applicationManager/launch", line,
+  if (!LSCall(priv_serviceHandle, "palm://com.palm.applicationManager/launch", buffer,
 	      getProfiles_handler, message, NULL, &lserror)) goto error;
 
   return true;
@@ -1564,11 +1591,11 @@ bool setProfile_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
     return true;
   }
 
-  sprintf(line, "{\"id\":\"org.webosinternals.govnah\",\"params\":{\"type\":\"set-profile\",\"profileid\":%s}}",
+  sprintf(buffer, "{\"id\":\"org.webosinternals.govnah\",\"params\":{\"type\":\"set-profile\",\"profileid\":%s}}",
 	  id->child->text);
 
   LSMessageRef(message);
-  if (!LSCall(priv_serviceHandle, "palm://com.palm.applicationManager/launch", line,
+  if (!LSCall(priv_serviceHandle, "palm://com.palm.applicationManager/launch", buffer,
 	      getProfiles_handler, message, NULL, &lserror)) goto error;
 
   return true;
