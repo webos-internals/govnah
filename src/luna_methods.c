@@ -434,7 +434,7 @@ bool get_battery_current_method(LSHandle* lshandle, LSMessage *message, void *ct
   LSError lserror;
   LSErrorInit(&lserror);
   
-  char battname[MAXLINLEN];
+  char *battname = "";
   
   sprintf(buffer, "{\"returnValue\": true }");
 
