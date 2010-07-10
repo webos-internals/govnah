@@ -430,7 +430,7 @@ bool get_tmp105_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 //
 // Read current (amps)
 //
-bool get_curr_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+bool get_battery_current_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   LSError lserror;
   LSErrorInit(&lserror);
   
@@ -461,7 +461,7 @@ bool get_curr_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   FILE *fp = fopen(filename, "r");
 
   if (!fp) {
-    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", filename);
   }
   else {
     int value;
@@ -469,10 +469,10 @@ bool get_curr_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
       sprintf(buffer, "{\"value\": %d, \"returnValue\": true }", value);
     }
     else {
-      sprintf(buffer, "{\"errorText\": \"Unable to parse %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+      sprintf(buffer, "{\"errorText\": \"Unable to parse %s\", \"returnValue\": false, \"errorCode\": -1 }", filename);
     }
     if (fclose(fp)) {
-      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }", filename);
     }
   }
 
@@ -1587,7 +1587,7 @@ LSMethod luna_methods[] = {
   { "get_proc_loadavg",		get_proc_loadavg_method },
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
   { "get_tmp105_temp",		get_tmp105_temp_method },
-  { "get_curr",			    get_curr_method },
+  { "get_battery_current",		  get_battery_current_method },
 
   { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
   { "get_scaling_governor",     get_scaling_governor_method },

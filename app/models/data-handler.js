@@ -359,7 +359,7 @@ dataHandlerModel.prototype.timerFunction = function()
 		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
 		this.memReq   = service.get_proc_meminfo(this.memHandler);
 		this.stateReq = service.get_time_in_state(this.stateHandler);
-		this.currReq  = service.get_curr(this.currHandler);
+		this.currReq  = service.get_battery_current(this.currHandler);
 	}
 	
 	this.delayedTimer(this.rate);

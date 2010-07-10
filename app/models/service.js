@@ -187,11 +187,11 @@ service.get_trans_table = function(callback)
 	});
 	return request;
 };
-service.get_curr = function(callback)
+service.get_battery_current = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
-		method: 'get_curr',
+		method: 'get_battery_current',
 		onSuccess: callback,
 		onFailure: callback
 	});
