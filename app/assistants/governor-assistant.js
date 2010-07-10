@@ -150,26 +150,18 @@ GovernorAssistant.prototype.setup = function()
 	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "specific");
 	this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
 
-	this.saveCompleteStandard  = this.saveComplete.bindAsEventListener(this, "standard");
-	this.saveCompleteSpecific  = this.saveComplete.bindAsEventListener(this, "specific");
-	this.saveCompleteCompcache = this.saveComplete.bindAsEventListener(this, "compcache");
+	this.saveCompleteCpufreq   = this.saveCompleteCpufreq.bindAsEventListener(this);
+	this.saveCompleteCompcache = this.saveCompleteCompcache.bindAsEventListener(this);
 	
 	this.onSetParams = this.onSetParams.bindAsEventListener(this);
 	
-	this.getRequests = new Array();
-	this.getRequests["governor"]  = false;
-	this.getRequests["standard"]  = service.get_cpufreq_params(this.onGetParamsStandard);
-	this.getRequests["specific"]  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
-	this.getRequests["compcache"] = service.get_compcache_config(this.onGetParamsCompcache);
-
-	this.setRequests = new Array();
-	this.setRequests["governor"]  = false;
-	this.setRequests["standard"]  = false;
-	this.setRequests["specific"]  = false;
-	this.setRequests["compcache"] = false;
+	this.getRequest = false;
+	this.setRequest = false;
 
 	// make it so nothing is selected by default
 	this.controller.setInitialFocusedElement(null);
+
+	this.reloadSettings();
 };
 
 
@@ -180,14 +172,33 @@ GovernorAssistant.prototype.governorChange = function(event)
 	
 	//alert(event.value);
 	this.governorModel.value = event.value;
-	if (this.setRequests['governor']) this.setRequests['governor'].cancel();
-	this.setRequests['governor'] = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
+	if (this.setRequest) this.setRequest.cancel();
+	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
+};
+
+GovernorAssistant.prototype.onSetParams = function(payload)
+{
+	//alert('===========');
+	//for (p in payload) alert(p+' : '+payload[p]);
+	
+	if (payload.errorCode != undefined) {
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
+	}
+
+	this.reloadSettings();
+};
+
+GovernorAssistant.prototype.reloadSettings = function()
+{
+	this.settingsModel = {};
+	this.settingsLocation = {};
+	
+	if (this.getRequest) this.getRequest.cancel();
+	this.getRequest  = service.get_cpufreq_params(this.onGetParamsStandard);
 };
 
 GovernorAssistant.prototype.onGetParams = function(payload, location)
 {
-	this.setRequests[location] = false;
-
 	if (payload.errorCode != undefined) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
@@ -488,31 +499,18 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 		else rows[r].className = 'palm-row';
 	}
 
-};
-
-GovernorAssistant.prototype.reloadSettings = function()
-{
-	this.settingsModel = {};
-	this.settingsLocation = {};
-	
-	if (this.getRequests['standard']) this.getRequests['standard'].cancel();
-	this.getRequests["standard"]  = service.get_cpufreq_params(this.onGetParamsStandard);
-	if (this.getRequests['specific']) this.getRequests['specific'].cancel();
-	this.getRequests["specific"]  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
-	if (this.getRequests['compcache']) this.getRequests['compcache'].cancel();
-	this.getRequests["compcache"] = service.get_compcache_config(this.onGetParamsCompcache);
-};
-
-GovernorAssistant.prototype.onSetParams = function(payload)
-{
-	//alert('===========');
-	//for (p in payload) alert(p+' : '+payload[p]);
-	
-	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
+	if (location == "standard") {
+		if (this.getRequest) this.getRequest.cancel();
+		this.getRequest  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
 	}
-
-	this.reloadSettings();
+	else if (location == "specific") {
+		if (this.getRequest) this.getRequest.cancel();
+		this.getRequest = service.get_compcache_config(this.onGetParamsCompcache);
+	}
+	else if (location == "compcache") {
+		if (this.getRequest) this.getRequest.cancel();
+		this.getRequest = false;
+	}
 };
 
 GovernorAssistant.prototype.saveButtonPressed = function(event)
@@ -550,9 +548,19 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 		}
 	}
 	
-	if (this.setRequests['standard']) this.setRequests['standard'].cancel();
-	this.setRequests["standard"]  = service.set_cpufreq_params(this.saveCompleteStandard, standardParams, specificParams);
+	if (this.setRequest) this.setRequest.cancel();
+	this.setRequest = service.set_cpufreq_params(this.saveCompleteCpufreq, standardParams, specificParams);
+};
 
+GovernorAssistant.prototype.saveCompleteCpufreq = function(payload)
+{
+	//alert('===========');
+	//for (p in payload) alert(p+' : '+payload[p]);
+	
+	if (payload.errorCode != undefined) {
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
+	}
+		
 	var compcacheConfig = [];
 	
 	for (var m in this.settingsModel)
@@ -564,14 +572,16 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	}
 
 	if (compcacheConfig.length) {
-		if (this.setRequests['compcache']) this.setRequests['compcache'].cancel();
-		this.setRequests["compcache"] = service.set_compcache_config(this.saveCompleteCompcache, compcacheConfig);
+		if (this.setRequest) this.setRequest.cancel();
+		this.setRequest = service.set_compcache_config(this.saveCompleteCompcache, compcacheConfig);
 	}
-
-	this.reloadSettings();
+	else {
+		this.saveButtonElement.mojo.deactivate();
+		this.reloadSettings();
+	}
 };
 
-GovernorAssistant.prototype.saveComplete = function(payload, location)
+GovernorAssistant.prototype.saveCompleteCompcache = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
@@ -580,13 +590,8 @@ GovernorAssistant.prototype.saveComplete = function(payload, location)
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 		
-	this.setRequests[location] = false;
-
-	if (!this.setRequests["standard"] &&
-		!this.setRequests["specific"] &&
-		!this.setRequests["compcache"]) {
-		this.saveButtonElement.mojo.deactivate();
-	}
+	this.saveButtonElement.mojo.deactivate();
+	this.reloadSettings();
 };
 
 GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
