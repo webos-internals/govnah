@@ -57,12 +57,12 @@ MainAssistant.prototype.setup = function()
 	this.freqCurrent =		this.controller.get('freqCurrent');
 	this.tempRow =			this.controller.get('tempRow');
 	this.tempCurrent =		this.controller.get('tempCurrent');
+	this.currRow =			this.controller.get('currRow');
+	this.currCurrent =		this.controller.get('currCurrent');
 	this.loadRow =			this.controller.get('loadRow');
 	this.loadCurrent =		this.controller.get('loadCurrent');
 	this.memRow =			this.controller.get('memRow');
 	this.memCurrent =		this.controller.get('memCurrent');
-	this.currRow =			this.controller.get('currRow');
-	this.currCurrent =		this.controller.get('currCurrent');
 	
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
@@ -81,9 +81,9 @@ MainAssistant.prototype.setup = function()
 	
 	this.controller.listen(this.freqRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq'));
 	this.controller.listen(this.tempRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'temp'));
+	this.controller.listen(this.currRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr'));	
 	this.controller.listen(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
 	this.controller.listen(this.memRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'mem' ));
-	this.controller.listen(this.currRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr'));	
 	
 	this.visible = this.visible.bindAsEventListener(this);
 	this.invisible = this.invisible.bindAsEventListener(this);

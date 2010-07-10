@@ -25,16 +25,16 @@ GraphAssistant.prototype.setup = function()
 	this.titleElement = this.controller.get('title');
 	this.canvasElement = this.controller.get('graphCanvas');
 	
-	if (this.display == 'temp')
-		this.titleElement.innerHTML = $L('Temperature Graph');
 	if (this.display == 'freq')
 		this.titleElement.innerHTML = $L('Frequency Graph');
+	if (this.display == 'temp')
+		this.titleElement.innerHTML = $L('Temperature Graph');
+    if (this.display == 'curr')
+    	this.titleElement.innerHTML = $L('Current Draw Graph');
 	if (this.display == 'load')
 		this.titleElement.innerHTML = $L('Load Average Graph');
 	if (this.display == 'mem')
 		this.titleElement.innerHTML = $L('Memory Usage Graph');
-    if (this.display == 'curr')
-    	this.titleElement.innerHTML = $L('Current Graph');
 	
     this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
     this.gestureChangeHandler =	this.gestureChangeHandler.bindAsEventListener(this);

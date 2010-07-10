@@ -182,6 +182,7 @@ body.palm-dark .palm-separator
 }
 .main canvas#freqCanvas,
 .main canvas#tempCanvas,
+.main canvas#currCanvas,
 .main canvas#loadCanvas,
 .main canvas#memCanvas,
 .main canvas#stateCanvas

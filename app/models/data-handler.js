@@ -28,43 +28,43 @@ function dataHandlerModel()
 	
 	this.timerHandler = this.timerFunction.bind(this);
 	
-    this.tempHandler  = this.tempHandler.bindAsEventListener(this);
     this.freqHandler  = this.freqHandler.bindAsEventListener(this);
+    this.tempHandler  = this.tempHandler.bindAsEventListener(this);
+    this.currHandler = this.currHandler.bindAsEventListener(this);
     this.loadHandler  = this.loadHandler.bindAsEventListener(this);
     this.memHandler   = this.memHandler.bindAsEventListener(this);
     this.stateHandler = this.stateHandler.bindAsEventListener(this);
-    this.currHandler = this.currHandler.bindAsEventListener(this);
 	
 	this.graphs = $H();
-	this.graphs["temp"] = false;
 	this.graphs["freq"] = false;
+	this.graphs["temp"] = false;
+	this.graphs["curr"] = false;
 	this.graphs["load"] = false;
 	this.graphs["mem"] = false;
 	this.graphs["state"] = false;
-	this.graphs["curr"] = false;
 	
 	this.strokes = $H();
-	this.strokes["temp"]  = "rgba(153, 205, 153, .4)";
 	this.strokes["freq"]  = "rgba(255, 153, 153, .4)";
+	this.strokes["temp"]  = "rgba(153, 205, 153, .4)";
+	this.strokes["curr"]  = "rgba(153, 205, 153, .4)";
 	this.strokes["load"]  = "rgba(153, 153, 255, .4)";
 	this.strokes["mem"]   = "rgba(153, 153, 255, .4)";
 	this.strokes["state"] = "rgba(153, 153, 153, .4)";
-	this.strokes["curr"]  = "rgba(153, 205, 153, .4)";
 
 	this.fills = $H();
-	this.fills["temp"]    = "rgba(153, 205, 153, .2)";
 	this.fills["freq"]    = "rgba(255, 153, 153, .2)";
+	this.fills["temp"]    = "rgba(153, 205, 153, .2)";
+	this.fills["curr"]    = "rgba(153, 205, 153, .2)";
 	this.fills["load"]    = "rgba(153, 153, 255, .2)";
 	this.fills["mem"]     = "rgba(153, 153, 255, .2)";
 	this.fills["state"]   = "rgba(153, 153, 153, .2)";
-	this.fills["curr"]    = "rgba(153, 205, 153, .2)";
 
-	this.tempReq  = false;
 	this.freqReq  = false;
+	this.tempReq  = false;
+	this.currReq = false;
 	this.loadReq  = false;
 	this.memReq   = false;
 	this.stateReq = false;
-	this.currReq = false;
 	
 	this.fullGraph = false;
 	
@@ -85,6 +85,14 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 	this.currentMode = "card";
 	this.rate = parseInt(prefs.get().cardPollSpeed) * 1000;
 	
+	this.graphs["freq"] = new lineGraph
+	(
+		this.mainAssistant.controller.get('freqCanvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 30
+		}
+	);
 	this.graphs["temp"] = new lineGraph
 	(
 		this.mainAssistant.controller.get('tempCanvas'),
@@ -93,9 +101,9 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			renderHeight: 30
 		}
 	);
-	this.graphs["freq"] = new lineGraph
+	this.graphs["curr"] = new lineGraph
 	(
-		this.mainAssistant.controller.get('freqCanvas'),
+		this.mainAssistant.controller.get('currCanvas'),
 		{
 			renderWidth: 320,
 			renderHeight: 30
@@ -123,14 +131,6 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 		{
 			height: 27,
 			width: 320
-		}
-	);
-	this.graphs["curr"] = new lineGraph
-	(
-		this.mainAssistant.controller.get('currCanvas'),
-		{
-			renderWidth: 320,
-			renderHeight: 30
 		}
 	);
 };
@@ -330,12 +330,12 @@ dataHandlerModel.prototype.delayedTimer = function(delay)
 
 dataHandlerModel.prototype.timerFunction = function()
 {
-	if (this.tempReq)  this.tempReq.cancel();
 	if (this.freqReq)  this.freqReq.cancel();
+	if (this.tempReq)  this.tempReq.cancel();
+	if (this.currReq)  this.currReq.cancel();
 	if (this.loadReq)  this.loadReq.cancel();
 	if (this.memReq)   this.memReq.cancel();
 	if (this.stateReq) this.stateReq.cancel();
-	if (this.currReq)  this.currReq.cancel();
 
 	var keys = this.lineData.keys();
 	if (keys.length > this.cutoff)
@@ -352,14 +352,14 @@ dataHandlerModel.prototype.timerFunction = function()
 	else {
 		this.tempReq = service.get_omap34xx_temp(this.tempHandler);
 	}
-	
+
 	if (this.currentMode == "card")
 	{ // we really only need these when in card mode...
 		this.freqReq  = service.get_scaling_cur_freq(this.freqHandler);
+		this.currReq  = service.get_battery_current(this.currHandler);
 		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
 		this.memReq   = service.get_proc_meminfo(this.memHandler);
 		this.stateReq = service.get_time_in_state(this.stateHandler);
-		this.currReq  = service.get_battery_current(this.currHandler);
 	}
 	
 	this.delayedTimer(this.rate);
@@ -630,13 +630,17 @@ dataHandlerModel.prototype.renderMiniLine = function(item)
 		for (var k = start; k < keys.length; k++) {
 			var dataObj = this.lineData.get(keys[k]);
 			
-			if (item == "temp") {
+			if (item =="freq") {
+				if (dataObj.freq)
+					data.push({x: keys[k], y: dataObj.freq.value});
+			}
+			else if (item == "temp") {
 				if (dataObj.temp)
 					data.push({x: keys[k], y: dataObj.temp.value});
 			}
-			else if (item =="freq") {
-				if (dataObj.freq)
-					data.push({x: keys[k], y: dataObj.freq.value});
+			else if (item =="curr") {
+				if (dataObj.curr)
+					data.push({x: keys[k], y: dataObj.curr.value});
 			}
 			else if (item =="load") {
 				if (dataObj.load)
@@ -645,10 +649,6 @@ dataHandlerModel.prototype.renderMiniLine = function(item)
 			else if (item =="mem") {
 				if (dataObj.mem)
 					data.push({x: keys[k], y: dataObj.mem.value});
-			}
-			else if (item =="curr") {
-				if (dataObj.curr)
-					data.push({x: keys[k], y: dataObj.curr.value});
 			}
 		}
 		
@@ -698,12 +698,16 @@ dataHandlerModel.prototype.renderFullGraph = function()
 		for (var k = 0; k < keys.length; k++) {
 			var dataObj = this.lineData.get(keys[k]);
 			
+			if (dataObj.freq && this.graphAssistant.display == "freq") {
+				fullData1.push({x: keys[k], y: dataObj.freq.value});
+			}
+			
 			if (dataObj.temp && this.graphAssistant.display == "temp") {
 				fullData1.push({x: keys[k], y: dataObj.temp.value});
 			}
-			
-			if (dataObj.freq && this.graphAssistant.display == "freq") {
-				fullData1.push({x: keys[k], y: dataObj.freq.value});
+
+			if (dataObj.curr && this.graphAssistant.display == "curr") {
+				fullData1.push({x: keys[k], y: dataObj.curr.value});
 			}
 			
 			if (dataObj.load && this.graphAssistant.display == "load") {
@@ -715,20 +719,20 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			if (dataObj.mem && this.graphAssistant.display == "mem") {
 				fullData1.push({x: keys[k], y: dataObj.mem.value});
 			}
-
-			if (dataObj.curr && this.graphAssistant.display == "curr") {
-				fullData1.push({x: keys[k], y: dataObj.curr.value});
-			}
-		}
-		
-		if (this.graphAssistant.display == "temp") {
-			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
 		}
 		
 		if (this.graphAssistant.display == "freq") {
 			this.fullGraph.addLine({data: fullData1, stroke: "rgba(205, 153, 153, .4)", fill: "rgba(205, 153, 153, .2)"});
 		}
 		
+		if (this.graphAssistant.display == "temp") {
+			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
+		}
+		
+		if (this.graphAssistant.display == "curr") {
+			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
+		}		
+				
 		if (this.graphAssistant.display == "load") {
 			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
 			this.fullGraph.addLine({data: fullData2, stroke: "rgba(105, 105, 205, .4)"});
@@ -739,10 +743,6 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			this.fullGraph.addLine({data: fullData1, stroke: "rgba(75, 75, 205, .4)"});
 		}
 		
-		if (this.graphAssistant.display == "curr") {
-			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
-		}		
-				
 		this.fullGraph.render();
 	}
 };
