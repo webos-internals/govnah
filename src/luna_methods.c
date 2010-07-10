@@ -41,6 +41,7 @@ static char run_command_buffer[MAXBUFLEN];
 static char errorText[MAXLINLEN];
 
 static char *cpufreqdir = "/sys/devices/system/cpu/cpu0/cpufreq";
+static char *battdir    = "/sys/devices/w1_bus_master1";
 
 //
 // Escape a string so that it can be used directly in a JSON response.
@@ -430,7 +431,60 @@ bool get_tmp105_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 // Read current (amps)
 //
 bool get_curr_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return simple_command(lshandle, message, "/bin/cat /sys/devices/w1_bus_master1/32*/getcurrent 2>&1");
+  LSError lserror;
+  LSErrorInit(&lserror);
+  
+  char battname[MAXLINLEN];
+  
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  DIR *dp = opendir(battdir);
+  if (!dp) {
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false }", directory);
+    // fprintf(stderr, "Message is %s\n", buffer);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  struct dirent *ep;
+
+  while (ep = readdir(dp)) {
+  
+      /* Find the directory that starts with 32- */
+      if (!strncmp(ep->d_name,"32-",3)) {
+          battname = ep->d_name;
+      }
+  }
+  
+  sprintf(filename, "%s/%s/getcurrent", battdir, battname);
+
+  FILE *fp = fopen(filename, "r");
+
+  if (!fp) {
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+  }
+  else {
+    int value;
+    if (fscanf(fp, "%d", &value) == 1) {
+      sprintf(buffer, "{\"value\": %d, \"returnValue\": true }", value);
+    }
+    else {
+      sprintf(buffer, "{\"errorText\": \"Unable to parse %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+    }
+    if (fclose(fp)) {
+      sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }", file);
+    }
+  }
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;  
 }
 
 //
