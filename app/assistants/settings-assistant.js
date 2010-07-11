@@ -51,7 +51,7 @@ SettingsAssistant.prototype.rowTap = function(event)
 	}
 }
 
-MainAssistant.prototype.updateList = function(skipUpdate)
+SettingsAssistant.prototype.updateList = function(skipUpdate)
 {
 	try 
 	{

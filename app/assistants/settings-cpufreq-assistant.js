@@ -1,4 +1,4 @@
-function GovernorAssistant()
+function SettingsCpufreqAssistant()
 {
 	// setup menu
 	this.menuModel =
@@ -63,7 +63,7 @@ function GovernorAssistant()
 			
 };
 
-GovernorAssistant.prototype.setup = function()
+SettingsCpufreqAssistant.prototype.setup = function()
 {
 	// setup menu
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
@@ -121,7 +121,7 @@ GovernorAssistant.prototype.setup = function()
 };
 
 
-GovernorAssistant.prototype.governorChange = function(event)
+SettingsCpufreqAssistant.prototype.governorChange = function(event)
 {
 	//alert('===========');
 	//for (e in event) alert(e+' : '+event[e]);
@@ -132,7 +132,7 @@ GovernorAssistant.prototype.governorChange = function(event)
 	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
 };
 
-GovernorAssistant.prototype.onSetParams = function(payload)
+SettingsCpufreqAssistant.prototype.onSetParams = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
@@ -144,7 +144,7 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	this.reloadSettings();
 };
 
-GovernorAssistant.prototype.reloadSettings = function()
+SettingsCpufreqAssistant.prototype.reloadSettings = function()
 {
 	this.settingsModel = {};
 	this.settingsLocation = {};
@@ -153,7 +153,7 @@ GovernorAssistant.prototype.reloadSettings = function()
 	this.getRequest  = service.get_cpufreq_params(this.onGetParamsStandard);
 };
 
-GovernorAssistant.prototype.onGetParams = function(payload, location)
+SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 {
 	if (payload.errorCode != undefined) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
@@ -465,7 +465,7 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 	}
 };
 
-GovernorAssistant.prototype.saveButtonPressed = function(event)
+SettingsCpufreqAssistant.prototype.saveButtonPressed = function(event)
 {
 	//alert('-------');
 	//for (var m in this.settingsModel) alert(m+" : "+this.settingsModel[m]);
@@ -504,7 +504,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	this.setRequest = service.set_cpufreq_params(this.saveCompleteCpufreq, standardParams, specificParams);
 };
 
-GovernorAssistant.prototype.saveCompleteCpufreq = function(payload)
+SettingsCpufreqAssistant.prototype.saveCompleteCpufreq = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
@@ -517,20 +517,7 @@ GovernorAssistant.prototype.saveCompleteCpufreq = function(payload)
 	this.reloadSettings();
 };
 
-GovernorAssistant.prototype.saveCompleteCompcache = function(payload)
-{
-	//alert('===========');
-	//for (p in payload) alert(p+' : '+payload[p]);
-	
-	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
-	}
-		
-	this.saveButtonElement.mojo.deactivate();
-	this.reloadSettings();
-};
-
-GovernorAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
+SettingsCpufreqAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
 {
 	if (stdErr && stdErr.length) {
 		message = message + '<br>' + stdErr.join('<br>');
@@ -547,7 +534,7 @@ GovernorAssistant.prototype.errorMessage = function(title, message, stdErr, okFu
     });
 };
 
-GovernorAssistant.prototype.activate = function(event)
+SettingsCpufreqAssistant.prototype.activate = function(event)
 {
 	if (this.controller.stageController.setWindowOrientation)
 	{
@@ -560,7 +547,7 @@ GovernorAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 };
-GovernorAssistant.prototype.handleCommand = function(event)
+SettingsCpufreqAssistant.prototype.handleCommand = function(event)
 {
 	if (event.type == Mojo.Event.command)
 	{
@@ -573,7 +560,7 @@ GovernorAssistant.prototype.handleCommand = function(event)
 	}
 };
 
-GovernorAssistant.prototype.onlyNumbers = function (charCode)
+SettingsCpufreqAssistant.prototype.onlyNumbers = function (charCode)
 {
 	if (charCode > 47 && charCode < 58) {
 		return true;
@@ -581,7 +568,7 @@ GovernorAssistant.prototype.onlyNumbers = function (charCode)
 	return false;
 }
 
-GovernorAssistant.prototype.cleanup = function(event)
+SettingsCpufreqAssistant.prototype.cleanup = function(event)
 {
 	
 };

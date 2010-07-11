@@ -1,4 +1,4 @@
-function GovernorAssistant()
+function SettingsCompacheAssistant()
 {
 	// setup menu
 	this.menuModel =
@@ -24,7 +24,7 @@ function GovernorAssistant()
 	
 };
 
-GovernorAssistant.prototype.setup = function()
+SettingsCompacheAssistant.prototype.setup = function()
 {
 	// setup menu
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
@@ -66,18 +66,7 @@ GovernorAssistant.prototype.setup = function()
 };
 
 
-GovernorAssistant.prototype.governorChange = function(event)
-{
-	//alert('===========');
-	//for (e in event) alert(e+' : '+event[e]);
-	
-	//alert(event.value);
-	this.governorModel.value = event.value;
-	if (this.setRequest) this.setRequest.cancel();
-	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
-};
-
-GovernorAssistant.prototype.onSetParams = function(payload)
+SettingsCompacheAssistant.prototype.onSetParams = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
@@ -89,16 +78,16 @@ GovernorAssistant.prototype.onSetParams = function(payload)
 	this.reloadSettings();
 };
 
-GovernorAssistant.prototype.reloadSettings = function()
+SettingsCompacheAssistant.prototype.reloadSettings = function()
 {
 	this.settingsModel = {};
 	this.settingsLocation = {};
 	
 	if (this.getRequest) this.getRequest.cancel();
-	this.getRequest  = service.get_cpufreq_params(this.onGetParamsStandard);
+	this.getRequest = service.get_compcache_config(this.onGetParamsCompcache);
 };
 
-GovernorAssistant.prototype.onGetParams = function(payload, location)
+SettingsCompacheAssistant.prototype.onGetParams = function(payload, location)
 {
 	if (payload.errorCode != undefined) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
@@ -400,21 +389,13 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 		else rows[r].className = 'palm-row';
 	}
 
-	if (location == "standard") {
-		if (this.getRequest) this.getRequest.cancel();
-		this.getRequest  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
-	}
-	else if (location == "specific") {
-		if (this.getRequest) this.getRequest.cancel();
-		this.getRequest = service.get_compcache_config(this.onGetParamsCompcache);
-	}
-	else if (location == "compcache") {
+	if (location == "compcache") {
 		if (this.getRequest) this.getRequest.cancel();
 		this.getRequest = false;
 	}
 };
 
-GovernorAssistant.prototype.saveButtonPressed = function(event)
+SettingsCompacheAssistant.prototype.saveButtonPressed = function(event)
 {
 	var compcacheConfig = [];
 	
@@ -435,7 +416,7 @@ GovernorAssistant.prototype.saveButtonPressed = function(event)
 	}
 };
 
-GovernorAssistant.prototype.saveCompleteCompcache = function(payload)
+SettingsCompacheAssistant.prototype.saveCompleteCompcache = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
@@ -448,7 +429,7 @@ GovernorAssistant.prototype.saveCompleteCompcache = function(payload)
 	this.reloadSettings();
 };
 
-GovernorAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
+SettingsCompacheAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
 {
 	if (stdErr && stdErr.length) {
 		message = message + '<br>' + stdErr.join('<br>');
@@ -465,7 +446,7 @@ GovernorAssistant.prototype.errorMessage = function(title, message, stdErr, okFu
     });
 };
 
-GovernorAssistant.prototype.activate = function(event)
+SettingsCompacheAssistant.prototype.activate = function(event)
 {
 	if (this.controller.stageController.setWindowOrientation)
 	{
@@ -478,7 +459,7 @@ GovernorAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 };
-GovernorAssistant.prototype.handleCommand = function(event)
+SettingsCompacheAssistant.prototype.handleCommand = function(event)
 {
 	if (event.type == Mojo.Event.command)
 	{
@@ -491,7 +472,7 @@ GovernorAssistant.prototype.handleCommand = function(event)
 	}
 };
 
-GovernorAssistant.prototype.onlyNumbers = function (charCode)
+SettingsCompacheAssistant.prototype.onlyNumbers = function (charCode)
 {
 	if (charCode > 47 && charCode < 58) {
 		return true;
@@ -499,7 +480,7 @@ GovernorAssistant.prototype.onlyNumbers = function (charCode)
 	return false;
 }
 
-GovernorAssistant.prototype.cleanup = function(event)
+SettingsCompacheAssistant.prototype.cleanup = function(event)
 {
 	
 };
