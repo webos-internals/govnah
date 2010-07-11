@@ -416,52 +416,6 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 
 GovernorAssistant.prototype.saveButtonPressed = function(event)
 {
-	//alert('-------');
-	//for (var m in this.settingsModel) alert(m+" : "+this.settingsModel[m]);
-	//for (var m in this.settingsLocation) alert(m+" : "+this.settingsLocation[m]);
-	
-	var standardParams = [];
-	var specificParams = [];
-	
-	standardParams.push({name:"scaling_governor", value:this.governorModel.value});
-
-	for (var m in this.settingsModel)
-	{
-		if (this.settingsLocation[m] == "standard")
-		{
-			if ((m == "scaling_min_freq") &&
-				(parseFloat(this.settingsModel[m]) > parseFloat(dataHandler.currentLimits.max))) {
-				alert("newmin: "+this.settingsModel[m]+" greater than oldmax: "+dataHandler.currentLimits.max);
-				// Push the max frequency first to allow for the new min
-				standardParams.push({name:"scaling_max_freq", value:String(this.settingsModel["scaling_max_freq"])});
-			}
-			if ((m == "scaling_max_freq") &&
-				(parseFloat(this.settingsModel[m]) < parseFloat(dataHandler.currentLimits.min))) {
-				alert("newmmax: "+this.settingsModel[m]+" less than oldmin: "+dataHandler.currentLimits.min);
-				// Push the min frequency first to allow for the new max
-				standardParams.push({name:"scaling_min_freq", value:String(this.settingsModel["scaling_min_freq"])});
-			}
-			standardParams.push({name:m, value:String(this.settingsModel[m])});
-		}
-		else if (this.settingsLocation[m] == "specific")
-		{
-			specificParams.push({name:m, value:String(this.settingsModel[m])});
-		}
-	}
-	
-	if (this.setRequest) this.setRequest.cancel();
-	this.setRequest = service.set_cpufreq_params(this.saveCompleteCpufreq, standardParams, specificParams);
-};
-
-GovernorAssistant.prototype.saveCompleteCpufreq = function(payload)
-{
-	//alert('===========');
-	//for (p in payload) alert(p+' : '+payload[p]);
-	
-	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
-	}
-		
 	var compcacheConfig = [];
 	
 	for (var m in this.settingsModel)
@@ -477,8 +431,7 @@ GovernorAssistant.prototype.saveCompleteCpufreq = function(payload)
 		this.setRequest = service.set_compcache_config(this.saveCompleteCompcache, compcacheConfig);
 	}
 	else {
-		this.saveButtonElement.mojo.deactivate();
-		this.reloadSettings();
+		this.saveCompleteCompcache();
 	}
 };
 

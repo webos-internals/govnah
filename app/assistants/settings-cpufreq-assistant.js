@@ -461,10 +461,6 @@ GovernorAssistant.prototype.onGetParams = function(payload, location)
 	}
 	else if (location == "specific") {
 		if (this.getRequest) this.getRequest.cancel();
-		this.getRequest = service.get_compcache_config(this.onGetParamsCompcache);
-	}
-	else if (location == "compcache") {
-		if (this.getRequest) this.getRequest.cancel();
 		this.getRequest = false;
 	}
 };
@@ -516,25 +512,9 @@ GovernorAssistant.prototype.saveCompleteCpufreq = function(payload)
 	if (payload.errorCode != undefined) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
-		
-	var compcacheConfig = [];
 	
-	for (var m in this.settingsModel)
-	{
-		if (this.settingsLocation[m] == "compcache")
-		{
-			compcacheConfig.push({name:m, value:String(this.settingsModel[m])});
-		}
-	}
-
-	if (compcacheConfig.length) {
-		if (this.setRequest) this.setRequest.cancel();
-		this.setRequest = service.set_compcache_config(this.saveCompleteCompcache, compcacheConfig);
-	}
-	else {
-		this.saveButtonElement.mojo.deactivate();
-		this.reloadSettings();
-	}
+	this.saveButtonElement.mojo.deactivate();
+	this.reloadSettings();
 };
 
 GovernorAssistant.prototype.saveCompleteCompcache = function(payload)
