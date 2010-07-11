@@ -93,85 +93,34 @@ SettingsCompacheAssistant.prototype.onGetParams = function(payload, location)
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
+	/*
+	alert('=========== ' + location);
+	for (var p in payload) {
+		if (p == "params") {
+			alert('params:');
+			for (var a = 0; a < payload.params.length; a++) {
+				tmpParam = payload.params[a];
+				for (var b in tmpParam) {
+					alert('    ' + b + " : " + tmpParam[b]);
+				}
+			}
+		} else {
+			alert(p+' : '+payload[p]);
+		}
+	}
+	*/
+	
 	var newHTML = '';
 	var newCount = 0;
 
 	if (payload.params)
 	{
-		// initial loop
-		for (var param = 0; param < payload.params.length; param++)
-		{
-			tmpParam = payload.params[param];
-			
-			//alert('-----');
-			//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
-
-			switch(tmpParam.name)
-			{
-				case 'scaling_available_governors':
-					this.governorModel.choices = [];
-					var data = tmpParam.value.split(" ");
-					if (data.length > 0)
-					{
-						for (d = 0; d < data.length; d++)
-						{
-							var tmpGov = trim(data[d]);
-							if (tmpGov != "")
-							{
-								this.governorModel.choices.push({label:$L(tmpGov), value:tmpGov});
-							}
-						}
-					}
-					this.controller.modelChanged(this.governorModel);
-					break;
-				case 'scaling_governor':
-					this.governorModel.value = "";
-					this.governorModel.value = trim(tmpParam.value);
-					this.controller.modelChanged(this.governorModel);
-					break;
-				
-				case 'scaling_min_freq':
-					dataHandler.currentLimits.min = trim(tmpParam.value);
-					break;
-				
-				case 'scaling_max_freq':
-					dataHandler.currentLimits.max = trim(tmpParam.value);
-					break;
-				
-				case 'scaling_available_frequencies':
-					this.scalingFrequencyChoices = [];
-					var data = tmpParam.value.split(" ");
-					if (data.length > 0)
-					{
-						for (d = 0; d < data.length; d++)
-						{
-							var tmpFreq = parseInt(trim(data[d]));
-							if (tmpFreq)
-							{
-								this.scalingFrequencyChoices.push({label:(tmpFreq/1000) + ' MHz', value:tmpFreq});
-							}
-						}
-					}
-					break;
-					
-				case 'sampling_rate_max':
-					this.samplingRates.max = parseInt(trim(tmpParam.value));
-					//alert(this.samplingRates.max);
-					break;
-				case 'sampling_rate_min':
-					this.samplingRates.min = parseInt(trim(tmpParam.value));
-					//alert(this.samplingRates.min);
-					break;
-			}
-		}
-		
-		
-		// second loop
+		// only loop
 		for (var param = 0; param < payload.params.length; param++)
 		{
 			tmpParam = payload.params[param];
 
-			if (tmpParam.writeable && tmpParam.name != 'scaling_governor')
+			if (tmpParam.writeable)
 			{
 				//alert('-----');
 				//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
@@ -426,7 +375,8 @@ SettingsCompacheAssistant.prototype.saveCompleteCompcache = function(payload)
 	}
 		
 	this.saveButtonElement.mojo.deactivate();
-	this.reloadSettings();
+	//this.reloadSettings();
+	this.controller.stageController.popScene();
 };
 
 SettingsCompacheAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)

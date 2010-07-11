@@ -159,6 +159,23 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
+	/*
+	alert('=========== ' + location);
+	for (var p in payload) {
+		if (p == "params") {
+			alert('params:');
+			for (var a = 0; a < payload.params.length; a++) {
+				tmpParam = payload.params[a];
+				for (var b in tmpParam) {
+					alert('    ' + b + " : " + tmpParam[b]);
+				}
+			}
+		} else {
+			alert(p+' : '+payload[p]);
+		}
+	}
+	*/
+	
 	var newHTML = '';
 	var newCount = 0;
 
@@ -514,7 +531,8 @@ SettingsCpufreqAssistant.prototype.saveCompleteCpufreq = function(payload)
 	}
 	
 	this.saveButtonElement.mojo.deactivate();
-	this.reloadSettings();
+	//this.reloadSettings();
+	this.controller.stageController.popScene();
 };
 
 SettingsCpufreqAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
