@@ -104,8 +104,8 @@ MainAssistant.prototype.profileTap = function(event)
 }
 MainAssistant.prototype.governorTap = function(event)
 {
-	//this.controller.stageController.pushScene('settings');
-	this.controller.stageController.pushScene('governor');
+	this.controller.stageController.pushScene('settings');
+	//this.controller.stageController.pushScene('governor');
 }
 MainAssistant.prototype.graphTap = function(event, display)
 {
