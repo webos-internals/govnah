@@ -197,7 +197,54 @@ service.get_battery_current = function(callback)
 	});
 	return request;
 };
-
+service.get_io_scheduler = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_io_scheduler',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.set_io_scheduler = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'set_io_scheduler',
+		parameters:
+		{
+			genericParams: genericParams
+		},
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.get_tcp_congestion_control = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_tcp_congestion_control',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.set_tcp_congestion_control = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'set_tcp_congestion_control',
+		parameters:
+		{
+			genericParams: genericParams
+		},
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 
 // Local Variables:
 // tab-width: 4
