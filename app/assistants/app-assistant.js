@@ -15,6 +15,14 @@ AppAssistant.prototype.handleLaunch = function(params)
 {
 	var mainStageController = this.controller.getStageController(mainStageName);
 	
+	/*
+	alert('--------------------------');
+	if (params)
+		for (var p in params)
+			if (typeof(params[p]) != 'function')
+				alert(p+': '+params[p]);
+	*/
+	
 	try
 	{
 		// launch from launcher tap
