@@ -26,6 +26,18 @@
         "source": "app/assistants/help-assistant.js"
     },
     {
+        "scenes": "settings",
+        "source": "app/assistants/settings-assistant.js"
+    },
+    {
+        "scenes": "settings-cpufreq",
+        "source": "app/assistants/settings-cpufreq-assistant.js"
+    },
+    {
+        "scenes": "settings-compache",
+        "source": "app/assistants/settings-compache-assistant.js"
+    },
+    {
         "scenes": "governor",
         "source": "app/assistants/governor-assistant.js"
     },
