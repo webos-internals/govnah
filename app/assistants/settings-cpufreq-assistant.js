@@ -264,7 +264,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 					switch(profilesModel.settings[tmpParam.name].type)
 					{
 						case 'listFreq':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -280,7 +280,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listPcnt':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -297,7 +297,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listPowr':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -313,7 +313,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listSamp':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -364,7 +364,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listSampDown':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -380,7 +380,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listMem':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -397,7 +397,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							break;
 							
 						case 'toggleTF':
-							newHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'governor/toggle-widget'});
+							newHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'settings/toggle-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -416,7 +416,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							break;
 
 						case 'listWindow':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'governor/listselect-widget'});
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -435,7 +435,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 				}
 				else
 				{
-					newHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'governor/textfield-widget'});
+					newHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'settings/textfield-widget'});
 					newCount++;
 					this.settingsModel[tmpParam.name] = tmpParam.value;
 					this.settingsLocation[tmpParam.name] = location;
