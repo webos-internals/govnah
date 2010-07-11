@@ -13,50 +13,6 @@ function GovernorAssistant()
 		]
 	};
 	
-	this.governorModel = 
-	{
-		value: dataHandler.governor,
-		choices: []
-	};
-	
-	this.settingsModel = {};
-	this.settingsLocation = {};
-	
-	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
-	
-	this.scalingFrequencyChoices = [];
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
-		this.scalingFrequencyChoices.push({label:'122.88 MHz', value:122880});
-		this.scalingFrequencyChoices.push({label:'245.76 MHz', value:245760});
-		this.scalingFrequencyChoices.push({label:'320.00 MHz', value:320000});
-		this.scalingFrequencyChoices.push({label:'480.00 MHz', value:480000});
-		this.scalingFrequencyChoices.push({label:'600.00 MHz', value:600000});
-	}
-	
-	this.samplingRates = {min:false, max:false}; 
-	
-	this.samplingDownChoices = [];
-	for (var x = 1; x <= 10; x++)
-	{
-		this.samplingDownChoices.push({label:x, value:x});
-	}
-			
-	this.percentChoices = [];
-	for (var x = 0; x <= 100; x = x + 5)
-	{
-		this.percentChoices.push({label:x + ' %', value:x});
-	}
-	
-	this.powersaveChoices = [];
-	for (var x = 0; x <= 10; x++)
-	{
-		this.powersaveChoices.push({label:x, value:x});
-	}
-	for (var x = 20; x <= 1000; x = x + 10)
-	{
-		this.powersaveChoices.push({label:x, value:x});
-	}
-
 	this.memoryChoices = [];
 	this.memoryChoices.push({label: "16MB", value: 16*1024});
 	this.memoryChoices.push({label: "24MB", value: 24*1024});
@@ -65,31 +21,13 @@ function GovernorAssistant()
 	this.memoryChoices.push({label: "64MB", value: 64*1024});
 	this.memoryChoices.push({label: "96MB", value: 96*1024});
 	this.memoryChoices.push({label:"128MB", value:128*1024});
-			
-	this.windowChoices = [];
-	for (var x = 1; x <= 10; x++)
-	{
-		this.windowChoices.push({label:x + " Sec", value:x*1000});
-	}
-			
+	
 };
 
 GovernorAssistant.prototype.setup = function()
 {
 	// setup menu
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
-
-	// setup governor list
-	this.controller.setupWidget
-	(
-		'governor',
-		{
-			label: $L('Governor')
-		},
-		this.governorModel
-	);
-	this.governorChange = this.governorChange.bindAsEventListener(this);
-	this.controller.listen('governor', Mojo.Event.propertyChange, this.governorChange);
 	
 	this.controller.setupWidget
 	(
@@ -104,53 +42,16 @@ GovernorAssistant.prototype.setup = function()
 	this.saveButtonElement = this.controller.get('saveButton');
 	this.saveButtonPressed = this.saveButtonPressed.bindAsEventListener(this);
 	this.controller.listen('saveButton', Mojo.Event.tap, this.saveButtonPressed);
-
-	this.controller.setupWidget
-	(
-		'profileName',
-		{
-			focus: false,
-			autoFocus: false,
-			modelProperty: 'name',
-			multiline: false,
-			enterSubmits: false,
-			changeOnKeyPress: true
-		},
-		this.profileModel
-	);
-	
-	this.controller.setupWidget
-	(
-		'saveAsProfileButton',
-		{
-			type: Mojo.Widget.activityButton
-		},
-		{
-			buttonLabel: 'Save As New Profile'
-		}
-	);
-	this.saveAsProfileButtonElement = this.controller.get('saveAsProfileButton');
-	this.saveAsProfileButtonPressed = this.saveAsProfileButtonPressed.bindAsEventListener(this);
-	this.controller.listen('saveAsProfileButton', Mojo.Event.tap, this.saveAsProfileButtonPressed);
 	
 	this.forms = new Array();
-	this.forms['standard']  = this.controller.get('governor_freq');
-	this.forms['specific']  = this.controller.get('governor_params');
 	this.forms['compcache'] = this.controller.get('compcache_config');
 
 	this.groups = new Array();
-	this.groups['standard'] = this.controller.get('frequency_group');
-	this.groups['standard'].style.display = 'block';
-	this.groups['specific'] = this.controller.get('governor_group');
-	this.groups['specific'].style.display = 'none';
 	this.groups['compcache'] = this.controller.get('compcache_group');
 	this.groups['compcache'].style.display = 'none';
 
-	this.onGetParamsStandard  = this.onGetParams.bindAsEventListener(this, "standard");
-	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "specific");
 	this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
 
-	this.saveCompleteCpufreq   = this.saveCompleteCpufreq.bindAsEventListener(this);
 	this.saveCompleteCompcache = this.saveCompleteCompcache.bindAsEventListener(this);
 	
 	this.onSetParams = this.onSetParams.bindAsEventListener(this);
@@ -592,47 +493,6 @@ GovernorAssistant.prototype.saveCompleteCompcache = function(payload)
 		
 	this.saveButtonElement.mojo.deactivate();
 	this.reloadSettings();
-};
-
-GovernorAssistant.prototype.saveAsProfileButtonPressed = function(event)
-{
-	var params =
-	{
-		name: this.profileModel.name,
-		governor: this.governorModel.value,
-		settingsStandard: [],
-		settingsSpecific: [],
-		settingsCompcache: []
-	};
-	
-	for (var m in this.settingsModel)
-	{
-		if (this.settingsLocation[m] == "standard")
-		{
-			params.settingsStandard.push({name:m, value:String(this.settingsModel[m])});
-		}
-		else if (this.settingsLocation[m] == "specific")
-		{
-			params.settingsSpecific.push({name:m, value:String(this.settingsModel[m])});
-		}
-		else if (this.settingsLocation[m] == "compcache")
-		{
-			params.settingsCompcache.push({name:m, value:String(this.settingsModel[m])});
-		}
-	}
-	
-	var dup = profiles.getProfileFromName(params.name);
-	
-	if (dup) {
-		profiles.deleteProfile(dup.id);
-	}
-
-	profiles.newProfile(params);
-	
-	this.saveAsProfileButtonElement.mojo.deactivate();
-	
-	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
-	this.controller.get('profileName').mojo.setValue('Profile ' + (profiles.cookieData.serial + 1));
 };
 
 GovernorAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
