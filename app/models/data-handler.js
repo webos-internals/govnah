@@ -46,7 +46,8 @@ function dataHandlerModel()
 	this.strokes = $H();
 	this.strokes["freq"]  = "rgba(255, 153, 153, .4)";
 	this.strokes["temp"]  = "rgba(153, 205, 153, .4)";
-	this.strokes["curr"]  = "rgba(153, 205, 153, .4)";
+	this.strokes["curr1"] = "rgba(153, 205, 153, .4)";
+	this.strokes["curr2"] = "rgba(255, 153, 153, .4)";
 	this.strokes["load"]  = "rgba(153, 153, 255, .4)";
 	this.strokes["mem"]   = "rgba(153, 153, 255, .4)";
 	this.strokes["state"] = "rgba(153, 153, 153, .4)";
@@ -54,7 +55,8 @@ function dataHandlerModel()
 	this.fills = $H();
 	this.fills["freq"]    = "rgba(255, 153, 153, .2)";
 	this.fills["temp"]    = "rgba(153, 205, 153, .2)";
-	this.fills["curr"]    = "rgba(153, 205, 153, .2)";
+	this.fills["curr1"]   = "rgba(153, 205, 153, .2)";
+	this.fills["curr2"]   = "rgba(255, 153, 153, .2)";
 	this.fills["load"]    = "rgba(153, 153, 255, .2)";
 	this.fills["mem"]     = "rgba(153, 153, 255, .2)";
 	this.fills["state"]   = "rgba(153, 153, 153, .2)";
@@ -620,6 +622,7 @@ dataHandlerModel.prototype.renderMiniLine = function(item)
 		this.graphs[item].clearLines();
 		
 		var data = [];
+		var data2 = [];
 		
 		var avg = 1;
 		var points = 80;
@@ -639,8 +642,16 @@ dataHandlerModel.prototype.renderMiniLine = function(item)
 					data.push({x: keys[k], y: dataObj.temp.value});
 			}
 			else if (item =="curr") {
-				if (dataObj.curr)
-					data.push({x: keys[k], y: dataObj.curr.value});
+				if (dataObj.curr) {
+					if (parseInt(dataObj.curr.value) >= 0) {
+						data.push({x: keys[k], y: dataObj.curr.value});
+						data2.push({x: keys[k], y: false});
+					}
+					else {
+						data.push({x: keys[k], y: false});
+						data2.push({x: keys[k], y: Math.abs(dataObj.curr.value)});
+					}
+				}
 			}
 			else if (item =="load") {
 				if (dataObj.load)
@@ -655,7 +666,15 @@ dataHandlerModel.prototype.renderMiniLine = function(item)
 		var minX = Math.round(new Date().getTime()/1000.0) - (points * (this.rate / 1000));
 		this.graphs[item].options.xaxis.min = minX;
 		
-		this.graphs[item].addLine({data: data, stroke: this.strokes[item], fill: this.fills[item]});
+		if (item == "curr")
+		{
+			this.graphs[item].addLine({data: data,  stroke: this.strokes[item+'1'], fill: this.fills[item+'1']});
+			this.graphs[item].addLine({data: data2, stroke: this.strokes[item+'2'], fill: this.fills[item+'2']});
+		}
+		else
+		{
+			this.graphs[item].addLine({data: data, stroke: this.strokes[item], fill: this.fills[item]});
+		}
 		
 		this.graphs[item].render();
 		
