@@ -16,6 +16,7 @@ function dataHandlerModel()
 	this.settingsStandard = [];
 	this.settingsSpecific = [];
 	this.settingsCompcache = [];
+	this.scheduler = false;
 	
 	this.currentLimits = {min:false, max:false}; 
 	
@@ -75,6 +76,7 @@ function dataHandlerModel()
     this.getParamsStandard  = this.getParamsHandler.bindAsEventListener(this, 1);
     this.getParamsSpecific  = this.getParamsHandler.bindAsEventListener(this, 2);
     this.getParamsCompcache = this.getParamsHandler.bindAsEventListener(this, 3);
+    this.getIoScheduler     = this.getIoScheduler.bindAsEventListener(this, 4);
 	
 };
 
@@ -181,6 +183,7 @@ dataHandlerModel.prototype.updateParams = function(num)
 			this.settingsStandard = [];
 			this.settingsSpecific = [];
 			this.settingsCompcache = [];
+			this.scheduler = false;
 			
 			service.get_cpufreq_params(this.getParamsStandard);
 		}
@@ -194,6 +197,10 @@ dataHandlerModel.prototype.updateParams = function(num)
 		service.get_compcache_config(this.getParamsCompcache);
 	}
 	else if (num == 3)
+	{
+		service.get_io_scheduler(this.getIoScheduler);
+	}
+	else if (num == 4)
 	{
 		this.profile = profiles.findProfile(this.governor,
 											this.settingsStandard,
@@ -253,6 +260,34 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 						this.compcacheEnabled = (tmpParam.value==1?true:false);
 					}
 					this.settingsCompcache.push({name:tmpParam.name, value:String(tmpParam.value)});
+				}
+			}
+		}
+	}
+	else
+	{
+		//error
+	}
+	
+	this.updateParams(num);
+	
+};
+
+dataHandlerModel.prototype.getIoScheduler = function(payload, num)
+{
+	alert("calling getIoScheduler");
+
+	if (payload.stdOut) {
+		tmpParam = payload.stdOut[0];
+			
+		var data = tmpParam.split(" ");
+		if (data.length > 0) {
+			for (d = 0; d < data.length; d++) {
+				var tmpSched = trim(data[d]);
+				if (tmpSched != "") {
+					if (tmpSched.indexOf("[") == 0) {
+						this.scheduler = tmpSched.substr(1,tmpSched.length-2);
+					}
 				}
 			}
 		}

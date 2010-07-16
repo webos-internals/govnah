@@ -61,21 +61,28 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		
 		this.listModel.items.push(
 		{
-			name:	'CPU Freq',
+			name:	'CPU Frequency',
 			data:	dataHandler.governor,
 			scene:	'settings-cpufreq'
 		});
 		
 		this.listModel.items.push(
 		{
-			name:	'Compcache',
+			name:	'Compressed Swap',
 			data:	(dataHandler.compcacheEnabled?'Enabled':'Disabled'),
 			scene:	'settings-compcache'
 		});
 		
 		this.listModel.items.push(
 		{
-			name:	'Save As Profile',
+			name:	'I/O Scheduler',
+			data:	dataHandler.scheduler,
+			scene:	'settings-iosched'
+		});
+		
+		this.listModel.items.push(
+		{
+			name:	'Save As New Profile',
 			scene:	'profile-save'
 		});
 		

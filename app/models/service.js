@@ -207,14 +207,14 @@ service.get_io_scheduler = function(callback)
 	});
 	return request;
 };
-service.set_io_scheduler = function(callback)
+service.set_io_scheduler = function(callback, value)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'set_io_scheduler',
 		parameters:
 		{
-			genericParams: genericParams
+			value: value
 		},
 		onSuccess: callback,
 		onFailure: callback
@@ -231,14 +231,14 @@ service.get_tcp_congestion_control = function(callback)
 	});
 	return request;
 };
-service.set_tcp_congestion_control = function(callback)
+service.set_tcp_congestion_control = function(callback, value)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'set_tcp_congestion_control',
 		parameters:
 		{
-			genericParams: genericParams
+			value: value
 		},
 		onSuccess: callback,
 		onFailure: callback
