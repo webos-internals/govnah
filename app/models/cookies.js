@@ -19,20 +19,20 @@ preferenceCookie.prototype.get = function(reload)
 				
 				// Global Group
 				theme: 'palm-default',
-								
+				
 				// Card Group
-				cardPollSpeed: 1,
-				cardIconUpdate: true,
+				cardPollSpeed: 5,
+				cardIconUpdate: false,
 				
 				// Dashboard Group
 				useDash: false,
-				dashPollSpeed: 2,
+				dashPollSpeed: 10,
 				dashIconUpdate: true,
 				
 				// Profiles Group
 				profileList: 'governor',
 				
-				// Governor Settings Group
+				// Settings Group
 				manualEntry: false
 				
 			};
@@ -137,14 +137,12 @@ versionCookie.prototype.init = function()
 	Mojo.Log.logException(e, 'versionCookie#init');
     }
 };
-
 versionCookie.prototype.put = function()
 {
     this.cookie.put({version: Mojo.appInfo.version});
     // uncomment to set lower version for testing
     //this.cookie.put({version: '0.0.1'});
 };
-
 versionCookie.prototype.showStartupScene = function()
 {
     if (this.isNew || this.isFirst) return true;
