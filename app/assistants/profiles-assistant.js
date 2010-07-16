@@ -30,8 +30,10 @@ ProfilesAssistant.prototype.setup = function()
 		
 		this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 		
+		this.advancedRow =			this.controller.get('advancedRow');
 		this.profileListElement =	this.controller.get('profileList');
 		
+		this.advancedTapHandler =	this.advancedTap.bindAsEventListener(this);
 		this.listTapHandler =		this.listTapHandler.bindAsEventListener(this);
 		this.listDeleteHandler =	this.listDeleteHandler.bindAsEventListener(this);
 		
@@ -43,8 +45,10 @@ ProfilesAssistant.prototype.setup = function()
 			preventDeleteProperty: 'locked',
 			reorderable: false
 		}, this.profileListModel);
-		Mojo.Event.listen(this.profileListElement, Mojo.Event.listTap, this.listTapHandler);
-		Mojo.Event.listen(this.profileListElement, Mojo.Event.listDelete, this.listDeleteHandler);	
+		this.controller.listen(this.profileListElement, Mojo.Event.listTap, this.listTapHandler);
+		this.controller.listen(this.profileListElement, Mojo.Event.listDelete, this.listDeleteHandler);
+		
+		this.controller.listen(this.advancedRow, Mojo.Event.tap, this.advancedTapHandler);
 		
 	} 
 	catch (e) 
@@ -62,6 +66,10 @@ ProfilesAssistant.prototype.activate = function(event)
     }
 
     this.alreadyActivated = true;
+}
+ProfilesAssistant.prototype.advancedTap = function(event)
+{
+	this.controller.stageController.pushScene('settings');
 }
 ProfilesAssistant.prototype.updateList = function(skipUpdate)
 {
@@ -110,6 +118,6 @@ ProfilesAssistant.prototype.deactivate = function(event)
 }
 ProfilesAssistant.prototype.cleanup = function(event)
 {
-	Mojo.Event.stopListening(this.profileListElement, Mojo.Event.listTap, this.listTapHandler);
-	Mojo.Event.stopListening(this.profileListElement, Mojo.Event.listDelete, this.listDeleteHandler);
+	this.controller.stopListening(this.profileListElement, Mojo.Event.listTap, this.listTapHandler);
+	this.controller.stopListening(this.profileListElement, Mojo.Event.listDelete, this.listDeleteHandler);
 }

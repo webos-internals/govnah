@@ -73,7 +73,7 @@ MainAssistant.prototype.setup = function()
 	
 	
 	this.profileTapHandler = this.profileTap.bindAsEventListener(this);
-	this.settingsTapHandler = this.settingsTap.bindAsEventListener(this);
+	//this.settingsTapHandler = this.settingsTap.bindAsEventListener(this);
 	
 	this.controller.listen(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
 	//this.controller.listen(this.settingsRow, Mojo.Event.tap, this.settingsTapHandler);
