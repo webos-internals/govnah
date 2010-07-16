@@ -219,10 +219,12 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 			if (tmpParam.name == 'scaling_governor')
 			{
 				this.governor = trim(tmpParam.value);
+				/*
 				if (this.mainAssistant && this.mainAssistant.controller)
 				{
 					this.mainAssistant.governorCurrent.innerHTML = this.governor;
 				}
+				*/
 			}
 			else if (tmpParam.writeable)
 			{

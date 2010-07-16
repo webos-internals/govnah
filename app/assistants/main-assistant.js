@@ -50,8 +50,7 @@ MainAssistant.prototype.setup = function()
 	this.subTitleElement =	this.controller.get('subTitle');
 	this.profileRow =		this.controller.get('profileRow');
 	this.profileCurrent =	this.controller.get('profileCurrent');
-	this.governorRow =		this.controller.get('governorRow');
-	this.governorCurrent =	this.controller.get('governorCurrent');
+	this.settingsRow =		this.controller.get('settingsRow');
 	
 	this.freqRow =			this.controller.get('freqRow');
 	this.freqCurrent =		this.controller.get('freqCurrent');
@@ -74,16 +73,18 @@ MainAssistant.prototype.setup = function()
 	
 	
 	this.profileTapHandler = this.profileTap.bindAsEventListener(this);
-	this.governorTapHandler = this.governorTap.bindAsEventListener(this);
+	this.settingsTapHandler = this.settingsTap.bindAsEventListener(this);
 	
 	this.controller.listen(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
-	this.controller.listen(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
+	//this.controller.listen(this.settingsRow, Mojo.Event.tap, this.settingsTapHandler);
 	
+	/*
 	this.controller.listen(this.freqRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq'));
 	this.controller.listen(this.tempRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'temp'));
 	this.controller.listen(this.currRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr'));	
 	this.controller.listen(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
 	this.controller.listen(this.memRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'mem' ));
+	*/
 	
 	this.visible = this.visible.bindAsEventListener(this);
 	this.invisible = this.invisible.bindAsEventListener(this);
@@ -102,10 +103,9 @@ MainAssistant.prototype.profileTap = function(event)
 {
 	this.controller.stageController.pushScene('profiles');
 }
-MainAssistant.prototype.governorTap = function(event)
+MainAssistant.prototype.settingsTap = function(event)
 {
 	this.controller.stageController.pushScene('settings');
-	//this.controller.stageController.pushScene('governor');
 }
 MainAssistant.prototype.graphTap = function(event, display)
 {
@@ -198,7 +198,15 @@ MainAssistant.prototype.handleCommand = function(event)
 MainAssistant.prototype.cleanup = function(event)
 {
 	this.controller.stopListening(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
-	this.controller.stopListening(this.governorRow, Mojo.Event.tap, this.governorTapHandler);
+	//this.controller.stopListening(this.settingsRow, Mojo.Event.tap, this.settingsTapHandler);
+	
+	/*
+	this.controller.stopListening(this.freqRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq'));
+	this.controller.stopListening(this.tempRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'temp'));
+	this.controller.stopListening(this.currRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr'));	
+	this.controller.stopListening(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
+	this.controller.stopListening(this.memRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'mem' ));
+	*/
 	
 	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
