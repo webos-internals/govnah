@@ -77,6 +77,7 @@ function dataHandlerModel()
     this.getParamsSpecific  = this.getParamsHandler.bindAsEventListener(this, 2);
     this.getParamsCompcache = this.getParamsHandler.bindAsEventListener(this, 3);
     this.getIoScheduler     = this.getIoScheduler.bindAsEventListener(this, 4);
+    this.getTcpCongestion   = this.getTcpCongestion.bindAsEventListener(this, 5);
 	
 };
 
@@ -202,6 +203,10 @@ dataHandlerModel.prototype.updateParams = function(num)
 	}
 	else if (num == 4)
 	{
+		service.get_tcp_congestion_control(this.getTcpCongestion);
+	}
+	else if (num == 5)
+	{
 		this.profile = profiles.findProfile(this.governor,
 											this.settingsStandard,
 											this.settingsSpecific,
@@ -291,6 +296,21 @@ dataHandlerModel.prototype.getIoScheduler = function(payload, num)
 				}
 			}
 		}
+	}
+	else
+	{
+		//error
+	}
+	
+	this.updateParams(num);
+	
+};
+
+dataHandlerModel.prototype.getTcpCongestion = function(payload, num)
+{
+	if (payload.stdOut) {
+		tmpParam = payload.stdOut[0];
+		this.congestion = trim(tmpParam);
 	}
 	else
 	{

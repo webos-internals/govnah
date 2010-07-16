@@ -82,6 +82,13 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		
 		this.listModel.items.push(
 		{
+			name:	'TCP Congestion',
+			data:	dataHandler.congestion,
+			scene:	'settings-tcpcong'
+		});
+		
+		this.listModel.items.push(
+		{
 			name:	'Save As New Profile',
 			scene:	'profile-save'
 		});

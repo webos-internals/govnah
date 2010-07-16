@@ -221,6 +221,16 @@ service.set_io_scheduler = function(callback, value)
 	});
 	return request;
 };
+service.get_tcp_available_congestion_control = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_tcp_available_congestion_control',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 service.get_tcp_congestion_control = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
