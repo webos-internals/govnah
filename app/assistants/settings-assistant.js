@@ -93,6 +93,20 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 	}
 };
 
+SettingsAssistant.prototype.activate = function(event)
+{
+	if (this.alreadyActivated)
+	{
+		dataHandler.updateParams();
+		// once the setting scene go through the dataHandler, we dont need the above, and will only need the below
+		//this.updateList();
+	}
+	else
+	{
+		
+	}
+	this.alreadyActivated = true;
+};
 SettingsAssistant.prototype.handleCommand = function(event)
 {
 	if (event.type == Mojo.Event.command)
