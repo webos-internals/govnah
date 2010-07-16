@@ -32,7 +32,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 		{
 			if (this.profiles[p]) 
 			{
-				alert(this.profiles[p].governor);
+				//alert(this.profiles[p].governor);
 
 				if (this.profiles[p].governor == governor &&
 					(!this.profiles[p].settingsStandard ||
@@ -44,9 +44,9 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 				{
 					var match = true;
 					
-					alert("Checking match");
-
-					if (this.profiles[p].settingsStandard && (this.profiles[p].settingsStandard.length > 0))
+					//alert("Checking match");
+					
+					if (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length > 0)
 					{
 						alert("Checking settingsStandard");
 
@@ -59,7 +59,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 							}
 						}
 					}
-					if (this.profiles[p].settingsSpecific && (this.profiles[p].settingsSpecific.length > 0))
+					if (this.profiles[p].settingsSpecific && this.profiles[p].settingsSpecific.length > 0)
 					{
 						alert("Checking settingsSpecific");
 
@@ -72,7 +72,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 							}
 						}
 					}
-					if (this.profiles[p].settingsCompcache && (this.profiles[p].settingsCompcache.length > 0))
+					if (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length > 0)
 					{
 						alert("Checking settingsCompcache");
 
