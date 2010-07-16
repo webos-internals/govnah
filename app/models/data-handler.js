@@ -3,6 +3,7 @@ function dataHandlerModel()
 	
 	this.mainAssistant = false;
 	this.graphAssistant = false;
+	this.settingsAssistant = false;
 	this.dashAssistant = false;
 	
 	this.currentMode = "card";
@@ -10,6 +11,7 @@ function dataHandlerModel()
 	this.updatingParams = false;
 	
 	this.governor = false;
+	this.compacheEnabled = false;
 	this.profile = false;
 	this.settingsStandard = [];
 	this.settingsSpecific = [];
@@ -155,6 +157,10 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 		}
 	);
 };
+dataHandlerModel.prototype.setSettingsAssistant = function(assistant)
+{
+	this.settingsAssistant = assistant;
+};
 dataHandlerModel.prototype.setDashAssistant = function(assistant)
 {
 	this.dashAssistant = assistant;
@@ -204,6 +210,10 @@ dataHandlerModel.prototype.updateParams = function(num)
 				this.mainAssistant.profileCurrent.innerHTML = '<span class="unknown">Unknown</span>';
 			}
 		}
+		if (this.settingsAssistant && this.settingsAssistant.controller)
+		{
+			this.settingsAssistant.updateList();
+		}
 		
 		this.updatingParams = false;
 	}
@@ -219,12 +229,6 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 			if (tmpParam.name == 'scaling_governor')
 			{
 				this.governor = trim(tmpParam.value);
-				/*
-				if (this.mainAssistant && this.mainAssistant.controller)
-				{
-					this.mainAssistant.governorCurrent.innerHTML = this.governor;
-				}
-				*/
 			}
 			else if (tmpParam.writeable)
 			{
@@ -244,6 +248,10 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 				}
 				else if (num == 3)
 				{
+					if (tmpParam.name == 'compcache_enabled')
+					{
+						this.compacheEnabled = (tmpParam.value==1?true:false);
+					}
 					this.settingsCompcache.push({name:tmpParam.name, value:String(tmpParam.value)});
 				}
 			}

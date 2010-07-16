@@ -40,6 +40,7 @@ SettingsAssistant.prototype.setup = function()
 	this.controller.setupWidget('list', { itemTemplate: "settings/row", swipeToDelete: false, reorderable: false }, this.listModel);
 	this.controller.listen(this.listElement, Mojo.Event.listTap, this.rowTapHandler);
 	
+	dataHandler.setSettingsAssistant(this);
 };
 
 
@@ -61,12 +62,14 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		this.listModel.items.push(
 		{
 			name:	'CPU Freq',
+			data:	dataHandler.governor,
 			scene:	'settings-cpufreq'
 		});
 		
 		this.listModel.items.push(
 		{
 			name:	'Compache',
+			data:	(dataHandler.compacheEnabled?'Enabled':'Disabled'),
 			scene:	'settings-compache'
 		});
 		
