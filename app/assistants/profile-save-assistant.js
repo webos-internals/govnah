@@ -160,6 +160,8 @@ ProfileSaveAssistant.prototype.saveAsProfileButtonPressed = function(event)
 	
 	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
 	this.controller.get('profileName').mojo.setValue('Profile ' + (profiles.cookieData.serial + 1));
+
+	this.controller.stageController.popScene();
 };
 
 ProfileSaveAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
