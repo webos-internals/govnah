@@ -14,6 +14,10 @@ function ProfilesAssistant()
 		items:
 		[
 			{
+				label: $L("Preferences"),
+				command: 'do-prefs'
+			},
+			{
 				label: $L("Help"),
 				command: 'do-help'
 			}
@@ -105,6 +109,10 @@ ProfilesAssistant.prototype.handleCommand = function(event)
 	{
 		switch (event.command)
 		{
+			case 'do-prefs':
+				this.controller.stageController.pushScene('preferences');
+				break;
+				
 			case 'do-help':
 				this.controller.stageController.pushScene('help');
 				break;

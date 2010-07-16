@@ -27,7 +27,7 @@ preferenceCookie.prototype.get = function(reload)
 				// Dashboard Group
 				useDash: false,
 				dashPollSpeed: 10,
-				dashIconUpdate: true,
+				dashIconUpdate: false,
 				
 				// Profiles Group
 				profileList: 'governor',
