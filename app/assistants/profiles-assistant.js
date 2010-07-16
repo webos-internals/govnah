@@ -65,8 +65,10 @@ ProfilesAssistant.prototype.activate = function(event)
 {
     profiles.controller = this.controller;
 
-    if (this.alreadyActivated) {
-	this.updateList();
+    if (this.alreadyActivated)
+	{
+		this.controller.get('profileList').className = prefs.get().profileList;
+		this.updateList();
     }
 
     this.alreadyActivated = true;
