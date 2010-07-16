@@ -1,4 +1,4 @@
-function SettingsCompacheAssistant()
+function SettingsCompcacheAssistant()
 {
 	// setup menu
 	this.menuModel =
@@ -24,7 +24,7 @@ function SettingsCompacheAssistant()
 	
 };
 
-SettingsCompacheAssistant.prototype.setup = function()
+SettingsCompcacheAssistant.prototype.setup = function()
 {
 	// setup menu
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
@@ -66,7 +66,7 @@ SettingsCompacheAssistant.prototype.setup = function()
 };
 
 
-SettingsCompacheAssistant.prototype.onSetParams = function(payload)
+SettingsCompcacheAssistant.prototype.onSetParams = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
@@ -78,7 +78,7 @@ SettingsCompacheAssistant.prototype.onSetParams = function(payload)
 	this.reloadSettings();
 };
 
-SettingsCompacheAssistant.prototype.reloadSettings = function()
+SettingsCompcacheAssistant.prototype.reloadSettings = function()
 {
 	this.settingsModel = {};
 	this.settingsLocation = {};
@@ -87,7 +87,7 @@ SettingsCompacheAssistant.prototype.reloadSettings = function()
 	this.getRequest = service.get_compcache_config(this.onGetParamsCompcache);
 };
 
-SettingsCompacheAssistant.prototype.onGetParams = function(payload, location)
+SettingsCompcacheAssistant.prototype.onGetParams = function(payload, location)
 {
 	if (payload.errorCode != undefined) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
@@ -344,7 +344,7 @@ SettingsCompacheAssistant.prototype.onGetParams = function(payload, location)
 	}
 };
 
-SettingsCompacheAssistant.prototype.saveButtonPressed = function(event)
+SettingsCompcacheAssistant.prototype.saveButtonPressed = function(event)
 {
 	var compcacheConfig = [];
 	
@@ -365,7 +365,7 @@ SettingsCompacheAssistant.prototype.saveButtonPressed = function(event)
 	}
 };
 
-SettingsCompacheAssistant.prototype.saveCompleteCompcache = function(payload)
+SettingsCompcacheAssistant.prototype.saveCompleteCompcache = function(payload)
 {
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
@@ -379,7 +379,7 @@ SettingsCompacheAssistant.prototype.saveCompleteCompcache = function(payload)
 	this.controller.stageController.popScene();
 };
 
-SettingsCompacheAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
+SettingsCompcacheAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
 {
 	if (stdErr && stdErr.length) {
 		message = message + '<br>' + stdErr.join('<br>');
@@ -396,7 +396,7 @@ SettingsCompacheAssistant.prototype.errorMessage = function(title, message, stdE
     });
 };
 
-SettingsCompacheAssistant.prototype.activate = function(event)
+SettingsCompcacheAssistant.prototype.activate = function(event)
 {
 	if (this.controller.stageController.setWindowOrientation)
 	{
@@ -409,7 +409,7 @@ SettingsCompacheAssistant.prototype.activate = function(event)
 	}
 	this.firstActivate = true;
 };
-SettingsCompacheAssistant.prototype.handleCommand = function(event)
+SettingsCompcacheAssistant.prototype.handleCommand = function(event)
 {
 	if (event.type == Mojo.Event.command)
 	{
@@ -422,7 +422,7 @@ SettingsCompacheAssistant.prototype.handleCommand = function(event)
 	}
 };
 
-SettingsCompacheAssistant.prototype.onlyNumbers = function (charCode)
+SettingsCompcacheAssistant.prototype.onlyNumbers = function (charCode)
 {
 	if (charCode > 47 && charCode < 58) {
 		return true;
@@ -430,7 +430,7 @@ SettingsCompacheAssistant.prototype.onlyNumbers = function (charCode)
 	return false;
 }
 
-SettingsCompacheAssistant.prototype.cleanup = function(event)
+SettingsCompcacheAssistant.prototype.cleanup = function(event)
 {
 	
 };

@@ -34,8 +34,8 @@
         "source": "app/assistants/settings-cpufreq-assistant.js"
     },
     {
-        "scenes": "settings-compache",
-        "source": "app/assistants/settings-compache-assistant.js"
+        "scenes": "settings-compcache",
+        "source": "app/assistants/settings-compcache-assistant.js"
     },
     {
         "scenes": "governor",

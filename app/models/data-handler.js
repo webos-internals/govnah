@@ -11,7 +11,7 @@ function dataHandlerModel()
 	this.updatingParams = false;
 	
 	this.governor = false;
-	this.compacheEnabled = false;
+	this.compcacheEnabled = false;
 	this.profile = false;
 	this.settingsStandard = [];
 	this.settingsSpecific = [];
@@ -250,7 +250,7 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 				{
 					if (tmpParam.name == 'compcache_enabled')
 					{
-						this.compacheEnabled = (tmpParam.value==1?true:false);
+						this.compcacheEnabled = (tmpParam.value==1?true:false);
 					}
 					this.settingsCompcache.push({name:tmpParam.name, value:String(tmpParam.value)});
 				}

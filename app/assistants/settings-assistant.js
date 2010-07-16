@@ -68,9 +68,9 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		
 		this.listModel.items.push(
 		{
-			name:	'Compache',
-			data:	(dataHandler.compacheEnabled?'Enabled':'Disabled'),
-			scene:	'settings-compache'
+			name:	'Compcache',
+			data:	(dataHandler.compcacheEnabled?'Enabled':'Disabled'),
+			scene:	'settings-compcache'
 		});
 		
 		this.listModel.items.push(
