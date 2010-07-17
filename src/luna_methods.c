@@ -325,6 +325,8 @@ static bool read_single_line(LSHandle* lshandle, LSMessage *message, char *file)
 
   char line[MAXLINLEN];
 
+  // fprintf(stderr, "Reading from %s\n", file);
+
   FILE *fp = fopen(file, "r");
 
   if (!fp) {
@@ -343,7 +345,7 @@ static bool read_single_line(LSHandle* lshandle, LSMessage *message, char *file)
     }
   }
 
-  fprintf(stderr, "Message is %s\n", buffer);
+  // fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
   return true;
@@ -360,6 +362,8 @@ static bool read_single_line(LSHandle* lshandle, LSMessage *message, char *file)
 static bool read_single_integer(LSHandle* lshandle, LSMessage *message, char *file) {
   LSError lserror;
   LSErrorInit(&lserror);
+
+  // fprintf(stderr, "Reading from %s\n", file);
 
   FILE *fp = fopen(file, "r");
 
@@ -456,6 +460,13 @@ bool get_battery_current_method(LSHandle* lshandle, LSMessage *message, void *ct
       }
   }
   
+  if (closedir(dp)) {
+    sprintf(buffer, "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    directory);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
   sprintf(filename, "%s/%s/getcurrent", battdir, battname);
 
   FILE *fp = fopen(filename, "r");
@@ -703,7 +714,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
     sprintf(filename, "%s/%s", directory, name->child->text);
 
-    fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+    // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
     FILE *fp = fopen(filename, "w");
     if (!fp) {
@@ -760,7 +771,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
       sprintf(filename, "%s/%s", directory, name->child->text);
 
-      fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+      // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
       FILE *fp = fopen(filename, "w");
       if (!fp) {
@@ -882,7 +893,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       governor = value->child->text;
     }
 
-    fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+    // fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
     sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
 
     if (fputs(line, fp) < 0) {
@@ -911,7 +922,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       if (!value || (value->child->type != JSON_STRING) ||
 	  (strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) continue;
 
-      fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+      // fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
       sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
 
       if (fputs(line, fp) < 0) {
@@ -1397,7 +1408,7 @@ bool set_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 
   sprintf(filename, "/sys/block/mmcblk0/queue/scheduler");
 
-  fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+  // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
   FILE *fp = fopen(filename, "w");
   if (!fp) {
@@ -1472,7 +1483,7 @@ bool set_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, v
 
   sprintf(filename, "/proc/sys/net/ipv4/tcp_congestion_control");
 
-  fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+  // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
   FILE *fp = fopen(filename, "w");
   if (!fp) {

@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.5.8',log: [ 'Fixed memory leak, suspected of causing the eventual hang bug'] },
 	 { version: '0.5.7',log: [ 'Revamped current draw display, including inverting the polarity',
 				   'Added io schedulers and tcp congestion control (no profile support yet)'] },
 	 { version: '0.5.6',log: [ 'Improved current graphing on main screen'] },
