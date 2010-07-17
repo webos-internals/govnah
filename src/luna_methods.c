@@ -444,7 +444,7 @@ bool get_battery_current_method(LSHandle* lshandle, LSMessage *message, void *ct
 
   DIR *dp = opendir(battdir);
   if (!dp) {
-    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false }", directory);
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false }", battdir);
     // fprintf(stderr, "Message is %s\n", buffer);
     if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
     return true;
