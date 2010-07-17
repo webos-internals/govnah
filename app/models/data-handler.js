@@ -84,6 +84,7 @@ function dataHandlerModel()
 	this.fills["mem"]     = "rgba(153, 153, 255, .2)";
 	this.fills["state"]   = "rgba(153, 153, 153, .2)";
 
+	this.updateReq  = false;
 	this.freqReq  = false;
 	this.tempReq  = false;
 	this.currReq = false;
@@ -211,24 +212,29 @@ dataHandlerModel.prototype.updateParams = function(num)
 			this.settingsCompcache = [];
 			this.scheduler = false;
 			
-			service.get_cpufreq_params(this.getParamsStandard);
+			if (this.updateReq) this.updateReq.cancel();
+			this.updateReq = service.get_cpufreq_params(this.getParamsStandard);
 		}
 	}
 	else if (num == 1)
 	{
-		service.get_cpufreq_params(this.getParamsSpecific, this.governor);
+		if (this.updateReq) this.updateReq.cancel();
+		this.updateReq = service.get_cpufreq_params(this.getParamsSpecific, this.governor);
 	}
 	else if (num == 2)
 	{
-		service.get_compcache_config(this.getParamsCompcache);
+		if (this.updateReq) this.updateReq.cancel();
+		this.updateReq = service.get_compcache_config(this.getParamsCompcache);
 	}
 	else if (num == 3)
 	{
-		service.get_io_scheduler(this.getParamsIoScheduler);
+		if (this.updateReq) this.updateReq.cancel();
+		this.updateReq = service.get_io_scheduler(this.getParamsIoScheduler);
 	}
 	else if (num == 4)
 	{
-		service.get_tcp_congestion_control(this.getParamsTcpCongestion);
+		if (this.updateReq) this.updateReq.cancel();
+		this.updateReq = service.get_tcp_congestion_control(this.getParamsTcpCongestion);
 	}
 	else if (num == 5)
 	{
