@@ -69,10 +69,10 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		this.listModel.items.push(
 		{
 			name:	'Compressed Swap',
-			data:	(dataHandler.compcacheEnabled?'Enabled':'Disabled'),
-			scene:	'settings-compcache'
+			data:	(dataHandler.compcache == false) ? "N/A" : dataHandler.compcache,
+			scene:	(dataHandler.compcache == false) ? false : 'settings-compcache'
 		});
-		
+
 		this.listModel.items.push(
 		{
 			name:	'I/O Scheduler',

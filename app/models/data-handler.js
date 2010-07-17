@@ -29,7 +29,7 @@ function dataHandlerModel()
 	this.updatingParams = false;
 	
 	this.governor = false;
-	this.compcacheEnabled = false;
+	this.compcache = false;
 	this.profile = false;
 	this.settingsStandard = [];
 	this.settingsSpecific = [];
@@ -67,8 +67,8 @@ function dataHandlerModel()
 	this.strokes = $H();
 	this.strokes["freq"]  = "rgba(255, 153, 153, .4)";
 	this.strokes["temp"]  = "rgba(153, 205, 153, .4)";
-	this.strokes["curr1"] = "rgba(255, 153, 153, .4)";
-	this.strokes["curr2"] = "rgba(153, 205, 153, .4)";
+	this.strokes["curr1"] = "rgba(153, 205, 153, .4)";
+	this.strokes["curr2"] = "rgba(255, 153, 153, .4)";
 	this.strokes["load"]  = "rgba(153, 153, 255, .4)";
 	this.strokes["mem"]   = "rgba(153, 153, 255, .4)";
 	this.strokes["state"] = "rgba(153, 153, 153, .4)";
@@ -76,8 +76,8 @@ function dataHandlerModel()
 	this.fills = $H();
 	this.fills["freq"]    = "rgba(255, 153, 153, .2)";
 	this.fills["temp"]    = "rgba(153, 205, 153, .2)";
-	this.fills["curr1"]   = "rgba(255, 153, 153, .2)";
-	this.fills["curr2"]   = "rgba(153, 205, 153, .2)";
+	this.fills["curr1"]   = "rgba(153, 205, 153, .2)";
+	this.fills["curr2"]   = "rgba(255, 153, 153, .2)";
 	this.fills["load"]    = "rgba(153, 153, 255, .2)";
 	this.fills["mem"]     = "rgba(153, 153, 255, .2)";
 	this.fills["state"]   = "rgba(153, 153, 153, .2)";
@@ -291,7 +291,7 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 				{
 					if (tmpParam.name == 'compcache_enabled')
 					{
-						this.compcacheEnabled = (tmpParam.value==1?true:false);
+						this.compcache = (tmpParam.value==1?"Enabled":"Disabled");
 					}
 					this.settingsCompcache.push({name:tmpParam.name, value:String(tmpParam.value)});
 				}
@@ -645,7 +645,7 @@ dataHandlerModel.prototype.currHandler = function(payload)
 	if (payload.returnValue) 
 	{
 		var timestamp = Math.round(new Date().getTime()/1000.0);
-		var value = 0 - parseInt(payload.value);
+		var value = parseInt(payload.value);
 	
 		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
