@@ -6,7 +6,6 @@
     {"source": "app/models/bar-graph.js"},
     {"source": "app/models/profile.js"},
     {"source": "app/models/default-profiles.js"},
-    {"source": "app/models/settings.js"},
     {"source": "app/models/data-handler.js"},
     {"source": "app/assistants/app-assistant.js"},
     {

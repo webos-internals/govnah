@@ -1,5 +1,23 @@
 function dataHandlerModel()
 {
+	// this tells the 
+	this.settings = 
+	{
+		'scaling_min_freq':		{ type: 'listFreq',	nice: 'min freq'	},
+		'scaling_max_freq':		{ type: 'listFreq',	nice: 'max freq'	},
+		'scaling_setspeed':		{ type: 'listFreq',	nice: 'setspeed'	},
+		'up_threshold':			{ type: 'listPcnt'	},
+		'down_threshold':		{ type: 'listPcnt'	},
+		'freq_step':			{ type: 'listPcnt'	},
+		'sampling_rate':		{ type: 'listSamp'	},
+		'sampling_down_factor':	{ type: 'listSampDown'	},
+		'powersave_bias':		{ type: 'listPowr'	},
+		'ignore_nice_load':		{ type: 'toggleTF'	},
+		'max_tickle_window':	{ type: 'listWindow'	},
+		'max_floor_window':		{ type: 'listWindow'	},
+		'compcache_enabled':	{ type: 'toggleTF'	},
+		'compcache_memlimit':	{ type: 'listMem'	}
+	};
 	
 	this.mainAssistant = false;
 	this.graphAssistant = false;
@@ -73,11 +91,16 @@ function dataHandlerModel()
 	
 	this.fullGraph = false;
 	
-    this.getParamsStandard  = this.getParamsHandler.bindAsEventListener(this, 1);
-    this.getParamsSpecific  = this.getParamsHandler.bindAsEventListener(this, 2);
-    this.getParamsCompcache = this.getParamsHandler.bindAsEventListener(this, 3);
-    this.getIoScheduler     = this.getIoScheduler.bindAsEventListener(this, 4);
-    this.getTcpCongestion   = this.getTcpCongestion.bindAsEventListener(this, 5);
+    this.getParamsStandard		= this.getParamsHandler.bindAsEventListener(this, 1);
+    this.getParamsSpecific		= this.getParamsHandler.bindAsEventListener(this, 2);
+    this.getParamsCompcache		= this.getParamsHandler.bindAsEventListener(this, 3);
+    this.getParamsIoScheduler	= this.getIoScheduler.bindAsEventListener(this, 4);
+    this.getParamsTcpCongestion = this.getTcpCongestion.bindAsEventListener(this, 5);
+	
+};
+
+dataHandlerModel.prototype.setupModels = function()
+{
 	
 };
 
@@ -199,11 +222,11 @@ dataHandlerModel.prototype.updateParams = function(num)
 	}
 	else if (num == 3)
 	{
-		service.get_io_scheduler(this.getIoScheduler);
+		service.get_io_scheduler(this.getParamsIoScheduler);
 	}
 	else if (num == 4)
 	{
-		service.get_tcp_congestion_control(this.getTcpCongestion);
+		service.get_tcp_congestion_control(this.getParamsTcpCongestion);
 	}
 	else if (num == 5)
 	{
@@ -277,7 +300,6 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 	this.updateParams(num);
 	
 };
-
 dataHandlerModel.prototype.getIoScheduler = function(payload, num)
 {
 	alert("calling getIoScheduler");
@@ -305,7 +327,6 @@ dataHandlerModel.prototype.getIoScheduler = function(payload, num)
 	this.updateParams(num);
 	
 };
-
 dataHandlerModel.prototype.getTcpCongestion = function(payload, num)
 {
 	if (payload.stdOut) {
@@ -320,6 +341,11 @@ dataHandlerModel.prototype.getTcpCongestion = function(payload, num)
 	this.updateParams(num);
 	
 };
+
+dataHandlerModel.prototype.settingLabel = function(name)
+{
+	return (this.settings[name].nice ? this.settings[name].nice : name.replace(/_/g, " "));
+}
 
 dataHandlerModel.prototype.openDash = function(skipBanner)
 {
