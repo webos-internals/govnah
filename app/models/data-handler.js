@@ -311,8 +311,6 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 };
 dataHandlerModel.prototype.getIoScheduler = function(payload, num)
 {
-	alert("calling getIoScheduler");
-
 	if (payload.stdOut) {
 		tmpParam = payload.stdOut[0];
 			
