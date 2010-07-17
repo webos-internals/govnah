@@ -37,6 +37,7 @@ function dataHandlerModel()
 	this.settingsSpecific = [];
 	this.settingsCompcache = [];
 	this.scheduler = false;
+	this.congestion = false;
 	
 	this.currentLimits = {min:false, max:false}; 
 	
