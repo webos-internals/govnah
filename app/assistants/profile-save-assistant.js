@@ -157,10 +157,6 @@ ProfileSaveAssistant.prototype.saveAsProfileButtonPressed = function(event)
 	profiles.newProfile(params);
 	
 	this.saveAsProfileButtonElement.mojo.deactivate();
-	
-	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
-	this.controller.get('profileName').mojo.setValue('Profile ' + (profiles.cookieData.serial + 1));
-
 	this.controller.stageController.popScene();
 };
 
