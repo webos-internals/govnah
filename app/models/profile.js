@@ -407,18 +407,18 @@ profileModel.prototype.getDataString = function()
 };
 profileModel.prototype.getDataSettingString = function(name, value)
 {
-	if (profilesModel.settings[name])
+	if (dataHandler.settings[name])
 	{
-		switch(profilesModel.settings[name].type)
+		switch(dataHandler.settings[name].type)
 		{
 			case 'listFreq':
-				return [profilesModel.settingLabel(name), (parseInt(value)/1000) + ' MHz'];
+				return [dataHandler.settingLabel(name), (parseInt(value)/1000) + ' MHz'];
 				break;
 			case 'listPcnt':
-				return [profilesModel.settingLabel(name), value + ' %'];
+				return [dataHandler.settingLabel(name), value + ' %'];
 				break;
 			case 'listPowr':
-				return [profilesModel.settingLabel(name), value];
+				return [dataHandler.settingLabel(name), value];
 				break;
 			case 'listSamp':
 				var min = 0;
@@ -433,20 +433,20 @@ profileModel.prototype.getDataSettingString = function(name, value)
 				if (min > 1) display += 's ';
 				else display += ' ';
 				if (sec > 0) display += sec+' Sec';
-				return [profilesModel.settingLabel(name), display];
+				return [dataHandler.settingLabel(name), display];
 				break;
 			case 'listSampDown':
-				return [profilesModel.settingLabel(name), value];
+				return [dataHandler.settingLabel(name), value];
 				break;
 			case 'listMem':
-				return [profilesModel.settingLabel(name), value/1024 + ' MB'];
+				return [dataHandler.settingLabel(name), value/1024 + ' MB'];
 				break;
 			case 'listWindow':
-				return [profilesModel.settingLabel(name), value/1000 + ' Sec'];
+				return [dataHandler.settingLabel(name), value/1000 + ' Sec'];
 				break;
 				
 			case 'toggleTF':
-				return [profilesModel.settingLabel(name), (value == 1 ? 'true' : 'false')];
+				return [dataHandler.settingLabel(name), (value == 1 ? 'true' : 'false')];
 				break;
 		}
 	}

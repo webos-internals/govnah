@@ -259,9 +259,9 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 				//alert('-----');
 				//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
 				
-				if (profilesModel.settings[tmpParam.name] && !prefs.get().manualEntry)
+				if (dataHandler.settings[tmpParam.name] && !prefs.get().manualEntry)
 				{
-					switch(profilesModel.settings[tmpParam.name].type)
+					switch(dataHandler.settings[tmpParam.name].type)
 					{
 						case 'listFreq':
 							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
@@ -272,7 +272,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							(
 								tmpParam.name,
 								{
-									label: profilesModel.settingLabel(tmpParam.name),
+									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.scalingFrequencyChoices
 								},
@@ -289,7 +289,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							(
 								tmpParam.name,
 								{
-									label: profilesModel.settingLabel(tmpParam.name),
+									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.percentChoices
 								},
@@ -305,7 +305,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							(
 								tmpParam.name,
 								{
-									label: profilesModel.settingLabel(tmpParam.name),
+									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.powersaveChoices
 								},
@@ -356,7 +356,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							(
 								tmpParam.name,
 								{
-									label: profilesModel.settingLabel(tmpParam.name),
+									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: samplingChoices
 								},
@@ -372,7 +372,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							(
 								tmpParam.name,
 								{
-									label: profilesModel.settingLabel(tmpParam.name),
+									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.samplingDownChoices
 								},
@@ -388,7 +388,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							(
 								tmpParam.name,
 								{
-									label: profilesModel.settingLabel(tmpParam.name),
+									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.memoryChoices
 								},
@@ -397,7 +397,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							break;
 							
 						case 'toggleTF':
-							newHTML += Mojo.View.render({object: {label:profilesModel.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'settings/toggle-widget'});
+							newHTML += Mojo.View.render({object: {label:dataHandler.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'settings/toggle-widget'});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -424,7 +424,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							(
 								tmpParam.name,
 								{
-									label: profilesModel.settingLabel(tmpParam.name),
+									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.windowChoices
 								},
