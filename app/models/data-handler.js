@@ -1,22 +1,24 @@
 function dataHandlerModel()
 {
-	// this tells the 
+	/* this tells the settings scenes what nice name to give some settings,
+	 * and what widget type it should use to render it. if it doesn't exist
+	 * in this list, it will be rendered as a text box */
 	this.settings = 
 	{
 		'scaling_min_freq':		{ type: 'listFreq',	nice: 'min freq'	},
 		'scaling_max_freq':		{ type: 'listFreq',	nice: 'max freq'	},
 		'scaling_setspeed':		{ type: 'listFreq',	nice: 'setspeed'	},
-		'up_threshold':			{ type: 'listPcnt'	},
-		'down_threshold':		{ type: 'listPcnt'	},
-		'freq_step':			{ type: 'listPcnt'	},
-		'sampling_rate':		{ type: 'listSamp'	},
+		'up_threshold':			{ type: 'listPcnt'		},
+		'down_threshold':		{ type: 'listPcnt'		},
+		'freq_step':			{ type: 'listPcnt'		},
+		'sampling_rate':		{ type: 'listSamp'		},
 		'sampling_down_factor':	{ type: 'listSampDown'	},
-		'powersave_bias':		{ type: 'listPowr'	},
-		'ignore_nice_load':		{ type: 'toggleTF'	},
+		'powersave_bias':		{ type: 'listPowr'		},
+		'ignore_nice_load':		{ type: 'toggleTF'		},
 		'max_tickle_window':	{ type: 'listWindow'	},
 		'max_floor_window':		{ type: 'listWindow'	},
-		'compcache_enabled':	{ type: 'toggleTF'	},
-		'compcache_memlimit':	{ type: 'listMem'	}
+		'compcache_enabled':	{ type: 'toggleTF'		},
+		'compcache_memlimit':	{ type: 'listMem'		}
 	};
 	
 	this.mainAssistant = false;
