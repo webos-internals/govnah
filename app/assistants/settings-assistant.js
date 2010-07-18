@@ -68,9 +68,10 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		
 		this.listModel.items.push(
 		{
-			name:	'Compressed Swap',
-			data:	(dataHandler.compcache == false) ? "N/A" : dataHandler.compcache,
-			scene:	(dataHandler.compcache == false) ? false : 'settings-compcache'
+			rowClass:	(dataHandler.compcache == false) ? 'disabled' : '',
+			name:		'Compressed Swap',
+			data:		(dataHandler.compcache == false) ? "N/A" : dataHandler.compcache,
+			scene:		(dataHandler.compcache == false) ? false : 'settings-compcache'
 		});
 
 		this.listModel.items.push(

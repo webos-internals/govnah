@@ -195,6 +195,14 @@ body.palm-dark .palm-separator
 
 
 
+.settings .palm-row-wrapper.disabled .title
+{
+	color: #999;
+}
+
+
+
+
 /*
  * Governor Scene Styles
  */
