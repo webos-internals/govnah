@@ -510,7 +510,14 @@ dataHandlerModel.prototype.freqHandler = function(payload)
 	
 		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
-			this.mainAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
+			if ((value / 1000) >= 1000)
+			{
+				this.mainAssistant.freqCurrent.innerHTML = Math.round((value / 1000) / 100) / 10 + '<div class="unit">GHz</div>';
+			}
+			else
+			{
+				this.mainAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
+			}
 		}
 		
 		var dataObj = this.lineData.get(timestamp)
