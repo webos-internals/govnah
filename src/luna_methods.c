@@ -881,13 +881,13 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   sprintf(directory, "%s", cpufreqdir);
   json_t *genericEntry = genericParams->child->child;
   while (genericEntry) {
-    if (genericEntry->type != JSON_OBJECT) continue;
+    if (genericEntry->type != JSON_OBJECT) goto loop1;
     json_t *name = json_find_first_label(genericEntry, "name");
     if (!name || (name->child->type != JSON_STRING) ||
-	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) continue;
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) goto loop1;
     json_t *value = json_find_first_label(genericEntry, "value");
     if (!value || (value->child->type != JSON_STRING) ||
-	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text)))  continue;
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop1;
 
     if (!strcmp(name->child->text, "scaling_governor")) {
       governor = value->child->text;
@@ -906,6 +906,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       return true;
     }
       
+  loop1:
     genericEntry = genericEntry->next;
   }
 
@@ -914,13 +915,13 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
     sprintf(directory, "%s/%s", cpufreqdir, governor);
     json_t *governorEntry = governorParams->child->child;
     while (governorEntry) {
-      if (governorEntry->type != JSON_OBJECT) continue;
+      if (governorEntry->type != JSON_OBJECT) goto loop2;
       json_t *name = json_find_first_label(governorEntry, "name");
       if (!name || (name->child->type != JSON_STRING) ||
-	  (strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) continue;
+	  (strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) goto loop2;
       json_t *value = json_find_first_label(governorEntry, "value");
       if (!value || (value->child->type != JSON_STRING) ||
-	  (strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) continue;
+	  (strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop2;
 
       // fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
       sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
@@ -935,6 +936,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
 	return true;
       }
       
+    loop2:
       governorEntry = governorEntry->next;
     }
   }
@@ -1091,13 +1093,13 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
 
   json_t *entry = compcacheConfig->child->child;
   while (entry) {
-    if (entry->type != JSON_OBJECT) continue;
+    if (entry->type != JSON_OBJECT) goto loop;
     json_t *name = json_find_first_label(entry, "name");
     if (!name || (name->child->type != JSON_STRING) ||
-	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) continue;
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) goto loop;
     json_t *value = json_find_first_label(entry, "value");
     if (!value || (value->child->type != JSON_STRING) ||
-	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text)))  continue;
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop;
 
     if (!strcmp(name->child->text, "compcache_enabled")) {
       enable = strcmp(value->child->text, "1")?false:true;
@@ -1107,6 +1109,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
       memlimit = value->child->text;
     }
 
+  loop:
     entry = entry->next;
   }
 
@@ -1242,13 +1245,13 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
 
   json_t *entry = compcacheConfig->child->child;
   while (entry) {
-    if (entry->type != JSON_OBJECT) continue;
+    if (entry->type != JSON_OBJECT) goto loop;
     json_t *name = json_find_first_label(entry, "name");
     if (!name || (name->child->type != JSON_STRING) ||
-	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) continue;
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) goto loop;
     json_t *value = json_find_first_label(entry, "value");
     if (!value || (value->child->type != JSON_STRING) ||
-	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text)))  continue;
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop;
 
     if (!strcmp(name->child->text, "compcache_enabled")) {
       enable = strcmp(value->child->text, "1")?false:true;
@@ -1258,6 +1261,7 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
       memlimit = value->child->text;
     }
 
+  loop:
     entry = entry->next;
   }
 
@@ -1518,6 +1522,288 @@ bool set_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, v
 }
 
 //
+// Write upstart script to make sysfs params "sticky"
+//
+bool stick_sysfs_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  char directory[MAXLINLEN];
+  char filename[MAXLINLEN];
+  char line[MAXLINLEN];
+
+  bool error = false;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the sysfsParams argument from the message
+  json_t *sysfsParams = json_find_first_label(object, "sysfsParams");
+  if (!sysfsParams || (sysfsParams->child->type != JSON_ARRAY)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing sysfsParams array\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-sysfs");
+  FILE *fp = fopen(filename, "w");
+  if (!fp) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  error = false;
+  if (fputs("description \"Govnah SysFS Settings\"\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("start on stopped finish\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("script\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevBootPanicked`\" = \"false\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevShutdownClean`\" = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m -n com.palm.system last_umount_clean`\"  = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+ 
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  json_t *entry = sysfsParams->child->child;
+  while (entry) {
+    if (entry->type != JSON_OBJECT) goto loop;
+    json_t *name = json_find_first_label(entry, "name");
+    if (!name || (name->child->type != JSON_STRING) ||
+	(strspn(name->child->text, ALLOWED_CHARS"/") != strlen(name->child->text))) goto loop;
+    json_t *value = json_find_first_label(entry, "value");
+    if (!value || (value->child->type != JSON_STRING) ||
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop;
+
+    fprintf(stderr, "echo %s > %s\n", value->child->text, name->child->text);
+    sprintf(line, "echo -n '%s' > %s\n", value->child->text, name->child->text);
+
+    if (fputs(line, fp) < 0) {
+      (void)fclose(fp);
+      (void)unlink(filename);
+      sprintf(buffer,
+	      "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	      filename);
+      if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+      return true;
+    }
+      
+  loop:
+    entry = entry->next;
+  }
+
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("end script\n", fp) < 0) error = true;
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  if (fclose(fp)) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Delete sysfs params upstart script
+//
+bool unstick_sysfs_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  char filename[MAXLINLEN];
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-sysfs");
+  (void)unlink(filename);
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Write upstart script to make sysctl params "sticky"
+//
+bool stick_sysctl_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  char directory[MAXLINLEN];
+  char filename[MAXLINLEN];
+  char line[MAXLINLEN];
+
+  bool error = false;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  json_t *object = LSMessageGetPayloadJSON(message);
+
+  // Extract the sysctlParams argument from the message
+  json_t *sysctlParams = json_find_first_label(object, "sysctlParams");
+  if (!sysctlParams || (sysctlParams->child->type != JSON_ARRAY)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing sysctlParams array\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-sysctl");
+  FILE *fp = fopen(filename, "w");
+  if (!fp) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  error = false;
+  if (fputs("description \"Govnah SysCtl Settings\"\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("start on stopped finish\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("script\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevBootPanicked`\" = \"false\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevShutdownClean`\" = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m -n com.palm.system last_umount_clean`\"  = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+ 
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  json_t *entry = sysctlParams->child->child;
+  while (entry) {
+    if (entry->type != JSON_OBJECT) goto loop;
+    json_t *name = json_find_first_label(entry, "name");
+    if (!name || (name->child->type != JSON_STRING) ||
+	(strspn(name->child->text, ALLOWED_CHARS"/") != strlen(name->child->text))) goto loop;
+    json_t *value = json_find_first_label(entry, "value");
+    if (!value || (value->child->type != JSON_STRING) ||
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop;
+
+    // fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+    sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
+
+    if (fputs(line, fp) < 0) {
+      (void)fclose(fp);
+      (void)unlink(filename);
+      sprintf(buffer,
+	      "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	      filename);
+      if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+      return true;
+    }
+      
+  loop:
+    entry = entry->next;
+  }
+
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("end script\n", fp) < 0) error = true;
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  if (fclose(fp)) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Delete sysctl params upstart script
+//
+bool unstick_sysctl_params_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  char filename[MAXLINLEN];
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-sysctl");
+  (void)unlink(filename);
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
 // Handler for the getProfiles service.
 //
 bool getProfiles_handler(LSHandle* lshandle, LSMessage *reply, void *ctx) {
@@ -1648,6 +1934,12 @@ LSMethod luna_methods[] = {
   { "get_tcp_congestion_control", get_tcp_congestion_control_method },
   { "set_tcp_congestion_control", set_tcp_congestion_control_method },
   { "get_tcp_available_congestion_control", get_tcp_available_congestion_control_method },
+
+  { "stick_sysfs_params",	stick_sysfs_params_method },
+  { "unstick_sysfs_params",	unstick_sysfs_params_method },
+
+  { "stick_sysctl_params",	stick_sysctl_params_method },
+  { "unstick_sysctl_params",	unstick_sysctl_params_method },
 
   { "getProfiles",		getProfiles_method },
   { "setProfile",		setProfile_method },
