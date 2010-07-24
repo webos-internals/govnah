@@ -512,7 +512,7 @@ dataHandlerModel.prototype.freqHandler = function(payload)
 		{
 			if ((value / 1000) >= 1000)
 			{
-				this.mainAssistant.freqCurrent.innerHTML = Math.round((value / 1000) / 100) / 10 + '<div class="unit">GHz</div>';
+				this.mainAssistant.freqCurrent.innerHTML = ((value / 1000) / 1000) + '<div class="unit">GHz</div>';
 			}
 			else
 			{
