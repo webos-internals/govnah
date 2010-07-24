@@ -412,7 +412,10 @@ profileModel.prototype.getDataSettingString = function(name, value)
 		switch(dataHandler.settings[name].type)
 		{
 			case 'listFreq':
-				return [dataHandler.settingLabel(name), (parseInt(value)/1000) + ' MHz'];
+				if ((parseInt(value) / 1000) >= 1000)
+					return [dataHandler.settingLabel(name), ((parseInt(value)/1000)/1000) + ' GHz'];
+				else
+					return [dataHandler.settingLabel(name), (parseInt(value)/1000) + ' MHz'];
 				break;
 			case 'listPcnt':
 				return [dataHandler.settingLabel(name), value + ' %'];

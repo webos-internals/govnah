@@ -231,7 +231,14 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							var tmpFreq = parseInt(trim(data[d]));
 							if (tmpFreq)
 							{
-								this.scalingFrequencyChoices.push({label:(tmpFreq/1000) + ' MHz', value:tmpFreq});
+								if ((tmpFreq / 1000) >= 1000)
+								{
+									this.scalingFrequencyChoices.push({label:((tmpFreq/1000)/1000) + ' GHz', value:tmpFreq});
+								}
+								else
+								{
+									this.scalingFrequencyChoices.push({label:(tmpFreq/1000) + ' MHz', value:tmpFreq});
+								}
 							}
 						}
 					}
