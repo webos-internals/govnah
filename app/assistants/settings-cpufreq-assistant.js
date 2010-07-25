@@ -22,10 +22,7 @@ function SettingsCpufreqAssistant()
 	this.settingsModel = {};
 	this.settingsLocation = {};
 	
-	this.scalingFrequencyChoices = [];
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
-		this.scalingFrequencyChoices = dataHandler.scalingFrequencyChoices;
-	}
+	this.scalingFrequencyChoices = dataHandler.scalingFrequencyChoices;
 	
 	this.samplingRates = {min:false, max:false}; 
 	
