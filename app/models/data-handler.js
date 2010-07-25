@@ -39,6 +39,7 @@ function dataHandlerModel()
 	this.scheduler = false;
 	this.congestion = false;
 	
+	this.scalingFrequencyChoices = [];
 	this.currentLimits = {min:false, max:false}; 
 	
 	this.iconDirty = false;
@@ -640,6 +641,24 @@ dataHandlerModel.prototype.stateHandler = function(payload)
 			{
 				var dataArray = valueArray[v].split(' ');
 				dataHash.set(parseInt(dataArray[0]), parseInt(dataArray[1]));
+			}
+		}
+		if (this.scalingFrequencyChoices.length == 0)
+		{
+			for (var v = 0; v < valueArray.length; v++)
+			{
+				if (valueArray[v])
+				{
+					var dataArray = valueArray[v].split(' ');
+					if ((parseInt(dataArray[0]) / 1000) >= 1000)
+					{
+						this.scalingFrequencyChoices.push({label:((parseInt(dataArray[0])/1000)/1000) + ' GHz', value:parseInt(dataArray[0])});
+					}
+					else
+					{
+						this.scalingFrequencyChoices.push({label:(parseInt(dataArray[0])/1000) + ' MHz', value:parseInt(dataArray[0])});
+					}
+				}
 			}
 		}
 		this.barData.state = dataHash;

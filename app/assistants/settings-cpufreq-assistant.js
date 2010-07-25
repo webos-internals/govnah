@@ -24,11 +24,7 @@ function SettingsCpufreqAssistant()
 	
 	this.scalingFrequencyChoices = [];
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
-		this.scalingFrequencyChoices.push({label:'122.88 MHz', value:122880});
-		this.scalingFrequencyChoices.push({label:'245.76 MHz', value:245760});
-		this.scalingFrequencyChoices.push({label:'320.00 MHz', value:320000});
-		this.scalingFrequencyChoices.push({label:'480.00 MHz', value:480000});
-		this.scalingFrequencyChoices.push({label:'600.00 MHz', value:600000});
+		this.scalingFrequencyChoices = dataHandler.scalingFrequencyChoices;
 	}
 	
 	this.samplingRates = {min:false, max:false}; 
