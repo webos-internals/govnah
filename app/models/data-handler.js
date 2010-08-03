@@ -39,6 +39,7 @@ function dataHandlerModel()
 	this.profile = false;
 	this.settingsStandard = [];
 	this.settingsSpecific = [];
+	this.settingsOverride = [];
 	this.settingsCompcache = [];
 	this.scheduler = false;
 	this.congestion = false;
@@ -102,9 +103,10 @@ function dataHandlerModel()
 	
     this.getParamsStandard		= this.getParamsHandler.bindAsEventListener(this, 1);
     this.getParamsSpecific		= this.getParamsHandler.bindAsEventListener(this, 2);
-    this.getParamsCompcache		= this.getParamsHandler.bindAsEventListener(this, 3);
-    this.getParamsIoScheduler	= this.getIoScheduler.bindAsEventListener(this, 4);
-    this.getParamsTcpCongestion = this.getTcpCongestion.bindAsEventListener(this, 5);
+    this.getParamsOverride		= this.getParamsHandler.bindAsEventListener(this, 3);
+    this.getParamsCompcache		= this.getParamsHandler.bindAsEventListener(this, 4);
+    this.getParamsIoScheduler	= this.getIoScheduler.bindAsEventListener(  this, 5);
+    this.getParamsTcpCongestion = this.getTcpCongestion.bindAsEventListener(this, 6);
 	
 };
 
@@ -215,6 +217,7 @@ dataHandlerModel.prototype.updateParams = function(num)
 			this.profile = false;
 			this.settingsStandard = [];
 			this.settingsSpecific = [];
+			this.settingsOverride = [];
 			this.settingsCompcache = [];
 			this.scheduler = false;
 			
@@ -230,23 +233,29 @@ dataHandlerModel.prototype.updateParams = function(num)
 	else if (num == 2)
 	{
 		if (this.updateReq) this.updateReq.cancel();
-		this.updateReq = service.get_compcache_config(this.getParamsCompcache);
+		this.updateReq = service.get_cpufreq_params(this.getParamsOverride, "override");
 	}
 	else if (num == 3)
 	{
 		if (this.updateReq) this.updateReq.cancel();
-		this.updateReq = service.get_io_scheduler(this.getParamsIoScheduler);
+		this.updateReq = service.get_compcache_config(this.getParamsCompcache);
 	}
 	else if (num == 4)
 	{
 		if (this.updateReq) this.updateReq.cancel();
-		this.updateReq = service.get_tcp_congestion_control(this.getParamsTcpCongestion);
+		this.updateReq = service.get_io_scheduler(this.getParamsIoScheduler);
 	}
 	else if (num == 5)
+	{
+		if (this.updateReq) this.updateReq.cancel();
+		this.updateReq = service.get_tcp_congestion_control(this.getParamsTcpCongestion);
+	}
+	else if (num == 6)
 	{
 		this.profile = profiles.findProfile(this.governor,
 											this.settingsStandard,
 											this.settingsSpecific,
+											this.settingsOverride,
 											this.settingsCompcache);
 		if (this.mainAssistant && this.mainAssistant.controller)
 		{
@@ -296,6 +305,10 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 					this.settingsSpecific.push({name:tmpParam.name, value:String(tmpParam.value)});
 				}
 				else if (num == 3)
+				{
+					this.settingsOverride.push({name:tmpParam.name, value:String(tmpParam.value)});
+				}
+				else if (num == 4)
 				{
 					if (tmpParam.name == 'compcache_enabled')
 					{

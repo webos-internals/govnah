@@ -24,7 +24,7 @@ function profilesModel()
 	this.stickCompleteCpufreq  = this.stickComplete.bindAsEventListener(this, "cpufreq");
 	this.stickCompleteCompcache  = this.stickComplete.bindAsEventListener(this, "compcache");
 };
-profilesModel.prototype.findProfile = function(governor, settingsStandard, settingsSpecific, settingsCompcache)
+profilesModel.prototype.findProfile = function(governor, settingsStandard, settingsSpecific, settingsOverride, settingsCompcache)
 {
 	if (this.profiles.length > 0)
 	{
@@ -35,11 +35,13 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 				//alert(this.profiles[p].governor);
 
 				if (this.profiles[p].governor == governor &&
-					(!this.profiles[p].settingsStandard ||
+					(!this.profiles[p].settingsStandard || !this.profiles[p].settingsStandard.length ||
 					 (this.profiles[p].settingsStandard.length == settingsStandard.length)) &&
-					(!this.profiles[p].settingsSpecific ||
+					(!this.profiles[p].settingsSpecific || !this.profiles[p].settingsSpecific.length || 
 					 (this.profiles[p].settingsSpecific.length == settingsSpecific.length)) &&
-					(!this.profiles[p].settingsCompcache ||
+					(!this.profiles[p].settingsOverride || !this.profiles[p].settingsOverride.length ||
+					 (this.profiles[p].settingsOverride.length == settingsOverride.length)) &&
+					(!this.profiles[p].settingsCompcache || !this.profiles[p].settingsCompcache.length ||
 					 (this.profiles[p].settingsCompcache.length == settingsCompcache.length)))
 				{
 					var match = true;
@@ -67,6 +69,19 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 						{
 							if (this.profiles[p].settingsSpecific[s].name != settingsSpecific[s].name ||
 								this.profiles[p].settingsSpecific[s].value != settingsSpecific[s].value)
+							{
+								match = false;
+							}
+						}
+					}
+					if (this.profiles[p].settingsOverride && this.profiles[p].settingsOverride.length > 0)
+					{
+						alert("Checking settingsOverride");
+
+						for (var s = 0; s < this.profiles[p].settingsOverride.length; s++)
+						{
+							if (this.profiles[p].settingsOverride[s].name != settingsOverride[s].name ||
+								this.profiles[p].settingsOverride[s].value != settingsOverride[s].value)
 							{
 								match = false;
 							}
@@ -319,12 +334,14 @@ function profileModel(params)
 	
 	this.settingsStandard  = params.settingsStandard;
 	this.settingsSpecific  = params.settingsSpecific;
+	this.settingsOverride  = params.settingsOverride;
 	this.settingsCompcache = params.settingsCompcache;
 };
 profileModel.prototype.apply = function()
 {
 	var standardParams  = [];
 	var specificParams  = [];
+	var overrideParams  = [];
 	var compcacheConfig = [];
 
 	standardParams.push({name:'scaling_governor', value:this.governor});
@@ -351,10 +368,16 @@ profileModel.prototype.apply = function()
 		}
 	}
 
+	if (this.settingsOverride) {
+		for (var s = 0; s < this.settingsOverride.length; s++) {
+			overrideParams.push(this.settingsOverride[s]);
+		}
+	}
+
 	if (profiles.setRequests['cpufreq']) profiles.setRequests['cpufreq'].cancel();
-	profiles.setRequests["cpufreq"] = service.set_cpufreq_params(profiles.applyCompleteCpufreq, standardParams, specificParams, []);
+	profiles.setRequests["cpufreq"] = service.set_cpufreq_params(profiles.applyCompleteCpufreq, standardParams, specificParams, overrideParams);
 	if (profiles.stickRequests['cpufreq']) profiles.stickRequests['cpufreq'].cancel();
-	profiles.stickRequests['cpufreq'] = service.stick_cpufreq_params(profiles.stickCompleteCpufreq, standardParams, specificParams, []);
+	profiles.stickRequests['cpufreq'] = service.stick_cpufreq_params(profiles.stickCompleteCpufreq, standardParams, specificParams, overrideParams);
 	
 	if (this.settingsCompcache) {
 		for (var s = 0; s < this.settingsCompcache.length; s++) {
@@ -394,6 +417,12 @@ profileModel.prototype.getDataString = function()
 	if (this.settingsSpecific) {
 		for (var s = 0; s < this.settingsSpecific.length; s++) {
 			var row = this.getDataSettingString(this.settingsSpecific[s].name, this.settingsSpecific[s].value);
+			data += '<br /><span class="name">' + row[0] + '</span><span class="value">' + row[1] + '</span>';
+		}
+	}
+	if (this.settingsOverride) {
+		for (var s = 0; s < this.settingsOverride.length; s++) {
+			var row = this.getDataSettingString(this.settingsOverride[s].name, this.settingsOverride[s].value);
 			data += '<br /><span class="name">' + row[0] + '</span><span class="value">' + row[1] + '</span>';
 		}
 	}

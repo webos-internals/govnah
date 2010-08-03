@@ -61,6 +61,7 @@ ProfileSaveAssistant.prototype.setup = function()
 
 	this.onGetParamsStandard  = this.onGetParams.bindAsEventListener(this, "standard");
 	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "specific");
+	this.onGetParamsOverride  = this.onGetParams.bindAsEventListener(this, "override");
 	this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
 
 	// make it so nothing is selected by default
@@ -113,6 +114,10 @@ ProfileSaveAssistant.prototype.onGetParams = function(payload, location)
 	}
 	else if (location == "specific") {
 		if (this.getRequest) this.getRequest.cancel();
+		this.getRequest = service.get_cpufreq_params(this.onGetParamsOverride, "override");
+	}
+	else if (location == "override") {
+		if (this.getRequest) this.getRequest.cancel();
 		this.getRequest = service.get_compcache_config(this.onGetParamsCompcache);
 	}
 	else if (location == "compcache") {
@@ -129,6 +134,7 @@ ProfileSaveAssistant.prototype.saveAsProfileButtonPressed = function(event)
 		governor: this.governorModel.value,
 		settingsStandard: [],
 		settingsSpecific: [],
+		settingsOverride: [],
 		settingsCompcache: []
 	};
 	
@@ -141,6 +147,10 @@ ProfileSaveAssistant.prototype.saveAsProfileButtonPressed = function(event)
 		else if (this.settingsLocation[m] == "specific")
 		{
 			params.settingsSpecific.push({name:m, value:String(this.settingsModel[m])});
+		}
+		else if (this.settingsLocation[m] == "override")
+		{
+			params.settingsOverride.push({name:m, value:String(this.settingsModel[m])});
 		}
 		else if (this.settingsLocation[m] == "compcache")
 		{
