@@ -682,6 +682,15 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     return true;
   }
 
+  // Extract the overrideParams argument from the message
+  json_t *overrideParams = json_find_first_label(object, "overrideParams");
+  if (!overrideParams || (overrideParams->child->type != JSON_ARRAY)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing overrideParams array\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
   sprintf(directory, "%s", cpufreqdir);
   json_t *genericEntry = genericParams->child->child;
   while (genericEntry) {
@@ -799,6 +808,61 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     }
   }
 
+  sprintf(directory, "%s/%s", cpufreqdir, "override");
+  json_t *overrideEntry = overrideParams->child->child;
+  while (overrideEntry) {
+    if (overrideEntry->type != JSON_OBJECT) {
+      if (!LSMessageReply(lshandle, message,
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing overrideParams array element\"}",
+			  &lserror)) goto error;
+      return true;
+    }
+    json_t *name = json_find_first_label(overrideEntry, "name");
+    if (!name || (name->child->type != JSON_STRING) ||
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) {
+      if (!LSMessageReply(lshandle, message,
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing name overrideEntry\"}",
+			  &lserror)) goto error;
+      return true;
+    }
+    json_t *value = json_find_first_label(overrideEntry, "value");
+    if (!value || (value->child->type != JSON_STRING) ||
+	(strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) {
+      if (!LSMessageReply(lshandle, message,
+			  "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value overrideEntry\"}",
+			  &lserror)) goto error;
+      return true;
+    }
+
+    sprintf(filename, "%s/%s", directory, name->child->text);
+
+    fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+
+    FILE *fp = fopen(filename, "w");
+    if (!fp) {
+      sprintf(errorText, "Unable to open %s", filename);
+      error = true;
+    }
+    else {
+      if (fputs(value->child->text, fp) < 0) {
+	sprintf(errorText, "Unable to write to %s", filename);
+	error = true;
+      }
+      if (fclose(fp)) {
+	sprintf(errorText, "Unable to close %s", filename);
+	error = true;
+      }
+    }
+      
+    if (error) {
+      sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+	      errorText);
+      break;
+    }
+    
+    overrideEntry = overrideEntry->next;
+  }
+
   // fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
@@ -842,6 +906,15 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   if (!governorParams || (governorParams->child->type != JSON_ARRAY)) {
     if (!LSMessageReply(lshandle, message,
 			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing governorParams array\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  // Extract the overrideParams argument from the message
+  json_t *overrideParams = json_find_first_label(object, "overrideParams");
+  if (!overrideParams || (overrideParams->child->type != JSON_ARRAY)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing overrideParams array\"}",
 			&lserror)) goto error;
     return true;
   }
@@ -939,6 +1012,34 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
     loop2:
       governorEntry = governorEntry->next;
     }
+  }
+
+  sprintf(directory, "%s/%s", cpufreqdir, "override");
+  json_t *overrideEntry = overrideParams->child->child;
+  while (overrideEntry) {
+    if (overrideEntry->type != JSON_OBJECT) goto loop3;
+    json_t *name = json_find_first_label(overrideEntry, "name");
+    if (!name || (name->child->type != JSON_STRING) ||
+	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) goto loop3;
+    json_t *value = json_find_first_label(overrideEntry, "value");
+    if (!value || (value->child->type != JSON_STRING) ||
+	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop3;
+
+    fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+    sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
+
+    if (fputs(line, fp) < 0) {
+      (void)fclose(fp);
+      (void)unlink(filename);
+      sprintf(buffer,
+	      "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	      filename);
+      if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+      return true;
+    }
+      
+  loop3:
+    overrideEntry = overrideEntry->next;
   }
 
   if (fputs("\n", fp) < 0) error = true;

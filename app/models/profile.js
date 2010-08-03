@@ -451,6 +451,14 @@ profileModel.prototype.getDataSettingString = function(name, value)
 			case 'toggleTF':
 				return [dataHandler.settingLabel(name), (value == 1 ? 'true' : 'false')];
 				break;
+
+			case 'listTemp':
+				return [dataHandler.settingLabel(name), value + ' C'];
+				break;
+
+			case 'listVolts':
+				return [dataHandler.settingLabel(name), ((value * 12.5) + 600) + ' mV'];
+				break;
 		}
 	}
 	else

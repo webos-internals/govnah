@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.6.2',log: [ 'Initial support for the cpufreq override module'] },
 	 { version: '0.6.1',log: [ 'Rolled up all the 0.5.x alpha releases into a new public release',
 				   'Major new features include current monitoring, and a revamped Advanced Settings screen now located in the Profiles area'] },
 	 { version: '0.5.9',log: [ 'Renamed the battery current display and inverted the polarity again',

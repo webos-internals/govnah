@@ -1,8 +1,8 @@
 {
 	"title": "Govnah",
 	"id": "org.webosinternals.govnah",
-	"version": "0.6.1",
-	"release_date":	"24-July-2010",
+	"version": "0.6.2",
+	"release_date":	"3-August-2010",
 	"vendor": "WebOS Internals",
 	"vendor_email":	"support@webos-internals.org",
 	"vendor_url": "http://www.webos-internals.org/wiki/Application:Govnah",

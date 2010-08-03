@@ -54,6 +54,14 @@ function SettingsCpufreqAssistant()
 		this.windowChoices.push({label:x + " Sec", value:x*1000});
 	}
 			
+	this.tempChoices = [];
+	for (var x = 40; x <= 60; x = x + 1)
+	{
+		this.tempChoices.push({label:x + ' C', value:x});
+	}
+	
+	this.voltageLimits = {min:false, max:false}; 
+	
 };
 
 SettingsCpufreqAssistant.prototype.setup = function()
@@ -90,15 +98,19 @@ SettingsCpufreqAssistant.prototype.setup = function()
 	this.forms = new Array();
 	this.forms['standard']  = this.controller.get('governor_freq');
 	this.forms['specific']  = this.controller.get('governor_params');
+	this.forms['override']  = this.controller.get('governor_override');
 
 	this.groups = new Array();
 	this.groups['standard'] = this.controller.get('frequency_group');
 	this.groups['standard'].style.display = 'block';
 	this.groups['specific'] = this.controller.get('governor_group');
 	this.groups['specific'].style.display = 'none';
+	this.groups['override'] = this.controller.get('override_group');
+	this.groups['override'].style.display = 'none';
 
 	this.onGetParamsStandard  = this.onGetParams.bindAsEventListener(this, "standard");
 	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "specific");
+	this.onGetParamsOverride  = this.onGetParams.bindAsEventListener(this, "override");
 
 	this.saveCompleteCpufreq   = this.saveCompleteCpufreq.bindAsEventListener(this);
 	
@@ -244,6 +256,15 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 				case 'sampling_rate_min':
 					this.samplingRates.min = parseInt(trim(tmpParam.value));
 					//alert(this.samplingRates.min);
+					break;
+
+				case 'vdd1_vsel_max':
+					this.voltageLimits.max = parseInt(trim(tmpParam.value));
+					//alert(this.voltageLimits.max);
+					break;
+				case 'vdd1_vsel_min':
+					this.voltageLimits.min = parseInt(trim(tmpParam.value));
+					//alert(this.voltageLimits.min);
 					break;
 			}
 		}
@@ -431,6 +452,55 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								this.settingsModel
 							);
 							break;
+
+
+						case 'listTemp':
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: dataHandler.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: this.tempChoices
+								},
+								this.settingsModel
+							);
+							break;
+							
+						case 'listVolts':
+							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							var voltageChoices = [];
+							if (this.voltageLimits.max !== false && this.voltageLimits.min !== false)
+							{
+								for (var s = this.voltageLimits.min; s <= this.voltageLimits.max; s = s + 1)
+								{
+									var display = ((s * 12.5) + 600) +'mV';
+									voltageChoices.push({label:display, value:s});
+								}
+							}
+							else
+							{
+								var display = ((tmpParam.value * 12.5) + 600) +'mV';
+								voltageChoices.push({label:display, value:tmpParam.value});
+							}
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: dataHandler.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: voltageChoices
+								},
+								this.settingsModel
+							);
+							break;
 					}
 				}
 				else
@@ -478,6 +548,10 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 	}
 	else if (location == "specific") {
 		if (this.getRequest) this.getRequest.cancel();
+		this.getRequest  = service.get_cpufreq_params(this.onGetParamsOverride, "override");
+	}
+	else if (location == "override") {
+		if (this.getRequest) this.getRequest.cancel();
 		this.getRequest = false;
 	}
 };
@@ -490,6 +564,7 @@ SettingsCpufreqAssistant.prototype.saveButtonPressed = function(event)
 	
 	var standardParams = [];
 	var specificParams = [];
+	var overrideParams = [];
 	
 	standardParams.push({name:"scaling_governor", value:this.governorModel.value});
 
@@ -515,10 +590,17 @@ SettingsCpufreqAssistant.prototype.saveButtonPressed = function(event)
 		{
 			specificParams.push({name:m, value:String(this.settingsModel[m])});
 		}
+		else if (this.settingsLocation[m] == "override")
+		{
+			overrideParams.push({name:m, value:String(this.settingsModel[m])});
+		}
 	}
 	
 	if (this.setRequest) this.setRequest.cancel();
-	this.setRequest = service.set_cpufreq_params(this.saveCompleteCpufreq, standardParams, specificParams);
+	this.setRequest = service.set_cpufreq_params(this.saveCompleteCpufreq,
+												 standardParams,
+												 specificParams,
+												 overrideParams);
 };
 
 SettingsCpufreqAssistant.prototype.saveCompleteCpufreq = function(payload)

@@ -18,7 +18,11 @@ function dataHandlerModel()
 		'max_tickle_window':	{ type: 'listWindow'	},
 		'max_floor_window':		{ type: 'listWindow'	},
 		'compcache_enabled':	{ type: 'toggleTF'		},
-		'compcache_memlimit':	{ type: 'listMem'		}
+		'compcache_memlimit':	{ type: 'listMem'		},
+		'vdd1_vsel_min':		{ type: 'listVolts',	nice: 'min voltage'	},
+		'vdd1_vsel_max':		{ type: 'listVolts',	nice: 'max voltage'	},
+		'cpu_hightemp_reset':	{ type: 'listTemp',		nice: 'temp reset'	},
+		'cpu_hightemp_alarm':	{ type: 'listTemp',		nice: 'temp limit'	}
 	};
 	
 	this.mainAssistant = false;

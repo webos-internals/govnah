@@ -87,7 +87,7 @@ service.get_cpufreq_params = function(callback, governor)
 	});
 	return request;
 };
-service.set_cpufreq_params = function(callback, genericParams, governorParams)
+service.set_cpufreq_params = function(callback, genericParams, governorParams, overrideParams)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
@@ -95,14 +95,15 @@ service.set_cpufreq_params = function(callback, genericParams, governorParams)
 		parameters:
 		{
 			genericParams: genericParams,
-			governorParams: governorParams
+			governorParams: governorParams,
+			overrideParams: overrideParams
 		},
 		onSuccess: callback,
 		onFailure: callback
 	});
 	return request;
 };
-service.stick_cpufreq_params = function(callback, genericParams, governorParams)
+service.stick_cpufreq_params = function(callback, genericParams, governorParams, overrideParams)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
@@ -110,7 +111,8 @@ service.stick_cpufreq_params = function(callback, genericParams, governorParams)
 		parameters:
 		{
 			genericParams: genericParams,
-			governorParams: governorParams
+			governorParams: governorParams,
+			overrideParams: overrideParams
 		},
 		onSuccess: callback,
 		onFailure: callback
