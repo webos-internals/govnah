@@ -1023,7 +1023,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
 	(strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) goto loop3;
     json_t *value = json_find_first_label(overrideEntry, "value");
     if (!value || (value->child->type != JSON_STRING) ||
-	(strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop3;
+	(strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) goto loop3;
 
     fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
     sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
