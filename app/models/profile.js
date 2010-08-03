@@ -492,7 +492,7 @@ profileModel.prototype.getDataSettingString = function(name, value)
 	}
 	else
 	{
-		return [tmpParam.name.replace(/_/g, " "), value];
+		return [name.replace(/_/g, " "), value];
 	}
 };
 

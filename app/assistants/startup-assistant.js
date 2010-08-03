@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.6.5',log: [ 'Added profile support for the voltage selection parameters'] },
 	 { version: '0.6.4',log: [ 'Added profile support for the cpufreq override module'] },
 	 { version: '0.6.3',log: [ 'Initial support for the cpufreq override module'] },
 	 { version: '0.6.1',log: [ 'Rolled up all the 0.5.x alpha releases into a new public release',
