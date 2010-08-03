@@ -352,9 +352,9 @@ profileModel.prototype.apply = function()
 	}
 
 	if (profiles.setRequests['cpufreq']) profiles.setRequests['cpufreq'].cancel();
-	profiles.setRequests["cpufreq"] = service.set_cpufreq_params(profiles.applyCompleteCpufreq, standardParams, specificParams);
+	profiles.setRequests["cpufreq"] = service.set_cpufreq_params(profiles.applyCompleteCpufreq, standardParams, specificParams, []);
 	if (profiles.stickRequests['cpufreq']) profiles.stickRequests['cpufreq'].cancel();
-	profiles.stickRequests['cpufreq'] = service.stick_cpufreq_params(profiles.stickCompleteCpufreq, standardParams, specificParams);
+	profiles.stickRequests['cpufreq'] = service.stick_cpufreq_params(profiles.stickCompleteCpufreq, standardParams, specificParams, []);
 	
 	if (this.settingsCompcache) {
 		for (var s = 0; s < this.settingsCompcache.length; s++) {

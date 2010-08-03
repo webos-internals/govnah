@@ -134,7 +134,7 @@ SettingsCpufreqAssistant.prototype.governorChange = function(event)
 	//alert(event.value);
 	this.governorModel.value = event.value;
 	if (this.setRequest) this.setRequest.cancel();
-	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], []);
+	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], [], []);
 };
 
 SettingsCpufreqAssistant.prototype.onSetParams = function(payload)
