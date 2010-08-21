@@ -302,7 +302,9 @@ profilesModel.prototype.applyComplete = function(payload, location)
 	if (!this.setRequests["cpufreq"] &&
 		!this.setRequests["compcache"] &&
 		!this.stickRequests["cpufreq"] &&
-		!this.stickRequests["compcache"]) {
+		!this.stickRequests["compcache"] &&
+		this.controller &&
+		this.controller.stageController) {
 		this.controller.stageController.popScene();
 	}
 };
@@ -316,7 +318,9 @@ profilesModel.prototype.stickComplete = function(payload, location)
 	if (!this.setRequests["cpufreq"] &&
 		!this.setRequests["compcache"] &&
 		!this.stickRequests["cpufreq"] &&
-		!this.stickRequests["compcache"]) {
+		!this.stickRequests["compcache"] &&
+		this.controller &&
+		this.controller.stageController) {
 		this.controller.stageController.popScene();
 	}
 };
