@@ -5,7 +5,8 @@ function MainAssistant()
 	[
 		{weight: 30, text: $L('The Advanced CPU Controller')},
 		{weight: 30, text: $L('Take Control Of Your CPU')},
-		{weight: 15, text: $L('Much Better Than Arnie')},
+		{weight: 15, text: $L('Turn It Up To 11')},
+		{weight:  5, text: $L('Much Better Than Arnie')},
 		{weight:  2, text: $L('Random Taglines Are Awesome')},
 		{weight:  2, text: $L('Nomnomnom')},
 		{weight:  2, text: $L('Now With More Cowbell')}
