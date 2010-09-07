@@ -29,6 +29,9 @@ ProfilesAssistant.prototype.setup = function()
 {
 	try
 	{
+		this.controller.get('profiles-scene-profiles').innerHTML = $L("Profiles");
+		this.controller.get('profiles-scene-advanced-settings').innerHTML = $L("Advanced Settings");
+		
 		// set view
 		this.controller.get('profileList').className = prefs.get().profileList;
 		
