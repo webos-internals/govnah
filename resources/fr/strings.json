@@ -42,4 +42,13 @@
 "Name Only": "Nom uniquement",
 "All Data": "Toutes les donnnées",
 "TCP Congestion": "Congestion TCP",
+"Profiles": "Profils",
+"Advanced Settings": "Paramètres avancés",
+"Profile": "Profil",
+"Frequency": "Fréquence",
+"Temperature": "Température",
+"Battery Current": "Batterie actuellement",
+"Load Average": "Charge moyenne",
+"Memory / Swap": "Mémoire / Mem. échange",
+"Time In State": "Temps en l'état",
 } 
