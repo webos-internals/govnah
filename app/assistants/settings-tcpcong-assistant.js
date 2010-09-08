@@ -33,7 +33,7 @@ SettingsTcpcongAssistant.prototype.setup = function()
 	(
 		'congestion',
 		{
-			label: $L('TCP Congestion')
+			label: $L("TCP Congestion")
 		},
 		this.congestionModel
 	);
@@ -47,7 +47,7 @@ SettingsTcpcongAssistant.prototype.setup = function()
 			type: Mojo.Widget.activityButton
 		},
 		{
-			buttonLabel: 'Apply Settings'
+			buttonLabel: $L("Apply Settings")
 		}
 	);
 	this.saveButtonElement = this.controller.get('saveButton');
@@ -68,6 +68,9 @@ SettingsTcpcongAssistant.prototype.setup = function()
 	this.controller.setInitialFocusedElement(null);
 
 	this.reloadSettings();
+	
+	this.controller.get('congestion-title').innerHTML = $L("TCP Congestion");
+	this.controller.get('congestion-control-title').innerHTML = $L("TCP Congestion Control");
 };
 
 

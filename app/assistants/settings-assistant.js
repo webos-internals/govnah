@@ -41,6 +41,8 @@ SettingsAssistant.prototype.setup = function()
 	this.controller.listen(this.listElement, Mojo.Event.listTap, this.rowTapHandler);
 	
 	dataHandler.setSettingsAssistant(this);
+	
+	this.controller.get('advanced-settings-title').innerHTML = $L("Advanced Settings");
 };
 
 

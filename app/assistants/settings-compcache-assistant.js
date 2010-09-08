@@ -36,7 +36,7 @@ SettingsCompcacheAssistant.prototype.setup = function()
 			type: Mojo.Widget.activityButton
 		},
 		{
-			buttonLabel: 'Apply Settings'
+			buttonLabel: $L("Apply Settings")
 		}
 	);
 	this.saveButtonElement = this.controller.get('saveButton');
@@ -63,6 +63,9 @@ SettingsCompcacheAssistant.prototype.setup = function()
 	this.controller.setInitialFocusedElement(null);
 
 	this.reloadSettings();
+	
+	this.controller.get('compressed-swap-title').innerHTML = $L("Compressed Swap");
+	this.controller.get('compcache-configuration-title').innerHTML = $L("Compcache Configuration");
 };
 
 
@@ -271,9 +274,9 @@ SettingsCompcacheAssistant.prototype.onGetParams = function(payload, location)
 							(
 								tmpParam.name,
 								{
-						  			trueLabel: $L('True'),
+						  			trueLabel: $L("True"),
 									trueValue: '1',
-						 			falseLabel: $L('False'),
+						 			falseLabel: $L("False"),
 									falseValue: '0',
 									modelProperty: tmpParam.name
 								},
