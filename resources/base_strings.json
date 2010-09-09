@@ -78,4 +78,13 @@
 "Frequency Selection": "Frequency Selection",
 "Governor Parameters": "Governor Parameters",
 "Override Parameters": "Override Parameters",
+"Enabled": "Enabled",
+"Disabled": "Disabled",
+"min freq": "min freq",
+"max freq": "max freq",
+"setspeed": "setspeed",
+"min voltage": "min voltage",
+"max voltage": "max voltage",
+"temp reset": "temp reset",
+"temp limit": "temp limit",
 } 
