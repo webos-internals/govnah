@@ -5,9 +5,9 @@ function dataHandlerModel()
 	 * in this list, it will be rendered as a text box */
 	this.settings = 
 	{
-		'scaling_min_freq':		{ type: 'listFreq',	nice: 'min freq'	},
-		'scaling_max_freq':		{ type: 'listFreq',	nice: 'max freq'	},
-		'scaling_setspeed':		{ type: 'listFreq',	nice: 'setspeed'	},
+		'scaling_min_freq':		{ type: 'listFreq',	nice: $L("min freq")	},
+		'scaling_max_freq':		{ type: 'listFreq',	nice: $L("max freq")	},
+		'scaling_setspeed':		{ type: 'listFreq',	nice: $L("setspeed")	},
 		'up_threshold':			{ type: 'listPcnt'		},
 		'down_threshold':		{ type: 'listPcnt'		},
 		'freq_step':			{ type: 'listPcnt'		},
@@ -19,10 +19,10 @@ function dataHandlerModel()
 		'max_floor_window':		{ type: 'listWindow'	},
 		'compcache_enabled':	{ type: 'toggleTF'		},
 		'compcache_memlimit':	{ type: 'listMem'		},
-		'vdd1_vsel_min':		{ type: 'listVolts',	nice: 'min voltage'	},
-		'vdd1_vsel_max':		{ type: 'listVolts',	nice: 'max voltage'	},
-		'cpu_hightemp_reset':	{ type: 'listTemp',		nice: 'temp reset'	},
-		'cpu_hightemp_alarm':	{ type: 'listTemp',		nice: 'temp limit'	}
+		'vdd1_vsel_min':		{ type: 'listVolts',	nice: $L("min voltage")	},
+		'vdd1_vsel_max':		{ type: 'listVolts',	nice: $L("max voltage")	},
+		'cpu_hightemp_reset':	{ type: 'listTemp',		nice: $L("temp reset")	},
+		'cpu_hightemp_alarm':	{ type: 'listTemp',		nice: $L("temp limit")	}
 	};
 	
 	this.mainAssistant = false;
@@ -312,7 +312,7 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 				{
 					if (tmpParam.name == 'compcache_enabled')
 					{
-						this.compcache = (tmpParam.value==1?"Enabled":"Disabled");
+						this.compcache = (tmpParam.value==1?$L("Enabled"):$L("Disabled"));
 					}
 					this.settingsCompcache.push({name:tmpParam.name, value:String(tmpParam.value)});
 				}
