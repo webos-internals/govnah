@@ -531,7 +531,7 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   sprintf(buffer, "{\"returnValue\": true }");
   
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the governor argument from the message
   json_t *param = json_find_first_label(object, "governor");
@@ -662,7 +662,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the genericParams argument from the message
   json_t *genericParams = json_find_first_label(object, "genericParams");
@@ -890,7 +890,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the genericParams argument from the message
   json_t *genericParams = json_find_first_label(object, "genericParams");
@@ -1178,7 +1178,7 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   bool enable = false;
   char *memlimit = NULL;
@@ -1330,7 +1330,7 @@ bool stick_compcache_config_method(LSHandle* lshandle, LSMessage *message, void 
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   bool enable = false;
   char *memlimit = NULL;
@@ -1500,7 +1500,7 @@ bool set_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the genericParams argument from the message
   json_t *value = json_find_first_label(object, "value");
@@ -1575,7 +1575,7 @@ bool set_tcp_congestion_control_method(LSHandle* lshandle, LSMessage *message, v
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the genericParams argument from the message
   json_t *value = json_find_first_label(object, "value");
@@ -1637,7 +1637,7 @@ bool stick_sysfs_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the sysfsParams argument from the message
   json_t *sysfsParams = json_find_first_label(object, "sysfsParams");
@@ -1778,7 +1778,7 @@ bool stick_sysctl_params_method(LSHandle* lshandle, LSMessage *message, void *ct
 
   sprintf(buffer, "{\"returnValue\": true }");
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the sysctlParams argument from the message
   json_t *sysctlParams = json_find_first_label(object, "sysctlParams");
@@ -1928,7 +1928,7 @@ bool getProfiles_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   LSError lserror;
   LSErrorInit(&lserror);
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the params argument from the message
   json_t *id = json_find_first_label(object, "returnid");
@@ -1978,7 +1978,7 @@ bool setProfile_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   LSError lserror;
   LSErrorInit(&lserror);
 
-  json_t *object = LSMessageGetPayloadJSON(message);
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
 
   // Extract the params argument from the message
   json_t *id = json_find_first_label(object, "profileid");

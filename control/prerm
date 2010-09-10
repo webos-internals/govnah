@@ -18,6 +18,10 @@ rm -f /var/usr/sbin/${PID}
 # Remove the dbus service
 rm -f /usr/share/dbus-1/system-services/${PID}.service /var/palm/system-services/${PID}.service
 
+# Remove the ls2 roles
+rm -f /usr/share/ls2/roles/prv/${PID}.json /var/palm/ls2/roles/prv/${PID}.json
+rm -f /usr/share/ls2/roles/pub/${PID}.json /var/palm/ls2/roles/pub/${PID}.json
+
 # Stop the service if running
 /sbin/stop ${PID} || true
 /usr/bin/killall -9 ${PID} || true

@@ -18,6 +18,10 @@ rm -f /var/usr/sbin/${PID}
 # Remove the dbus service
 rm -f /usr/share/dbus-1/system-services/${PID}.service /var/palm/system-services/${PID}.service
 
+# Remove the ls2 roles
+rm -f /usr/share/ls2/roles/prv/${PID}.json /var/palm/ls2/roles/prv/${PID}.json
+rm -f /usr/share/ls2/roles/pub/${PID}.json /var/palm/ls2/roles/pub/${PID}.json
+
 # Stop the service if running
 /sbin/stop ${PID} || true
 /usr/bin/killall -9 ${PID} || true
@@ -30,26 +34,22 @@ mkdir -p /var/usr/sbin/
 install -m 755 $APPS/usr/palm/applications/${PID}/bin/${PID} /var/usr/sbin/${PID}
 
 # Install the dbus service
-if [ -d /var/palm/system-services ] ; then
-  cp $APPS/usr/palm/applications/${PID}/dbus/${PID}.service /var/palm/system-services/${PID}.service
-else
-  cp $APPS/usr/palm/applications/${PID}/dbus/${PID}.service /usr/share/dbus-1/system-services/${PID}.service
+mkdir -p /var/palm/system-services
+cp $APPS/usr/palm/applications/${PID}/dbus/${PID}.service /var/palm/system-services/${PID}.service
+
+# Install the ls2 roles
+if [ -d /var/palm/ls2/roles ] ; then
+  mkdir -p /var/palm/ls2/roles/prv /var/palm/ls2/roles/pub
+  cp $APPS/usr/palm/applications/${PID}/dbus/${PID}.json /var/palm/ls2/roles/prv/${PID}.json
+  cp $APPS/usr/palm/applications/${PID}/dbus/${PID}.json /var/palm/ls2/roles/pub/${PID}.json
+  /usr/bin/ls-control scan-services || true
 fi
 
 # Install the upstart script
-if [ -d /var/palm/event.d ] ; then
-  cp $APPS/usr/palm/applications/${PID}/upstart/${PID} /var/palm/event.d/${PID}
-else
-  cp $APPS/usr/palm/applications/${PID}/upstart/${PID} /etc/event.d/${PID}
-fi
+mkdir -p /var/palm/event.d
+cp $APPS/usr/palm/applications/${PID}/upstart/${PID} /var/palm/event.d/${PID}
 
 # Start the service
 /sbin/start ${PID}
-
-# Check the upstart script is installed
-[ -f /var/palm/event.d/${PID} ] || [ -f /etc/event.d/${PID} ] || exit 1
-
-# Check the dbus service is installed
-[ -f /var/palm/system-services/${PID}.service ] || [ -f /usr/share/dbus-1/system-services/${PID}.service ] || exit 1
 
 exit 0
