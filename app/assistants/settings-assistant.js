@@ -41,6 +41,8 @@ SettingsAssistant.prototype.setup = function()
 	this.controller.listen(this.listElement, Mojo.Event.listTap, this.rowTapHandler);
 	
 	dataHandler.setSettingsAssistant(this);
+	
+	this.controller.get('advanced-settings-title').innerHTML = $L("Advanced Settings");
 };
 
 
@@ -61,7 +63,7 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		
 		this.listModel.items.push(
 		{
-			name:	'CPU Frequency',
+			name:	$L("CPU Frequency"),
 			data:	dataHandler.governor,
 			scene:	'settings-cpufreq'
 		});
@@ -69,28 +71,28 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		this.listModel.items.push(
 		{
 			rowClass:	(dataHandler.compcache == false) ? 'disabled' : '',
-			name:		'Compressed Swap',
+			name:		$L("Compressed Swap"),
 			data:		(dataHandler.compcache == false) ? "N/A" : dataHandler.compcache,
 			scene:		(dataHandler.compcache == false) ? false : 'settings-compcache'
 		});
 
 		this.listModel.items.push(
 		{
-			name:	'I/O Scheduler',
+			name:	$L("I/O Scheduler"),
 			data:	dataHandler.scheduler,
 			scene:	'settings-iosched'
 		});
 		
 		this.listModel.items.push(
 		{
-			name:	'TCP Congestion',
+			name:	$L("TCP Congestion"),
 			data:	dataHandler.congestion,
 			scene:	'settings-tcpcong'
 		});
 		
 		this.listModel.items.push(
 		{
-			name:	'Save As New Profile',
+			name:	$L("Save As New Profile"),
 			scene:	'profile-save'
 		});
 		

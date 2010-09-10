@@ -5,7 +5,8 @@ function MainAssistant()
 	[
 		{weight: 30, text: $L('The Advanced CPU Controller')},
 		{weight: 30, text: $L('Take Control Of Your CPU')},
-		{weight: 15, text: $L('Much Better Than Arnie')},
+		{weight: 15, text: $L('Turn It Up To 11')},
+		{weight:  5, text: $L('Much Better Than Arnie')},
 		{weight:  2, text: $L('Random Taglines Are Awesome')},
 		{weight:  2, text: $L('Nomnomnom')},
 		{weight:  2, text: $L('Now With More Cowbell')}
@@ -40,6 +41,7 @@ function MainAssistant()
 
 MainAssistant.prototype.setup = function()
 {
+	
 	// set theme because this can be the first scene pushed
 	this.controller.document.body.className = prefs.get().theme;
 	
@@ -95,6 +97,14 @@ MainAssistant.prototype.setup = function()
 
 	dataHandler.setMainAssistant(this);
 	dataHandler.start();
+	
+	this.controller.get('main-scene-profile').innerHTML = $L("Profile");
+	this.controller.get('main-scene-frequency').innerHTML = $L("Frequency");
+	// this.controller.get('main-scene-temperature').innerHTML = $L("Temperature");
+	this.controller.get('main-scene-battery-current').innerHTML = $L("Battery Current");
+	this.controller.get('main-scene-load-average').innerHTML = $L("Load Average");
+	this.controller.get('main-scene-memory-swap').innerHTML = $L("Memory / Swap");
+	this.controller.get('main-scene-time-in-state').innerHTML = $L("Time In State");
 	
 };
 

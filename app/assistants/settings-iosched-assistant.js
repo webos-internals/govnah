@@ -33,7 +33,7 @@ SettingsIoschedAssistant.prototype.setup = function()
 	(
 		'scheduler',
 		{
-			label: $L('IO Scheduler')
+			label: $L("IO Scheduler")
 		},
 		this.schedulerModel
 	);
@@ -47,7 +47,7 @@ SettingsIoschedAssistant.prototype.setup = function()
 			type: Mojo.Widget.activityButton
 		},
 		{
-			buttonLabel: 'Apply Settings'
+			buttonLabel: $L("Apply Settings")
 		}
 	);
 	this.saveButtonElement = this.controller.get('saveButton');
@@ -67,6 +67,9 @@ SettingsIoschedAssistant.prototype.setup = function()
 	this.controller.setInitialFocusedElement(null);
 
 	this.reloadSettings();
+	
+	this.controller.get('io-scheduler-title').innerHTML = $L("I/O Scheduler");
+	this.controller.get('scheduler-selection-title').innerHTML = $L("Scheduler Selection");
 };
 
 

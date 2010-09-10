@@ -74,7 +74,7 @@ SettingsCpufreqAssistant.prototype.setup = function()
 	(
 		'governor',
 		{
-			label: $L('Governor')
+			label: $L("Governor")
 		},
 		this.governorModel
 	);
@@ -88,7 +88,7 @@ SettingsCpufreqAssistant.prototype.setup = function()
 			type: Mojo.Widget.activityButton
 		},
 		{
-			buttonLabel: 'Apply Settings'
+			buttonLabel: $L("Apply Settings")
 		}
 	);
 	this.saveButtonElement = this.controller.get('saveButton');
@@ -123,6 +123,12 @@ SettingsCpufreqAssistant.prototype.setup = function()
 	this.controller.setInitialFocusedElement(null);
 
 	this.reloadSettings();
+	
+	this.controller.get('cpu-frequency-title').innerHTML = $L("CPU Frequency");
+	this.controller.get('governor-selection-title').innerHTML = $L("Governor Selection");
+	this.controller.get('frequency-selection-title').innerHTML = $L("Frequency Selection");
+	this.controller.get('governor-parameters-title').innerHTML = $L("Governor Parameters");
+	this.controller.get('override-parameters-title').innerHTML = $L("Override Parameters");
 };
 
 

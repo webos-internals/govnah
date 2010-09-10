@@ -76,8 +76,8 @@ PreferencesAssistant.prototype.setup = function()
 		(
 			'cardIconUpdate',
 			{
-	  			trueLabel:  'Yes',
-	 			falseLabel: 'No',
+	  			trueLabel:  $L("Yes"),
+	 			falseLabel: $L("No"),
 	  			fieldName:  'cardIconUpdate'
 			},
 			{
@@ -95,8 +95,8 @@ PreferencesAssistant.prototype.setup = function()
 		(
 			'useDash',
 			{
-	  			trueLabel:  'Yes',
-	 			falseLabel: 'No',
+	  			trueLabel:  $L("Yes"),
+	 			falseLabel: $L("No"),
 	  			fieldName:  'useDash'
 			},
 			{
@@ -127,8 +127,8 @@ PreferencesAssistant.prototype.setup = function()
 		(
 			'dashIconUpdate',
 			{
-	  			trueLabel:  'Yes',
-	 			falseLabel: 'No',
+	  			trueLabel:  $L("Yes"),
+	 			falseLabel: $L("No"),
 	  			fieldName:  'dashIconUpdate'
 			},
 			{
@@ -170,8 +170,8 @@ PreferencesAssistant.prototype.setup = function()
 		(
 			'manualEntry',
 			{
-	  			trueLabel:  'Yes',
-	 			falseLabel: 'No',
+	  			trueLabel:  $L("Yes"),
+	 			falseLabel: $L("No"),
 	  			fieldName:  'manualEntry'
 			},
 			{
@@ -181,6 +181,19 @@ PreferencesAssistant.prototype.setup = function()
 		);
 		
 		this.controller.listen('manualEntry', Mojo.Event.propertyChange, this.toggleChangeHandler);
+		
+		this.controller.get('preferences-title').innerHTML = $L("Preferences");
+		this.controller.get('global-title').innerHTML = $L("Global");
+		this.controller.get('card-open-title').innerHTML = $L("Card Open");
+		this.controller.get('preferences-scene-update-launcher').innerHTML = $L("Update Launcher Icon");
+		this.controller.get('note-cause-app-catalog').innerHTML = $L("* Causes App Catalog To Flicker.");
+		this.controller.get('dashboard-title').innerHTML = $L("Dashboard");
+		this.controller.get('preferences-scene-use-dashboard').innerHTML = $L("Use Dashboard");
+		this.controller.get('preferences-scene-update-launcher-icon').innerHTML = $L("Update Launcher Icon");
+		this.controller.get('profiles-title').innerHTML = $L("Profiles");
+		this.controller.get('settings-title').innerHTML = $L("Settings");
+		this.controller.get('preferences-scene-manual-entry').innerHTML = $L("Manual Entry");
+		this.controller.get('note-for-experienced-users').innerHTML = $L("* For Experienced Users Only.");
 		
 	}
 	catch (e)

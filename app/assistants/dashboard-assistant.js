@@ -24,6 +24,9 @@ DashboardAssistant.prototype.setup = function()
 	this.invisible = this.invisible.bindAsEventListener(this);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
+	
+	this.controller.get('dashboardTitle').innerHTML = $L("Govnah Dashboard");
+	this.controller.get('dashboardText').innerHTML = $L("This will do something cool!");
 }
 
 DashboardAssistant.prototype.dashTapped = function(event)
