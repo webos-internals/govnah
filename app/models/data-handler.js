@@ -19,10 +19,11 @@ function dataHandlerModel()
 		'max_floor_window':		{ type: 'listWindow'	},
 		'compcache_enabled':	{ type: 'toggleTF'		},
 		'compcache_memlimit':	{ type: 'listMem'		},
-		'vdd1_vsel_min':		{ type: 'listVolts',	nice: $L("min voltage")	},
-		'vdd1_vsel_max':		{ type: 'listVolts',	nice: $L("max voltage")	},
 		'cpu_hightemp_reset':	{ type: 'listTemp',		nice: $L("temp reset")	},
-		'cpu_hightemp_alarm':	{ type: 'listTemp',		nice: $L("temp limit")	}
+		'cpu_hightemp_alarm':	{ type: 'listTemp',		nice: $L("temp limit")	},
+		'battery_scaleback_percent': { type: 'listPcnt', nice: $L("batt low thresh")	},
+		'battery_scaleback_speed':	{ type: 'listFreq',	nice: $L("batt low speed")	},
+		'override_charger':		{ type: 'toggleTF'		},
 	};
 	
 	this.mainAssistant = false;

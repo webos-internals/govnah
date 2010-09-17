@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.6.9',log: [ 'Added more support for the latest cpufreq override module features'] },
 	 { version: '0.6.8',log: [ 'Localization support and added French translations (courtesy of Yannick LE NY)'] },
 	 { version: '0.6.7',log: [ 'Added Screenstate 500/1000 default profile for Uber1G'] },
 	 { version: '0.6.6',log: [ 'Added profile support for the voltage selection parameters'] },
