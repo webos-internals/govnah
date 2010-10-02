@@ -33,6 +33,10 @@
         "source": "app/assistants/settings-cpufreq-assistant.js"
     },
     {
+        "scenes": "settings-voltage",
+        "source": "app/assistants/settings-voltage-assistant.js"
+    },
+    {
         "scenes": "settings-compcache",
         "source": "app/assistants/settings-compcache-assistant.js"
     },

@@ -187,7 +187,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 	}
 	*/
 	
-	var newHTML = '';
+	this.forms[location].update('');
 	var newCount = 0;
 
 	if (payload.params)
@@ -291,7 +291,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 					switch(dataHandler.settings[tmpParam.name].type)
 					{
 						case 'listFreq':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -307,7 +307,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listPcnt':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -324,7 +324,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listPowr':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -340,7 +340,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listSamp':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -391,7 +391,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listSampDown':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -407,7 +407,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 						case 'listMem':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -424,7 +424,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							break;
 							
 						case 'toggleTF':
-							newHTML += Mojo.View.render({object: {label:dataHandler.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'settings/toggle-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {label:dataHandler.settingLabel(tmpParam.name), id: tmpParam.name}, template: 'settings/toggle-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -443,7 +443,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							break;
 
 						case 'listWindow':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -461,7 +461,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 
 
 						case 'listTemp':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -478,7 +478,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							break;
 							
 						case 'listVolts':
-							newHTML += Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'});
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
@@ -507,11 +507,22 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								this.settingsModel
 							);
 							break;
+							
+						case 'sceneVolts':
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name, name: dataHandler.settingLabel(tmpParam.name), value: tmpParam.value}, template: 'settings/scene-widget'})});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, param)
+							{
+								this.controller.stageController.pushScene({name: 'settings-voltage'}, param, this);
+							}.bindAsEventListener(this, tmpParam));
+							break;
 					}
 				}
 				else
 				{
-					newHTML += Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'settings/textfield-widget'});
+					this.forms[location].insert({bottom: Mojo.View.render({object: {label:tmpParam.name.replace(/_/g, " "), id: tmpParam.name}, template: 'settings/textfield-widget'})});
 					newCount++;
 					this.settingsModel[tmpParam.name] = tmpParam.value;
 					this.settingsLocation[tmpParam.name] = location;
@@ -536,10 +547,9 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 		}
 	}
 
-	this.forms[location].innerHTML = newHTML;
 	this.groups[location].style.display = ((newCount == 0)?'none':'block');
 	this.controller.instantiateChildWidgets(this.forms[location]);		
-		
+	
 	// update form styles so list looks OK
 	var rows = this.forms[location].querySelectorAll('div.palm-row');
 	for (var r = 0; r < rows.length; r++) {
@@ -547,7 +557,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 		else if (r == rows.length-1) rows[r].className = 'palm-row last';
 		else rows[r].className = 'palm-row';
 	}
-
+	
 	if (location == "standard") {
 		if (this.getRequest) this.getRequest.cancel();
 		this.getRequest  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
