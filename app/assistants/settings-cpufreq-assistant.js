@@ -515,7 +515,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, param)
 							{
-								this.controller.stageController.pushScene({name: 'settings-voltage'}, param, this);
+								this.controller.stageController.pushScene({name: 'settings-voltage', disableSceneScroller: true}, param, this);
 							}.bindAsEventListener(this, tmpParam));
 							break;
 					}

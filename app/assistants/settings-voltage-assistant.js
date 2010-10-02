@@ -24,6 +24,9 @@ SettingsVoltageAssistant.prototype.setup = function()
 	this.controller.setupWidget(Mojo.Menu.appMenu, { omitDefaultItems: true }, this.menuModel);
 	
 	this.controller.get('voltage-title').update(dataHandler.settingLabel(this.param.name));
+	
+	
+	
 };
 
 

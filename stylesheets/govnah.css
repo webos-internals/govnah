@@ -213,6 +213,72 @@ body.palm-dark .palm-separator
 
 
 /*
+ * Voltage Scene Styles
+ */
+.volt .slider
+{
+	position: relative;
+	float: left;
+	width: 7px;
+	height: 340px;
+	border-width: 4px 0px 4px 0px;
+	-webkit-border-image: url(../images/palm-default/slider-background-3tile.png) 4 0 4 0 repeat repeat;
+	margin-left: 37px;
+	margin-top: 30px;
+}
+.volt .slider.first
+{
+	margin-left: 26px;
+}
+.volt .slider .freq
+{
+	top: 0px;
+	left: 0px;
+	width: 90px;
+	position: absolute;
+	z-index: 1001;
+	text-align: center;
+	font-size: 11px;
+	margin-left: -42px;
+	margin-top: -28px;
+}
+.volt .slider .button
+{
+	top: 0px;
+	left: 0px;
+	height: 90px;
+	width: 90px;
+	z-index: 1000;
+	background: url(../images/palm-default/slider-button-press.png);
+	background: url(../images/palm-default/slider-button.png) center center no-repeat;
+	position: absolute;
+	margin-top: -36px;
+	margin-left: -42px;
+}
+.volt .slider .button.selected
+{
+	background: url(../images/palm-default/slider-button-press.png) center center no-repeat;
+}
+.volt .slider .button .volt
+{
+	opacity: .65;
+	background: #e4e4e2;
+	
+	width: 40px;
+	margin-top: 38px;
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 12px;
+	font-weight: bold;
+	text-align: center;
+}
+.volt .slider .button.selected .volt
+{
+	margin-top: -10px;
+}
+
+
+/*
  * Profile Scene Styles
  */
 .profiles #profileList.governor .palm-row .sub,
