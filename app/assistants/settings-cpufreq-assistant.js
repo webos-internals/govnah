@@ -487,13 +487,13 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							{
 								for (var s = this.voltageLimits.min; s <= this.voltageLimits.max; s = s + 1)
 								{
-									var display = ((s * 12.5) + 600) +'mV';
+									var display = ((s * 12.5) + 600) +' mV';
 									voltageChoices.push({label:display, value:s});
 								}
 							}
 							else
 							{
-								var display = ((tmpParam.value * 12.5) + 600) +'mV';
+								var display = ((tmpParam.value * 12.5) + 600) +' mV';
 								voltageChoices.push({label:display, value:tmpParam.value});
 							}
 							this.controller.setupWidget
@@ -515,7 +515,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, param)
 							{
-								this.controller.stageController.pushScene({name: 'settings-voltage', disableSceneScroller: true}, param, this);
+								this.controller.stageController.pushScene({name: 'settings-voltage'}, param, this);
 							}.bindAsEventListener(this, tmpParam));
 							break;
 					}
