@@ -18,7 +18,7 @@ function dataHandlerModel()
 		'max_tickle_window':			{ type: 'listWindow'	},
 		'max_floor_window':				{ type: 'listWindow'	},
 		'compcache_enabled':			{ type: 'toggleTF'		},
-		'compcache_memlimit':			{ type: 'listMem'		},
+		'compcache_memlimit':			{ type: 'listMem',		status: 'compcache_enabled' },
 		'vdd1_vsel':					{ type: 'sceneVolts',	nice: $L("core voltages")	},
 		'cpu_hightemp_reset':			{ type: 'listTemp',		nice: $L("temp reset")		},
 		'cpu_hightemp_alarm':			{ type: 'listTemp',		nice: $L("temp limit")		},

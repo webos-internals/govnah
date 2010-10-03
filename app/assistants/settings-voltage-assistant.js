@@ -70,9 +70,8 @@ SettingsVoltageAssistant.prototype.setup = function()
 
 SettingsVoltageAssistant.prototype.freqVoltChanged = function(event, num)
 {
-	alert(this.getNewString());
+	//alert(this.getNewString());
 };
-
 
 SettingsVoltageAssistant.prototype.getNewString = function()
 {
@@ -85,7 +84,6 @@ SettingsVoltageAssistant.prototype.getNewString = function()
 	}
 	return string;
 };
-
 
 SettingsVoltageAssistant.prototype.activate = function(event)
 {

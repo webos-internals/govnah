@@ -253,12 +253,28 @@ SettingsCompcacheAssistant.prototype.onGetParams = function(payload, location)
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
+							
+							this.settingsModel[tmpParam.name+'_status'] = false;
+							this.settingsLocation[tmpParam.name+'_status'] = 'IGNORE';
+							if (dataHandler.settings[tmpParam.name].status)
+							{
+								if (this.settingsModel[dataHandler.settings[tmpParam.name].status] == 1)
+								{
+									this.settingsModel[tmpParam.name+'_status'] = true;
+								}
+								else
+								{
+									this.settingsModel[tmpParam.name+'_status'] = false;
+								}
+							}
+							
 							this.controller.setupWidget
 							(
 								tmpParam.name,
 								{
 									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
+									disabledProperty: tmpParam.name+'_status',
 									choices: this.memoryChoices
 								},
 								this.settingsModel
