@@ -34,9 +34,6 @@ SettingsVoltageAssistant.prototype.setup = function()
 	
 	for (var num = 0; num < this.parent.scalingFrequencyChoices.length; num++)
 	{
-		alert('----');
-		for (var x in this.parent.scalingFrequencyChoices[num]) alert(x+': '+this.parent.scalingFrequencyChoices[num][x]);
-		
 		this.group.insert({bottom: Mojo.View.render({object: {id: 'freq_'+num, rowClass: (num == 0 ? 'first' : (num == this.parent.scalingFrequencyChoices.length-1 ? 'last' : ''))}, template: 'settings/listselect-widget'})});
 		this.voltageModel['freq_'+num] = this.voltages[num];
 		
@@ -65,8 +62,28 @@ SettingsVoltageAssistant.prototype.setup = function()
 			},
 			this.voltageModel
 		);
+		
+		this.controller.listen('freq_'+num, Mojo.Event.propertyChange, this.freqVoltChanged.bindAsEventListener(this, num));
 	}
 	
+};
+
+SettingsVoltageAssistant.prototype.freqVoltChanged = function(event, num)
+{
+	alert(this.getNewString());
+};
+
+
+SettingsVoltageAssistant.prototype.getNewString = function()
+{
+	var string = '';
+	for (var x in this.voltageModel)
+	{
+		//alert('** - ' + x + ': ' + this.voltageModel[x]);
+		if (string != '') string += ' ';
+		string += this.voltageModel[x];
+	}
+	return string;
 };
 
 
@@ -89,7 +106,7 @@ SettingsVoltageAssistant.prototype.handleCommand = function(event)
 
 SettingsVoltageAssistant.prototype.cleanup = function(event)
 {
-	this.parent.settingsModel[this.param.name] = this.param.value;
+	this.parent.settingsModel[this.param.name] = this.getNewString();
 };
 
 
