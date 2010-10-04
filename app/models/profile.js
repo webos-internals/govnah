@@ -489,8 +489,8 @@ profileModel.prototype.getDataSettingString = function(name, value)
 				return [dataHandler.settingLabel(name), value + ' C'];
 				break;
 
-			case 'listVolts':
-				return [dataHandler.settingLabel(name), ((value * 12.5) + 600) + ' mV'];
+			case 'sceneVolts':
+				return [dataHandler.settingLabel(name), value];
 				break;
 		}
 	}
