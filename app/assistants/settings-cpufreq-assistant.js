@@ -513,10 +513,10 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
-							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, param)
+							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, name)
 							{
-								this.controller.stageController.pushScene({name: 'settings-voltage'}, param, this);
-							}.bindAsEventListener(this, tmpParam));
+								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name]}, this);
+							}.bindAsEventListener(this, tmpParam.name));
 							break;
 					}
 				}
