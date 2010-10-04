@@ -40,7 +40,11 @@ SettingsVoltageAssistant.prototype.setup = function()
 		var voltageChoices = [];
 		if (this.parent.voltageLimits.max !== false && this.parent.voltageLimits.min !== false)
 		{
-			for (var s = this.parent.voltageLimits.min; s <= this.parent.voltageLimits.max; s = s + 1)
+			var voltMin = parseInt(this.voltages[num])-2;
+			var voltMax = parseInt(this.voltages[num])+2
+			if (voltMin < this.parent.voltageLimits.min) voltMin = this.parent.voltageLimits.min;
+			if (voltMax > this.parent.voltageLimits.max) voltMax = this.parent.voltageLimits.max;
+			for (var s = voltMin; s <= voltMax; s++)
 			{
 				var display = ((s * 12.5) + 600) +' mV';
 				voltageChoices.push({label: display, value: s});
