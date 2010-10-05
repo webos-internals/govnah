@@ -351,7 +351,7 @@ SettingsCompcacheAssistant.prototype.onGetParams = function(payload, location)
 	this.forms[location].innerHTML = newHTML;
 	this.groups[location].style.display = ((newCount == 0)?'none':'block');
 	this.controller.instantiateChildWidgets(this.forms[location]);		
-		
+	
 	// update form styles so list looks OK
 	var rows = this.forms[location].querySelectorAll('div.palm-row');
 	for (var r = 0; r < rows.length; r++) {
@@ -390,10 +390,13 @@ SettingsCompcacheAssistant.prototype.helpRowTapped = function(event)
 	event.stopPropagation();
 	event.preventDefault();
 	
-	//for (var x in event) alert(x+': '+event[x]);
+	var lookup = event.target.id.replace(/help-/, '');
+	var help = helpData.get(lookup);
 	
-	alert('-----');
-	alert(event.target.id);
+	if (lookup && help)
+	{
+		this.controller.stageController.pushScene('help-data', help);
+	}
 }
 
 SettingsCompcacheAssistant.prototype.saveButtonPressed = function(event)

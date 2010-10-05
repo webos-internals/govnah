@@ -166,10 +166,13 @@ SettingsTcpcongAssistant.prototype.helpRowTapped = function(event)
 	event.stopPropagation();
 	event.preventDefault();
 	
-	//for (var x in event) alert(x+': '+event[x]);
+	var lookup = event.target.id.replace(/help-/, '');
+	var help = helpData.get(lookup);
 	
-	alert('-----');
-	alert(event.target.id);
+	if (lookup && help)
+	{
+		this.controller.stageController.pushScene('help-data', help);
+	}
 }
 SettingsTcpcongAssistant.prototype.saveButtonPressed = function(event)
 {

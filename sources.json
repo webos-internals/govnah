@@ -1,6 +1,7 @@
 [
     {"source": "app/models/service.js"},
     {"source": "app/models/utility.js"},
+    {"source": "app/models/help.js"},
     {"source": "app/models/cookies.js"},
     {"source": "app/models/line-graph.js"},
     {"source": "app/models/bar-graph.js"},
@@ -23,6 +24,10 @@
     {
         "scenes": "help",
         "source": "app/assistants/help-assistant.js"
+    },
+    {
+        "scenes": "help-data",
+        "source": "app/assistants/help-data-assistant.js"
     },
     {
         "scenes": "settings",
