@@ -210,7 +210,39 @@ body.palm-dark .palm-separator
 {
 	max-width: 300px;
 }
-
+.governor .palm-row .palm-row-wrapper
+{
+	position: relative;
+}
+.governor .palm-row .palm-row-wrapper
+{
+	min-height: 53px;
+}
+.governor .palm-row .palm-row-wrapper .help-overlay
+{
+	display: none;
+	position: absolute;
+	z-index: 10000;
+	top: 0px;
+	left: 0px;
+	width: 300px;
+	height: 53px;
+	background-position: 3px 3px;
+	background-repeat: no-repeat;
+	background-image: url(../images/palm-default/helprow.png);
+}
+.governor .palm-row.first .palm-row-wrapper .help-overlay
+{
+	background-image: url(../images/palm-default/helprow-first.png);
+}
+.governor .palm-row.single .palm-row-wrapper .help-overlay
+{
+	background-image: url(../images/palm-default/helprow-single.png);
+}
+.governor .palm-row.last .palm-row-wrapper .help-overlay
+{
+	background-image: url(../images/palm-default/helprow-last.png);
+}
 
 
 /*
