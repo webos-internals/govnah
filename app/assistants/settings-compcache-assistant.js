@@ -51,6 +51,9 @@ SettingsCompcacheAssistant.prototype.setup = function()
 	this.groups['compcache'].style.display = 'none';
 
 	this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
+	
+	this.helpTap = this.helpRowTapped.bindAsEventListener(this);
+	this.controller.listen(this.controller.get('help-toggle'), Mojo.Event.tap, this.helpButtonTapped.bindAsEventListener(this));
 
 	this.saveCompleteCompcache = this.saveCompleteCompcache.bindAsEventListener(this);
 	
@@ -356,12 +359,42 @@ SettingsCompcacheAssistant.prototype.onGetParams = function(payload, location)
 		else if (r == rows.length-1) rows[r].className = 'palm-row last';
 		else rows[r].className = 'palm-row';
 	}
+	
+	var helps = this.forms[location].querySelectorAll('div.help-overlay');
+	for (var h = 0; h < helps.length; h++) {
+		this.controller.listen(helps[h], Mojo.Event.tap, this.helpTap);
+	}
 
 	if (location == "compcache") {
 		if (this.getRequest) this.getRequest.cancel();
 		this.getRequest = false;
 	}
 };
+
+SettingsCompcacheAssistant.prototype.helpButtonTapped = function(event)
+{
+	if (this.controller.get('container').hasClassName('help'))
+	{
+		this.controller.get('container').removeClassName('help');
+		event.target.removeClassName('selected');
+	}
+	else
+	{
+		this.controller.get('container').addClassName('help');
+		event.target.addClassName('selected');
+	}
+}
+SettingsCompcacheAssistant.prototype.helpRowTapped = function(event)
+{
+	event.stop();
+	event.stopPropagation();
+	event.preventDefault();
+	
+	//for (var x in event) alert(x+': '+event[x]);
+	
+	alert('-----');
+	alert(event.target.id);
+}
 
 SettingsCompcacheAssistant.prototype.saveButtonPressed = function(event)
 {

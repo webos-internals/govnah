@@ -59,6 +59,10 @@ SettingsTcpcongAssistant.prototype.setup = function()
 
 	this.saveCompleteCongestion   = this.saveCompleteCongestion.bindAsEventListener(this);
 	
+	this.helpTap = this.helpRowTapped.bindAsEventListener(this);
+	this.controller.listen(this.controller.get('help-toggle'), Mojo.Event.tap, this.helpButtonTapped.bindAsEventListener(this));
+	this.controller.listen(this.controller.get('help-congestion'), Mojo.Event.tap, this.helpTap);
+	
 	this.onSetParams = this.onSetParams.bindAsEventListener(this);
 	
 	this.getRequest = false;
@@ -143,6 +147,30 @@ SettingsTcpcongAssistant.prototype.onGetCongestion = function(payload)
 	}
 };
 
+SettingsTcpcongAssistant.prototype.helpButtonTapped = function(event)
+{
+	if (this.controller.get('container').hasClassName('help'))
+	{
+		this.controller.get('container').removeClassName('help');
+		event.target.removeClassName('selected');
+	}
+	else
+	{
+		this.controller.get('container').addClassName('help');
+		event.target.addClassName('selected');
+	}
+}
+SettingsTcpcongAssistant.prototype.helpRowTapped = function(event)
+{
+	event.stop();
+	event.stopPropagation();
+	event.preventDefault();
+	
+	//for (var x in event) alert(x+': '+event[x]);
+	
+	alert('-----');
+	alert(event.target.id);
+}
 SettingsTcpcongAssistant.prototype.saveButtonPressed = function(event)
 {
 	if (this.setRequest) this.setRequest.cancel();

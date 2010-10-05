@@ -58,6 +58,10 @@ SettingsIoschedAssistant.prototype.setup = function()
 
 	this.saveCompleteScheduler   = this.saveCompleteScheduler.bindAsEventListener(this);
 	
+	this.helpTap = this.helpRowTapped.bindAsEventListener(this);
+	this.controller.listen(this.controller.get('help-toggle'), Mojo.Event.tap, this.helpButtonTapped.bindAsEventListener(this));
+	this.controller.listen(this.controller.get('help-scheduler'), Mojo.Event.tap, this.helpTap);
+	
 	this.onSetParams = this.onSetParams.bindAsEventListener(this);
 	
 	this.getRequest = false;
@@ -129,6 +133,31 @@ SettingsIoschedAssistant.prototype.onGetScheduler = function(payload)
 		this.controller.modelChanged(this.schedulerModel);
 	}
 };
+
+SettingsIoschedAssistant.prototype.helpButtonTapped = function(event)
+{
+	if (this.controller.get('container').hasClassName('help'))
+	{
+		this.controller.get('container').removeClassName('help');
+		event.target.removeClassName('selected');
+	}
+	else
+	{
+		this.controller.get('container').addClassName('help');
+		event.target.addClassName('selected');
+	}
+}
+SettingsIoschedAssistant.prototype.helpRowTapped = function(event)
+{
+	event.stop();
+	event.stopPropagation();
+	event.preventDefault();
+	
+	//for (var x in event) alert(x+': '+event[x]);
+	
+	alert('-----');
+	alert(event.target.id);
+}
 
 SettingsIoschedAssistant.prototype.saveButtonPressed = function(event)
 {
