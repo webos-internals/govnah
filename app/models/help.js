@@ -25,7 +25,7 @@ helpData.lookup =
 	'scaling_max_freq':				{ title: $L('Max Frequency'),			data: $L('This section has no help yet - you can contribute some!') },
 	'scaling_setspeed':				{ title: $L('SetSpeed'),				data: $L('This section has no help yet - you can contribute some!') },
 	'up_threshold':					{ title: $L('Up Threshold'),			data: $L('This section has no help yet - you can contribute some!') },
-	'down_threshold':				{ title: $L('Down Threshold'),			data: $L('This section has no help yet - you can contribute some!') ),
+	'down_threshold':				{ title: $L('Down Threshold'),			data: $L('This section has no help yet - you can contribute some!') },
 	'freq_step':					{ title: $L('Frequency Step'),			data: $L('This section has no help yet - you can contribute some!') },
 	'sampling_rate':				{ title: $L('Sampling Rate'),			data: $L('This section has no help yet - you can contribute some!') },
 	'sampling_down_factor':			{ title: $L('Sampling Down Factor'),	data: $L('This section has no help yet - you can contribute some!') },
