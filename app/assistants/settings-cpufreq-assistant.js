@@ -111,6 +111,10 @@ SettingsCpufreqAssistant.prototype.setup = function()
 	this.onGetParamsStandard  = this.onGetParams.bindAsEventListener(this, "standard");
 	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "specific");
 	this.onGetParamsOverride  = this.onGetParams.bindAsEventListener(this, "override");
+	
+	this.helpTap = this.helpRowTapped.bindAsEventListener(this);
+	this.controller.listen(this.controller.get('help-toggle'), Mojo.Event.tap, this.helpButtonTapped.bindAsEventListener(this));
+	this.controller.listen(this.controller.get('help-governor'), Mojo.Event.tap, this.helpTap);
 
 	this.saveCompleteCpufreq   = this.saveCompleteCpufreq.bindAsEventListener(this);
 	
@@ -556,15 +560,11 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 		if (r == 0) rows[r].className = 'palm-row first';
 		else if (r == rows.length-1) rows[r].className = 'palm-row last';
 		else rows[r].className = 'palm-row';
-		
-		this.controller.listen(rows[r], Mojo.Event.tap, function(e)
-		{
-			e.stop();
-			
-			alert('-----');
-			alert(e.target.id);
-			
-		}.bindAsEventListener(this));
+	}
+	
+	var helps = this.forms[location].querySelectorAll('div.help-overlay');
+	for (var h = 0; h < helps.length; h++) {
+		this.controller.listen(helps[h], Mojo.Event.tap, this.helpTap);
 	}
 	
 	if (location == "standard") {
@@ -580,6 +580,31 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 		this.getRequest = false;
 	}
 };
+
+SettingsCpufreqAssistant.prototype.helpButtonTapped = function(event)
+{
+	if (this.controller.get('container').hasClassName('help'))
+	{
+		this.controller.get('container').removeClassName('help');
+		event.target.removeClassName('selected');
+	}
+	else
+	{
+		this.controller.get('container').addClassName('help');
+		event.target.addClassName('selected');
+	}
+}
+SettingsCpufreqAssistant.prototype.helpRowTapped = function(event)
+{
+	event.stop();
+	event.stopPropagation();
+	event.preventDefault();
+	
+	//for (var x in event) alert(x+': '+event[x]);
+	
+	alert('-----');
+	alert(event.target.id);
+}
 
 SettingsCpufreqAssistant.prototype.saveButtonPressed = function(event)
 {
