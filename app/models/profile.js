@@ -34,6 +34,89 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 			{
 				//alert(this.profiles[p].governor);
 
+				// look for exact match
+				if (this.profiles[p].governor == governor &&
+					((!this.profiles[p].settingsStandard && settingsStandard.length == 0) ||
+					  (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length == settingsStandard.length)) &&
+					((!this.profiles[p].settingsSpecific && settingsSpecific.length == 0) || 
+					  (this.profiles[p].settingsSpecific && this.profiles[p].settingsSpecific.length == settingsSpecific.length)) &&
+					((!this.profiles[p].settingsOverride && settingsOverride.length == 0) ||
+					  (this.profiles[p].settingsOverride && this.profiles[p].settingsOverride.length == settingsOverride.length)) &&
+					((!this.profiles[p].settingsCompcache && settingsCompcache.length == 0) ||
+					  (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length == settingsCompcache.length)))
+				{
+					var match = true;
+					
+					//alert("Checking match");
+					
+					if (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length > 0)
+					{
+						alert("Checking settingsStandard");
+
+						for (var s = 0; s < this.profiles[p].settingsStandard.length; s++)
+						{
+							if (this.profiles[p].settingsStandard[s].name != settingsStandard[s].name ||
+								this.profiles[p].settingsStandard[s].value != settingsStandard[s].value)
+							{
+								match = false;
+							}
+						}
+					}
+					if (this.profiles[p].settingsSpecific && this.profiles[p].settingsSpecific.length > 0)
+					{
+						alert("Checking settingsSpecific");
+
+						for (var s = 0; s < this.profiles[p].settingsSpecific.length; s++)
+						{
+							if (this.profiles[p].settingsSpecific[s].name != settingsSpecific[s].name ||
+								this.profiles[p].settingsSpecific[s].value != settingsSpecific[s].value)
+							{
+								match = false;
+							}
+						}
+					}
+					if (this.profiles[p].settingsOverride && this.profiles[p].settingsOverride.length > 0)
+					{
+						alert("Checking settingsOverride");
+
+						for (var s = 0; s < this.profiles[p].settingsOverride.length; s++)
+						{
+							if (this.profiles[p].settingsOverride[s].name != settingsOverride[s].name ||
+								this.profiles[p].settingsOverride[s].value != settingsOverride[s].value)
+							{
+								match = false;
+							}
+						}
+					}
+					if (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length > 0)
+					{
+						alert("Checking settingsCompcache");
+
+						for (var s = 0; s < this.profiles[p].settingsCompcache.length; s++)
+						{
+							if (this.profiles[p].settingsCompcache[s].name != settingsCompcache[s].name ||
+								this.profiles[p].settingsCompcache[s].value != settingsCompcache[s].value)
+							{
+								match = false;
+							}
+						}
+					}
+					
+					if (match)
+					{
+						return this.profiles[p];
+					}
+				}
+			}
+		}
+		
+		for (var p = 0; p < this.profiles.length; p++)
+		{
+			if (this.profiles[p]) 
+			{
+				//alert(this.profiles[p].governor);
+
+				// look for fuzzy match
 				if (this.profiles[p].governor == governor &&
 					(!this.profiles[p].settingsStandard || !this.profiles[p].settingsStandard.length ||
 					 (this.profiles[p].settingsStandard.length == settingsStandard.length)) &&
