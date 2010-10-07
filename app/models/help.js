@@ -130,13 +130,13 @@ helpData.lookup =
 	'cpu_hightemp_reset':
 	{
 		title: $L('Temp Reset'),
-		data: $L('This section has no help yet - you can contribute some!')
+		data: $L('When the CPU cools down to this temperature the CPU frequency will go back the max frequency that the user has set.')
 	},
 	
 	'cpu_hightemp_alarm':
 	{
 		title: $L('Temp Limit'),
-		data: $L('This section has no help yet - you can contribute some!')
+		data: $L('When the CPU reaches this temperature the CPU speed will be knocked back until a user predetermined lower temperature is achieved.')
 	},
 	
 	'battery_scaleback_percent':
