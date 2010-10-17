@@ -136,19 +136,19 @@ helpData.lookup =
 	'cpu_hightemp_alarm':
 	{
 		title: $L('Temp Limit'),
-		data: $L('When the CPU reaches this temperature the CPU speed will be clamped to 500MHz until a user configurable lower temperature is achieved.')
+		data: $L('When the CPU reaches this temperature the CPU speed will be clamped to 500MHz until the CPU cools down to a user configurable lower temperature.')
 	},
 	
 	'battery_scaleback_percent':
 	{
 		title: $L('Battery Low Threshold'),
-		data: $L('This value represents how low the battery can go before the kernel will lower the CPU speed to conserve battery power. By default this value is set to 25%. Once this value is attained the kernel will lower the CPU frequency.')
+		data: $L('This value represents how low the battery can go before the kernel will lower the CPU speed to conserve battery power. By default this value is set to 25%. Once this threshold is crossed the kernel will lower the CPU frequency.')
 	},
 	
 	'battery_scaleback_speed':
 	{
 		title: $L('Battery Low Speed'),
-		data: $L('This setting is the frequency that the device will be lowered to once the Low Batt Threshold has been achieved. For example: by default if the the battery reaches 25% charge the CPU speed will be decreased to 500MHz to conserve battery power.')
+		data: $L('This setting is the frequency that the device will be lowered to once the Battery Low Threshold has been crossed. For example: by default if the the battery reaches 25% charge the CPU speed will be decreased to 500MHz to conserve battery power.')
 	},
 	
 	'override_charger':
