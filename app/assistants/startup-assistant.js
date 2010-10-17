@@ -9,6 +9,7 @@ function StartupAssistant()
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.7.3',log: [ 'Improved the help text.'] },
 	 { version: '0.7.2',log: [ 'Improved profile exact matching. Initial help mode implementation.'] },
 	 { version: '0.7.1',log: [ 'Reversed the order of the voltage popup, and fixed the profile saving'] },
 	 { version: '0.7.0',log: [ 'Added voltage selection screen, and improved compcache settings handling'] },
