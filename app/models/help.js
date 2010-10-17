@@ -20,7 +20,7 @@ helpData.lookup =
 	'governor':
 	{
 		title: $L('Governor'),
-		data: $L('A governor is what controls the operating frequency of the kernel in real time. Different governors have different parameters, and each governor is unique in the way that it operates. The govnerners available depend upon the installed kernel. The standard set of governors available when the UberKernel is installed are:<ul><li>ondemand - Increases clock speed in response to increases in CPU load.</li><li>conservative - Similar to the ondemand governor. It differs in behaviour in that it gracefully increases and decreases the CPU speed rather than jumping to max speed the moment there is any load on the CPU.</li><li>userspace - Sets the CPU speed to a defined rate as chosen by LunaSysMgr.</li><li>powersave - Sets the CPU speed to the min frequency value.</li><li>performance - Sets the CPU speed to the max frequency value.</li><li>screenstate - Runs at a higher speed when the screen is on and a lower speed when the screen is off.</li></ul>Note: Not all governors are available for all kernels. Some kernels are designed to use a specific governor.')
+		data: $L('A governor is what controls the operating frequency of the kernel in real time. Different governors have different parameters, and each governor is unique in the way that it operates. The governors available depend upon the installed kernel. The standard set of governors available when the UberKernel is installed are:<ul><li>ondemand - Increases clock speed in response to increases in CPU load.</li><li>conservative - Similar to the ondemand governor. It differs in behaviour in that it gracefully increases and decreases the CPU speed rather than jumping to max speed the moment there is any load on the CPU.</li><li>userspace - Sets the CPU speed to a defined rate as chosen by LunaSysMgr.</li><li>powersave - Sets the CPU speed to the min frequency value.</li><li>performance - Sets the CPU speed to the max frequency value.</li><li>screenstate - Runs at a higher speed when the screen is on and a lower speed when the screen is off.</li></ul>Note: Not all governors are available for all kernels. Some kernels are designed to use a specific governor.')
 	},
 	
 	'scheduler':
@@ -58,13 +58,13 @@ helpData.lookup =
 	'up_threshold':
 	{
 		title: $L('Up Threshold'),
-		data: $L('This parameter decides how much of the CPU needs to be in use before the CPU speed will be increased. For example: if this value is set to the default setting of 80 the CPU will need to be 80% in use before Govnah will increase the speed of the device.')
+		data: $L('This parameter decides how much of the CPU needs to be in use before the CPU speed will be increased. For example: if this value is set to the default setting of 80 the CPU will need to be 80% in use before the kernel will increase the speed of the device.')
 	},
 	
 	'down_threshold':
 	{
 		title: $L('Down Threshold'),
-		data: $L('This parameter decides how much the CPU needs to be in use before the CPU speed will be decreased. For example: if the down_threshold is set to 20 the CPU speed will not decrease until is is below 20% use.')
+		data: $L('This parameter decides how much the CPU needs to be in use before the CPU speed will be decreased. For example: if this value is set to 20 the CPU speed will not decrease until it is below 20% in use.')
 	},
 	
 	'freq_step':
