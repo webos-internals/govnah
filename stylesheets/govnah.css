@@ -214,9 +214,13 @@ body.palm-dark .palm-separator
 {
 	position: relative;
 }
-.governor .palm-row .palm-row-wrapper
+.governor .palm-row .palm-row-wrapper:not(.textfield-group)
 {
 	min-height: 53px;
+}
+.governor .palm-row .palm-row-wrapper.textfield-group
+{
+	min-height: 23px;
 }
 .governor .palm-row .palm-row-wrapper .help-overlay
 {
@@ -230,6 +234,11 @@ body.palm-dark .palm-separator
 	background-position: 3px 3px;
 	background-repeat: no-repeat;
 	background-image: url(../images/palm-default/helprow.png);
+}
+.governor .palm-row .palm-row-wrapper.textfield-group .help-overlay
+{
+	top: -15px;
+	left: -15px;
 }
 .governor.help .palm-row .palm-row-wrapper .help-overlay
 {
