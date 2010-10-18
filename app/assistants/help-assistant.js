@@ -30,6 +30,11 @@ HelpAssistant.prototype.setup = function()
 		Class: 'img_web',
 		type: 'web'
 	});
+	this.supportModel.items.push({
+		text: $L('Generate Email'),
+		Class: 'img_email',
+		type: 'supportEmail'
+	});
 	
 	this.controller.setupWidget
 	(
@@ -78,7 +83,44 @@ HelpAssistant.prototype.listTapHandler = function(event)
 		case 'scene':
 			this.controller.stageController.pushScene(event.item.detail);
 			break;
+			
+		case 'supportEmail':
+			this.generateEmail();
+			break;
 	}
+};
+HelpAssistant.prototype.generateEmail = function()
+{
+	var email = '';
+	
+	email += '<h1>Current:</h1>';
+	email += '<i>From Service:</i>';
+	email += dataHandler.dumpCurrent();
+	email += '<br><br>';
+	email += '<h1>Profiles:</h1>'
+	for (var p = 0; p < profiles.profiles.length; p++)
+	{
+		email += profiles.profiles[p].dump();
+	}
+	
+	//this.controller.get('test').update(email);
+	
+	this.controller.serviceRequest
+	(
+    	"palm://com.palm.applicationManager",
+		{
+	        method: 'open',
+	        parameters:
+			{
+	            id: "com.palm.app.email",
+	            params:
+				{
+	                summary: "Govnah Support",
+	                text: '<html><body>'+email+'</body></html>'
+	            }
+	        }
+	    }
+	);
 };
 
 HelpAssistant.prototype.activate = function(event)
