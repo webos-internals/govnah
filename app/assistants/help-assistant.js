@@ -93,6 +93,10 @@ HelpAssistant.prototype.generateEmail = function()
 {
 	var email = '';
 	
+	email += '<h1>Current:</h1>';
+	email += '<i>From Service:</i>';
+	email += dataHandler.dumpCurrent();
+	email += '<br><br>';
 	email += '<h1>Profiles:</h1>'
 	for (var p = 0; p < profiles.profiles.length; p++)
 	{
