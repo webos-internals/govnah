@@ -1106,6 +1106,14 @@ bool unstick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void 
 }
 
 //
+// Read cpufreq_params file
+//
+bool get_cpufreq_file_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /var/palm/event.d/org.webosinternals.govnah-settings 2>&1");
+}
+
+//
 // Read time_in_state
 //
 bool get_time_in_state_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -1484,6 +1492,14 @@ bool unstick_compcache_config_method(LSHandle* lshandle, LSMessage *message, voi
   LSErrorFree(&lserror);
  end:
   return false;
+}
+
+//
+// Read compcache_config file
+//
+bool get_compcache_file_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message,
+			"/bin/cat /var/palm/event.d/org.webosinternals.govnah-compcache 2>&1");
 }
 
 //
@@ -2020,7 +2036,7 @@ LSMethod luna_methods[] = {
   { "get_proc_loadavg",		get_proc_loadavg_method },
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
   { "get_tmp105_temp",		get_tmp105_temp_method },
-  { "get_battery_current",		  get_battery_current_method },
+  { "get_battery_current",	get_battery_current_method },
 
   { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
   { "get_scaling_governor",     get_scaling_governor_method },
@@ -2028,6 +2044,8 @@ LSMethod luna_methods[] = {
   { "set_cpufreq_params",	set_cpufreq_params_method },
   { "stick_cpufreq_params",	stick_cpufreq_params_method },
   { "unstick_cpufreq_params",	unstick_cpufreq_params_method },
+  { "get_cpufreq_file",		get_cpufreq_file_method },
+
   { "get_time_in_state",	get_time_in_state_method },
   { "get_total_trans",		get_total_trans_method },
   { "get_trans_table",		get_trans_table_method },
@@ -2036,6 +2054,7 @@ LSMethod luna_methods[] = {
   { "set_compcache_config",	set_compcache_config_method },
   { "stick_compcache_config",	stick_compcache_config_method },
   { "unstick_compcache_config",	unstick_compcache_config_method },
+  { "get_compcache_file",	get_compcache_file_method },
 
   { "get_io_scheduler",		get_io_scheduler_method },
   { "set_io_scheduler",		set_io_scheduler_method },
