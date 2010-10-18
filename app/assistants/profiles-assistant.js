@@ -43,6 +43,7 @@ ProfilesAssistant.prototype.setup = function()
 		this.advancedTapHandler =	this.advancedTap.bindAsEventListener(this);
 		this.listTapHandler =		this.listTapHandler.bindAsEventListener(this);
 		this.listDeleteHandler =	this.listDeleteHandler.bindAsEventListener(this);
+		this.listReorderHandler =	this.listReorderHandler.bindAsEventListener(this);
 		
 		this.updateList(true);
 		this.controller.setupWidget('profileList', 
@@ -50,10 +51,11 @@ ProfilesAssistant.prototype.setup = function()
 			itemTemplate: "profiles/profile-row",
 			swipeToDelete: true,
 			preventDeleteProperty: 'locked',
-			reorderable: false
+			reorderable: true
 		}, this.profileListModel);
-		this.controller.listen(this.profileListElement, Mojo.Event.listTap, this.listTapHandler);
-		this.controller.listen(this.profileListElement, Mojo.Event.listDelete, this.listDeleteHandler);
+		this.controller.listen(this.profileListElement, Mojo.Event.listTap,    	this.listTapHandler);
+		this.controller.listen(this.profileListElement, Mojo.Event.listDelete, 	this.listDeleteHandler);
+		this.controller.listen(this.profileListElement, Mojo.Event.listReorder,	this.listReorderHandler);
 		
 		this.controller.listen(this.advancedRow, Mojo.Event.tap, this.advancedTapHandler);
 		
@@ -106,6 +108,10 @@ ProfilesAssistant.prototype.listTapHandler = function(event)
 ProfilesAssistant.prototype.listDeleteHandler = function(event)
 {
 	profiles.deleteProfile(event.item.id);
+}
+ProfilesAssistant.prototype.listReorderHandler = function(event)
+{
+	profiles.reorderProfiles(event.fromIndex, event.toIndex);
 }
 
 ProfilesAssistant.prototype.handleCommand = function(event)
