@@ -375,6 +375,65 @@ profilesModel.prototype.deleteProfile = function(id)
 		Mojo.Log.logException(e, 'profiles#deleteProfile');
 	}
 };
+profilesModel.prototype.reorderProfiles = function(from, to)
+{
+	try
+	{
+		var reorderedProfiles = [];
+		var reorderedCookie = [];
+		
+		if (from > to) 
+		{
+			for (var p = 0; p < to; p++)
+			{
+				reorderedProfiles.push(this.profiles[p]);
+				reorderedCookie.push(this.profiles[p].id);
+			}
+			
+			reorderedProfiles.push(this.profiles[from]);
+			reorderedCookie.push(this.profiles[from].id);
+			
+			for (var p = to; p < this.profiles.length; p++)
+			{
+				if (p > from || p < from)
+				{
+					reorderedProfiles.push(this.profiles[p]);
+					reorderedCookie.push(this.profiles[p].id);
+				}
+			}
+		}
+		else if (from < to)
+		{
+			for (var p = 0; p < to+1; p++)
+			{
+				if (p > from || p < from)
+				{
+					reorderedProfiles.push(this.profiles[p]);
+					reorderedCookie.push(this.profiles[p].id);
+				}
+			}
+			
+			reorderedProfiles.push(this.profiles[from]);
+			reorderedCookie.push(this.profiles[from].id);
+			
+			for (var p = to+1; p < this.profiles.length; p++)
+			{
+				reorderedProfiles.push(this.profiles[p]);
+				reorderedCookie.push(this.profiles[p].id);
+			}
+		}
+		
+		this.profiles = reorderedProfiles;
+		this.cookieData.profiles = reorderedCookie;
+		
+		this.cookie.put(this.cookieData);
+		
+	} 
+	catch (e)
+	{
+		Mojo.Log.logException(e, 'profiles#deleteProfile');
+	}
+};
 profilesModel.prototype.applyComplete = function(payload, location)
 {
 	//alert('===========');
