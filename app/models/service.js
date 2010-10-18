@@ -119,6 +119,16 @@ service.stick_cpufreq_params = function(callback, genericParams, governorParams,
 	});
 	return request;
 };
+service.unstick_cpufreq_params = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'unstick_cpufreq_params',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 
 service.get_compcache_config = function(callback, governor)
 {
@@ -153,6 +163,16 @@ service.stick_compcache_config = function(callback, compcacheConfig)
 		{
 			compcacheConfig: compcacheConfig
 		},
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.unstick_compcache_config = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'unstick_compcache_config',
 		onSuccess: callback,
 		onFailure: callback
 	});

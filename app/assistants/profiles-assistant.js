@@ -18,6 +18,10 @@ function ProfilesAssistant()
 				command: 'do-prefs'
 			},
 			{
+				label: $L("Disable Profile"),
+				command: 'do-unstick'
+			},
+			{
 				label: $L("Help"),
 				command: 'do-help'
 			}
@@ -122,6 +126,11 @@ ProfilesAssistant.prototype.handleCommand = function(event)
 		{
 			case 'do-prefs':
 				this.controller.stageController.pushScene('preferences');
+				break;
+				
+			case 'do-unstick':
+				service.unstick_cpufreq_params(function(p){});
+				service.unstick_compcache_config(function(p){});
 				break;
 				
 			case 'do-help':
