@@ -91,36 +91,99 @@ HelpAssistant.prototype.listTapHandler = function(event)
 };
 HelpAssistant.prototype.generateEmail = function()
 {
-	var email = '';
-	
-	email += '<h1>Current:</h1>';
-	email += '<i>From Service:</i>';
-	email += dataHandler.dumpCurrent();
-	email += '<br><br>';
-	email += '<h1>Profiles:</h1>'
-	for (var p = 0; p < profiles.profiles.length; p++)
+	service.get_proc_version(this.generateEmailHandler.bindAsEventListener(this, 'get_proc_version'));
+	service.get_cpufreq_file(this.generateEmailHandler.bindAsEventListener(this, 'get_cpufreq_file'));
+	service.get_compcache_file(this.generateEmailHandler.bindAsEventListener(this, 'get_compcache_file'));
+	this.generateCallbacks =
 	{
-		email += profiles.profiles[p].dump();
+		get_proc_version: false,
+		get_cpufreq_file: false,
+		get_compcache_file: false
+	}
+};
+HelpAssistant.prototype.generateEmailHandler = function(payload, part)
+{
+	if (payload.returnValue)
+	{
+		this.generateCallbacks[part] = payload.stdOut;
+	}
+	else
+	{
+		this.generateCallbacks[part] = payload.stdErr;
 	}
 	
-	//this.controller.get('test').update(email);
-	
-	this.controller.serviceRequest
-	(
-    	"palm://com.palm.applicationManager",
+	if (this.generateCallbacks.get_proc_version !== false &&
+		this.generateCallbacks.get_cpufreq_file !== false &&
+		this.generateCallbacks.get_compcache_file !== false)
+	{
+		var email = '';
+		
+		email += '<b>proc_version:</b> '+this.generateCallbacks.get_proc_version;
+		
+		email += '<h1>Current:</h1>';
+		email += '<i>From Service:</i>';
+		email += dataHandler.dumpCurrent();
+		email += '<br><br>';
+		
+		email += '<h1>Files:</h1>';
+		email += '<b>cpufreq_file</b>';
+		email += '<pre>';
+		if (Object.isArray(this.generateCallbacks.get_cpufreq_file))
 		{
-	        method: 'open',
-	        parameters:
+			for (var l = 0; l < this.generateCallbacks.get_cpufreq_file.length; l++)
 			{
-	            id: "com.palm.app.email",
-	            params:
+				if (l > 0) email += "\n";
+				email += this.generateCallbacks.get_cpufreq_file[l];
+			}
+		}
+		else
+		{
+			email += this.generateCallbacks.get_compcache_file;
+		}
+		email += '</pre>';
+		email += '<br>';
+		email += '<b>compcache_file</b>';
+		email += '<pre>';
+		if (Object.isArray(this.generateCallbacks.get_compcache_file))
+		{
+			for (var l = 0; l < this.generateCallbacks.get_compcache_file.length; l++)
+			{
+				if (l > 0) email += "\n";
+				email += this.generateCallbacks.get_compcache_file[l];
+			}
+		}
+		else
+		{
+			email += this.generateCallbacks.get_compcache_file;
+		}
+		email += '</pre>';
+		email += '<br><br>';
+		
+		email += '<h1>Profiles:</h1>'
+		for (var p = 0; p < profiles.profiles.length; p++)
+		{
+			email += profiles.profiles[p].dump();
+		}
+		
+		//this.controller.get('test').update(email);
+		
+		this.controller.serviceRequest
+		(
+	    	"palm://com.palm.applicationManager",
+			{
+		        method: 'open',
+		        parameters:
 				{
-	                summary: "Govnah Support",
-	                text: '<html><body>'+email+'</body></html>'
-	            }
-	        }
-	    }
-	);
+		            id: "com.palm.app.email",
+		            params:
+					{
+		                summary: "Govnah Support",
+		                text: '<html><body>'+email+'</body></html>'
+		            }
+		        }
+		    }
+		);
+	}
 };
 
 HelpAssistant.prototype.activate = function(event)

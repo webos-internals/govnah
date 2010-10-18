@@ -2,6 +2,16 @@ service.identifier = 'palm://org.webosinternals.govnah';
 
 function service(){};
 
+service.get_proc_version = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_proc_version',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 service.get_proc_cpuinfo = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
@@ -129,6 +139,16 @@ service.unstick_cpufreq_params = function(callback)
 	});
 	return request;
 };
+service.get_cpufreq_file = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_cpufreq_file',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 
 service.get_compcache_config = function(callback, governor)
 {
@@ -173,6 +193,16 @@ service.unstick_compcache_config = function(callback)
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'unstick_compcache_config',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.get_compcache_file = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_compcache_file',
 		onSuccess: callback,
 		onFailure: callback
 	});
