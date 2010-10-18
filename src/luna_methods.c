@@ -395,6 +395,13 @@ static bool read_single_integer(LSHandle* lshandle, LSMessage *message, char *fi
 }
 
 //
+// Read /proc/version
+//
+bool get_proc_version_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message, "/bin/cat /proc/version 2>&1");
+}
+
+//
 // Read /proc/cpuinfo
 //
 bool get_proc_cpuinfo_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -2007,6 +2014,7 @@ bool setProfile_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 LSMethod luna_methods[] = {
   { "status",			dummy_method },
 
+  { "get_proc_version",		get_proc_version_method },
   { "get_proc_cpuinfo",		get_proc_cpuinfo_method },
   { "get_proc_meminfo",		get_proc_meminfo_method },
   { "get_proc_loadavg",		get_proc_loadavg_method },
