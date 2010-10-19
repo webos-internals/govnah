@@ -121,7 +121,7 @@ HelpAssistant.prototype.generateEmailHandler = function(payload, part)
 		email += '<b>proc_version:</b> '+this.generateCallbacks.get_proc_version;
 		
 		email += '<h1>Current:</h1>';
-		email += '<i>From Service:</i>';
+		email += '<i>From Service:</i><br>';
 		email += dataHandler.dumpCurrent();
 		email += '<br><br>';
 		

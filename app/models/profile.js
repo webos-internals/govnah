@@ -645,40 +645,41 @@ profileModel.prototype.dump = function()
 {
 	var r = '';
 	
-	r += '<table style="border-top: 1px solid #000;">';
-	r += '<tr><th colspan="2" align="left">('+this.id+') '+this.name+' '+(this.version?'v'+this.version:'')+'</th></tr>';
-	r += '<tr><th valign="top" align="left">Governor:</th><td>'+this.governor+'</td></tr>';
+	r += '<span style="border-top: 1px solid #000;"><b>('+this.id+') '+this.name+' '+(this.version?'v'+this.version:'')+'</b></span><br>';
+	r += '<b>Governor:</b> '+this.governor+'<br>';
 	
 	if (this.settingsStandard)
 	{
 		for (var s = 0; s < this.settingsStandard.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsStandard[s].name+':</th><td>'+this.settingsStandard[s].value+'</td></tr>';
+			var row = this.getDataSettingString(this.settingsStandard[s].name, this.settingsStandard[s].value);
+			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
 	}
 	if (this.settingsSpecific)
 	{
 		for (var s = 0; s < this.settingsSpecific.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsSpecific[s].name+':</th><td>'+this.settingsSpecific[s].value+'</td></tr>';
+			var row = this.getDataSettingString(this.settingsSpecific[s].name, this.settingsSpecific[s].value);
+			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
 	}
 	if (this.settingsOverride)
 	{
 		for (var s = 0; s < this.settingsOverride.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsOverride[s].name+':</th><td>'+this.settingsOverride[s].value+'</td></tr>';
+			var row = this.getDataSettingString(this.settingsOverride[s].name, this.settingsOverride[s].value);
+			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
 	}
 	if (this.settingsCompcache)
 	{
 		for (var s = 0; s < this.settingsCompcache.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsCompcache[s].name+':</th><td>'+this.settingsCompcache[s].value+'</td></tr>';
+			var row = this.getDataSettingString(this.settingsCompcache[s].name, this.settingsCompcache[s].value);
+			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
 	}
-	
-	r += '</table>';
 	
 	return r;
 }

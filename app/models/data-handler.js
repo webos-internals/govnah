@@ -373,41 +373,42 @@ dataHandlerModel.prototype.dumpCurrent = function()
 {
 	var r = '';
 	
-	r += '<table>';
-	r += '<tr><th valign="top" align="left">Governor:</th><td>'+this.governor+'</td></tr>';
-	r += '<tr><th valign="top" align="left">Scheduler:</th><td>'+this.scheduler+'</td></tr>';
-	r += '<tr><th valign="top" align="left">Congestion:</th><td>'+this.congestion+'</td></tr>';
+	r += '<b>Governor:</b> '+this.governor+'<br>';
+	r += '<b>Scheduler:</b> '+this.scheduler+'<br>';
+	r += '<b>Congestion:</b> '+this.congestion+'<br>';
 	
 	if (this.settingsStandard)
 	{
 		for (var s = 0; s < this.settingsStandard.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsStandard[s].name+':</th><td>'+this.settingsStandard[s].value+'</td></tr>';
+			var row = profileModel.prototype.getDataSettingString(this.settingsStandard[s].name, this.settingsStandard[s].value);
+			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
 	}
 	if (this.settingsSpecific)
 	{
 		for (var s = 0; s < this.settingsSpecific.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsSpecific[s].name+':</th><td>'+this.settingsSpecific[s].value+'</td></tr>';
+			var row = profileModel.prototype.getDataSettingString(this.settingsSpecific[s].name, this.settingsSpecific[s].value);
+			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
 	}
 	if (this.settingsOverride)
 	{
 		for (var s = 0; s < this.settingsOverride.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsOverride[s].name+':</th><td>'+this.settingsOverride[s].value+'</td></tr>';
+			var row = profileModel.prototype.getDataSettingString(this.settingsOverride[s].name, this.settingsOverride[s].value);
+			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
 	}
 	if (this.settingsCompcache)
 	{
 		for (var s = 0; s < this.settingsCompcache.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsCompcache[s].name+':</th><td>'+this.settingsCompcache[s].value+'</td></tr>';
+			var row = profileModel.prototype.getDataSettingString(this.settingsCompcache[s].name, this.settingsCompcache[s].value);
+			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
 	}
-	
-	r += '</table>';
 	
 	return r;
 }
