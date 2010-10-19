@@ -651,39 +651,31 @@ profileModel.prototype.dump = function()
 	
 	if (this.settingsStandard)
 	{
-		r += '<tr><th valign="top" align="left">Standard:</th><td><table>'
 		for (var s = 0; s < this.settingsStandard.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsStandard[s].name+'</th><td>'+this.settingsStandard[s].value+'</td></tr>';
+			r += '<tr><th valign="top" align="left">'+this.settingsStandard[s].name+':</th><td>'+this.settingsStandard[s].value+'</td></tr>';
 		}
-		r += '</table></td></tr>';
 	}
 	if (this.settingsSpecific)
 	{
-		r += '<tr><th valign="top" align="left">Specific:</th><td><table>'
 		for (var s = 0; s < this.settingsSpecific.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsSpecific[s].name+'</th><td>'+this.settingsSpecific[s].value+'</td></tr>';
+			r += '<tr><th valign="top" align="left">'+this.settingsSpecific[s].name+':</th><td>'+this.settingsSpecific[s].value+'</td></tr>';
 		}
-		r += '</table></td></tr>';
 	}
 	if (this.settingsOverride)
 	{
-		r += '<tr><th valign="top" align="left">Override:</th><td><table>'
 		for (var s = 0; s < this.settingsOverride.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsOverride[s].name+'</th><td>'+this.settingsOverride[s].value+'</td></tr>';
+			r += '<tr><th valign="top" align="left">'+this.settingsOverride[s].name+':</th><td>'+this.settingsOverride[s].value+'</td></tr>';
 		}
-		r += '</table></td></tr>';
 	}
 	if (this.settingsCompcache)
 	{
-		r += '<tr><th valign="top" align="left">Compcache:</th><td><table>'
 		for (var s = 0; s < this.settingsCompcache.length; s++)
 		{
-			r += '<tr><th valign="top" align="left">'+this.settingsCompcache[s].name+'</th><td>'+this.settingsCompcache[s].value+'</td></tr>';
+			r += '<tr><th valign="top" align="left">'+this.settingsCompcache[s].name+':</th><td>'+this.settingsCompcache[s].value+'</td></tr>';
 		}
-		r += '</table></td></tr>';
 	}
 	
 	r += '</table>';

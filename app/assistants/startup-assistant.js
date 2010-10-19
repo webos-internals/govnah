@@ -10,7 +10,7 @@ function StartupAssistant()
 	[
 	 // Don't forget the comma on all but the last entry
 	 { version: '0.7.4',log: [ 'Added "Generate Support Email" option to help scene',
-	 						   'Added "Disable Profile" option to app-menu of profile list',
+	 						   'Added "Disable Profile" option to the app-menu of profile list',
 	 						   'Improved the help text.'] },
 	 { version: '0.7.3',log: [ 'Improved the help text.'] },
 	 { version: '0.7.2',log: [ 'Improved profile exact matching. Initial help mode implementation.'] },
