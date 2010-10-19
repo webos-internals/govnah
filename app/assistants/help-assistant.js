@@ -116,7 +116,7 @@ HelpAssistant.prototype.generateEmailHandler = function(payload, part)
 		this.generateCallbacks.get_cpufreq_file !== false &&
 		this.generateCallbacks.get_compcache_file !== false)
 	{
-		var email = '';
+		var email = '<br><br><br>';
 		
 		email += '<b>proc_version:</b> '+this.generateCallbacks.get_proc_version;
 		
