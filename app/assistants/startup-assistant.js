@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.7.5',log: [ 'Added a Changelog button to the Help scene' ] },
 	 { version: '0.7.4',log: [ 'Added "Generate Support Email" option to help scene',
 							   'Added "Disable Profile" option to app-menu of profile list',
 							   'Improved the help text.'] },
@@ -221,4 +222,8 @@ StartupAssistant.prototype.handleCommand = function(event)
 	break;
 	}
     }
-}
+};
+
+// Local Variables:
+// tab-width: 4
+// End:
