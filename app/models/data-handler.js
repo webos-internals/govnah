@@ -972,6 +972,8 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			}
 		}
 		
+		this.fullGraph.options.yaxis.ticFill = (this.graphAssistant.controller.document.body.hasClassName('palm-dark') ? "rgba(0, 0, 0, .08)" : "rgba(125, 125, 125, .08)");
+		
 		if (this.graphAssistant.display == "freq") {
 			this.fullGraph.options.yaxis.ticFormat = dataHandlerModel.freqFormat;
 			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display], fill: this.fills[this.graphAssistant.display]});
