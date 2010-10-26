@@ -201,7 +201,7 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 			},
 			yaxis:
 			{
-				min:		0,
+				/*min:		0,*/
 				tics:		11,
 				ticStroke:	false,
 				ticFill:	"rgba(125, 125, 125, .08)"

@@ -116,7 +116,11 @@ lineGraph.prototype.prepareLines = function()
 	if (this.options.yaxis.min !== null && this.options.yaxis.min < this.yaxis.min) this.yaxis.min = this.options.yaxis.min;
 	if (this.options.yaxis.max !== null && this.options.yaxis.max < this.yaxis.max) this.yaxis.max = this.options.yaxis.max;
 	
-	if (this.yaxis.max - this.yaxis.min == 0) this.yaxis.max++;
+	if ((this.yaxis.max - this.yaxis.min) == 0)
+	{
+		this.yaxis.max++;
+		if (this.yaxis.min >= 1) this.yaxis.min--;
+	}
 	
 	this.drawHeight = this.options.renderHeight - (this.options.padding.bottom + this.options.padding.top);
 	this.drawWidth = this.options.renderWidth - (this.options.padding.left + this.options.padding.right);
@@ -139,7 +143,7 @@ lineGraph.prototype.renderTics = function()
 	
 	for (var t = 0; t < this.options.yaxis.tics; t++)
 	{
-		var v = t*ticsEvery;
+		var v = (t*ticsEvery) + this.yaxis.min;
 		var y = this.getY(v);
 		if (y >= (0-this.options.padding.top))
 		{
@@ -155,7 +159,7 @@ lineGraph.prototype.renderTics = function()
 			}
 			if (this.options.yaxis.ticFill !== false && (t%2) && t > 0)
 			{
-				var y2 = this.getY((t-1)*ticsEvery);
+				var y2 = this.getY(((t-1)*ticsEvery) + this.yaxis.min);
 				this.canvas.fillRect(this.options.padding.left, y, this.drawWidth, y2-y);
 			}
 		}
@@ -165,9 +169,17 @@ lineGraph.prototype.renderTics = function()
 }
 lineGraph.prototype.getBetterMaxY = function(y)
 {
-	while (y%(this.options.yaxis.tics-1))
+	y = Math.ceil(y);
+	if (y > 1)
 	{
-		y++;
+		while ((y-this.yaxis.min)%(this.options.yaxis.tics-1))
+		{
+			y++;
+		}
+	}
+	else
+	{
+		y = 1;
 	}
 	return y;
 }
@@ -242,6 +254,7 @@ lineGraph.prototype.render = function()
 	
   	this.canvas.restore();
 };
+
 
 
 // Local Variables:
