@@ -775,6 +775,30 @@ dataHandlerModel.prototype.currHandler = function(payload)
 	this.renderFullGraph("curr");
 };
 
+dataHandlerModel.tempFormat = function(n)
+{
+	return n + ' &deg;C';
+}
+dataHandlerModel.freqFormat = function(n)
+{
+	if ((n / 1000) >= 1000)
+	{
+		return ((n / 1000) / 1000) + ' GHz';
+	}
+	else
+	{
+		return (n / 1000) + ' MHz';
+	}
+}
+dataHandlerModel.memFormat = function(n)
+{
+	return Math.floor((n)/1024) + ' MB';
+}
+dataHandlerModel.currFormat = function(n)
+{
+	return Math.round(n / 1000) + ' mA';
+}
+
 dataHandlerModel.prototype.updateIcon = function(temp)
 {
 	if ((this.currentMode == "card" && prefs.get().cardIconUpdate) ||
@@ -948,13 +972,18 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			}
 		}
 		
-		if (this.graphAssistant.display == "freq" ||
-			this.graphAssistant.display == "temp" ||
-			this.graphAssistant.display == "mem") {
+		if (this.graphAssistant.display == "freq") {
+			this.fullGraph.options.yaxis.ticFormat = dataHandlerModel.freqFormat;
+			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display], fill: this.fills[this.graphAssistant.display]});
+		}
+		
+		if (this.graphAssistant.display == "temp") {
+			this.fullGraph.options.yaxis.ticFormat = dataHandlerModel.tempFormat;
 			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display], fill: this.fills[this.graphAssistant.display]});
 		}
 		
 		if (this.graphAssistant.display == "curr") {
+			this.fullGraph.options.yaxis.ticFormat = dataHandlerModel.currFormat;
 			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display+'1'], fill: this.fills[this.graphAssistant.display+'1']});
 			this.fullGraph.addLine({data: fullData2, stroke: this.strokes[this.graphAssistant.display+'2'], fill: this.fills[this.graphAssistant.display+'2']});
 		}
@@ -963,6 +992,11 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
 			this.fullGraph.addLine({data: fullData2, stroke: "rgba(105, 105, 205, .4)"});
 			this.fullGraph.addLine({data: fullData1, stroke: "rgba(135, 135, 205, .4)", fill: "rgba(135, 135, 205, .2)"});
+		}
+		
+		if (this.graphAssistant.display == "mem") {
+			this.fullGraph.options.yaxis.ticFormat = dataHandlerModel.memFormat;
+			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display], fill: this.fills[this.graphAssistant.display]});
 		}
 		
 		this.fullGraph.render();

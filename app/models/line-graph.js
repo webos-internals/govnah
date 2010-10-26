@@ -33,7 +33,8 @@ function lineGraph(element, options, labels)
 			tics:		false,
 			ticStroke:	"rgba(0, 0, 0, .5)",
 			ticFill:	false,
-			ticWidth:	1
+			ticWidth:	1,
+			ticFormat:	function(n){return n;}
 		},
 		padding:
 		{
@@ -142,7 +143,7 @@ lineGraph.prototype.renderTics = function()
 		var y = this.getY(v);
 		if (y >= (0-this.options.padding.top))
 		{
-			html += '<div style="top: '+y+'px;">'+v+'</div>';
+			html += '<div style="top: '+y+'px;">'+this.options.yaxis.ticFormat(v)+'</div>';
 			
 			if (this.options.yaxis.ticStroke !== false)
 			{
