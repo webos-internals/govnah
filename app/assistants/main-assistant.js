@@ -82,13 +82,13 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
 	//this.controller.listen(this.settingsRow, Mojo.Event.tap, this.settingsTapHandler);
 	
-	/*
+	
 	this.controller.listen(this.freqRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq'));
 	this.controller.listen(this.tempRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'temp'));
 	this.controller.listen(this.currRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr'));	
 	this.controller.listen(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
 	this.controller.listen(this.memRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'mem' ));
-	*/
+	
 	
 	this.visible = this.visible.bindAsEventListener(this);
 	this.invisible = this.invisible.bindAsEventListener(this);

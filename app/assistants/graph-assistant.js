@@ -90,15 +90,17 @@ GraphAssistant.prototype.orientationChanged = function(orientation)
 	{
 		case 'left':
 		case 'right':
-			dataHandler.fullGraph.options.renderWidth = 480;
+			dataHandler.fullGraph.options.renderWidth  = 480;
 			dataHandler.fullGraph.options.renderHeight = 320;
+			dataHandler.fullGraph.options.yaxis.tics   = 8;
 			dataHandler.renderFullGraph();
 			break;
 			
 		case 'up':
 		case 'down':
-			dataHandler.fullGraph.options.renderWidth = 320;
+			dataHandler.fullGraph.options.renderWidth  = 320;
 			dataHandler.fullGraph.options.renderHeight = 452;
+			dataHandler.fullGraph.options.yaxis.tics   = 11;
 			dataHandler.renderFullGraph();
 			break;
 	}

@@ -185,15 +185,23 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 	(
 		this.graphAssistant.controller.get('graphCanvas'),
 		{
-			renderWidth: 320,
-			renderHeight: 452,
+			renderWidth:	320,
+			renderHeight:	452,
 			padding:
 			{
-				top:	52,
-				bottom:	30,
-				left:	50
+				top:		60,
+				bottom:		12,
+				left:		0
+			},
+			yaxis:
+			{
+				min:		0,
+				tics:		11,
+				ticStroke:	false,
+				ticFill:	"rgba(125, 125, 125, .08)"
 			}
-		}
+		},
+		this.graphAssistant.controller.get('graphLabels')
 	);
 };
 dataHandlerModel.prototype.setSettingsAssistant = function(assistant)

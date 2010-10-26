@@ -202,6 +202,52 @@ body.palm-dark .palm-separator
 
 
 
+.graph > .graph
+{
+	position: relative;
+}
+.graph > .graph canvas
+{
+	position: absolute;
+	z-index: 100;
+	top: 0px;
+	left: 0px;
+}
+.graph > .graph .labels
+{
+	position: absolute;
+	z-index: 101;
+	top: 0px;
+	left: 0px;
+	bottom: -2px;
+	right: 0px;
+	/*background: url(../images/palm-default/fade-left.png) top left repeat-y;*/
+}
+body.palm-dark .graph > .graph .labels
+{
+	/*background: url(../images/palm-dark/fade-left.png) top left repeat-y;*/
+}
+.graph > .graph .labels div
+{
+	position: absolute;
+	top: 0px;
+	left: 5px;
+	font-size: 12px;
+	margin-top: -6px;
+	height: 10px;
+	line-height: 10px;
+	vertical-align: middle;
+	color: #666;
+	text-shadow: #e4e4e2 1px 1px 0px;
+}
+body.palm-dark .graph > .graph .labels div
+{
+	color: #7f7f7f;
+	text-shadow: #393e43 1px 1px 0px;
+}
+
+
+
 
 /*
  * Governor Scene Styles
