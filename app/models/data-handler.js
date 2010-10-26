@@ -133,7 +133,8 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 		this.mainAssistant.controller.get('freqCanvas'),
 		{
 			renderWidth: 320,
-			renderHeight: 30
+			renderHeight: 30,
+			padding: {top: 1}
 		}
 	);
 	this.graphs["temp"] = new lineGraph
@@ -141,7 +142,8 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 		this.mainAssistant.controller.get('tempCanvas'),
 		{
 			renderWidth: 320,
-			renderHeight: 30
+			renderHeight: 30,
+			padding: {top: 1}
 		}
 	);
 	this.graphs["curr"] = new lineGraph
@@ -149,7 +151,8 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 		this.mainAssistant.controller.get('currCanvas'),
 		{
 			renderWidth: 320,
-			renderHeight: 30
+			renderHeight: 30,
+			padding: {top: 1}
 		}
 	);
 	this.graphs["load"] = new lineGraph
@@ -157,7 +160,8 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 		this.mainAssistant.controller.get('loadCanvas'),
 		{
 			renderWidth: 320,
-			renderHeight: 30
+			renderHeight: 30,
+			padding: {top: 1}
 		}
 	);
 	this.graphs["mem"] = new lineGraph
@@ -165,7 +169,8 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 		this.mainAssistant.controller.get('memCanvas'),
 		{
 			renderWidth: 320,
-			renderHeight: 30
+			renderHeight: 30,
+			padding: {top: 1}
 		}
 	);
 	this.graphs["state"] = new barGraph
@@ -189,6 +194,7 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 			renderHeight:	452,
 			padding:
 			{
+				clear:		true,
 				top:		60,
 				bottom:		12,
 				left:		0
@@ -919,9 +925,16 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			if (dataObj.temp && this.graphAssistant.display == "temp") {
 				fullData1.push({x: keys[k], y: dataObj.temp.value});
 			}
-
+			
 			if (dataObj.curr && this.graphAssistant.display == "curr") {
-				fullData1.push({x: keys[k], y: dataObj.curr.value});
+				if (parseInt(dataObj.curr.value) >= 0) {
+					fullData1.push({x: keys[k], y: dataObj.curr.value});
+					fullData2.push({x: keys[k], y: false});
+				}
+				else {
+					fullData1.push({x: keys[k], y: false});
+					fullData2.push({x: keys[k], y: Math.abs(dataObj.curr.value)});
+				}
 			}
 			
 			if (dataObj.load && this.graphAssistant.display == "load") {
@@ -935,26 +948,21 @@ dataHandlerModel.prototype.renderFullGraph = function()
 			}
 		}
 		
-		if (this.graphAssistant.display == "freq") {
-			this.fullGraph.addLine({data: fullData1, stroke: "rgba(205, 153, 153, .4)", fill: "rgba(205, 153, 153, .2)"});
-		}
-		
-		if (this.graphAssistant.display == "temp") {
-			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
+		if (this.graphAssistant.display == "freq" ||
+			this.graphAssistant.display == "temp" ||
+			this.graphAssistant.display == "mem") {
+			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display], fill: this.fills[this.graphAssistant.display]});
 		}
 		
 		if (this.graphAssistant.display == "curr") {
-			this.fullGraph.addLine({data: fullData1, stroke: "rgba(153, 205, 153, .4)", fill: "rgba(153, 205, 153, .2)"});
-		}		
-				
+			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display+'1'], fill: this.fills[this.graphAssistant.display+'1']});
+			this.fullGraph.addLine({data: fullData2, stroke: this.strokes[this.graphAssistant.display+'2'], fill: this.fills[this.graphAssistant.display+'2']});
+		}
+		
 		if (this.graphAssistant.display == "load") {
 			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
 			this.fullGraph.addLine({data: fullData2, stroke: "rgba(105, 105, 205, .4)"});
 			this.fullGraph.addLine({data: fullData1, stroke: "rgba(135, 135, 205, .4)", fill: "rgba(135, 135, 205, .2)"});
-		}
-				
-		if (this.graphAssistant.display == "mem") {
-			this.fullGraph.addLine({data: fullData1, stroke: "rgba(75, 75, 205, .4)"});
 		}
 		
 		this.fullGraph.render();
