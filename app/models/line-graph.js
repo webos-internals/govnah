@@ -169,17 +169,11 @@ lineGraph.prototype.renderTics = function()
 }
 lineGraph.prototype.getBetterMaxY = function(y)
 {
+	// really, this sucks...
 	y = Math.ceil(y);
-	if (y > 1)
+	while ((y-this.yaxis.min)%(this.options.yaxis.tics-1))
 	{
-		while ((y-this.yaxis.min)%(this.options.yaxis.tics-1))
-		{
-			y++;
-		}
-	}
-	else
-	{
-		y = 1;
+		y++;
 	}
 	return y;
 }

@@ -991,9 +991,11 @@ dataHandlerModel.prototype.renderFullGraph = function()
 		}
 		
 		if (this.graphAssistant.display == "load") {
+			this.fullGraph.options.yaxis.min = 0;
+			this.fullGraph.options.yaxis.ticFormat = function(n){return Math.round(n*100)/100;};
 			this.fullGraph.addLine({data: fullData3, stroke: "rgba(75, 75, 205, .4)"});
 			this.fullGraph.addLine({data: fullData2, stroke: "rgba(105, 105, 205, .4)"});
-			this.fullGraph.addLine({data: fullData1, stroke: "rgba(135, 135, 205, .4)", fill: "rgba(135, 135, 205, .2)"});
+			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display], fill: this.fills[this.graphAssistant.display]});
 		}
 		
 		if (this.graphAssistant.display == "mem") {

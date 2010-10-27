@@ -194,7 +194,9 @@ body.palm-dark .palm-separator
 
 
 
-
+/*
+ * Settings List Scene Styles
+ */
 .settings .palm-row-wrapper.disabled .title
 {
 	color: #999;
@@ -202,6 +204,9 @@ body.palm-dark .palm-separator
 
 
 
+/*
+ * Full-Screen Graph Scene Styles
+ */
 .graph > .graph
 {
 	position: relative;
@@ -221,11 +226,11 @@ body.palm-dark .palm-separator
 	left: 0px;
 	bottom: -2px;
 	right: 0px;
-	/*background: url(../images/palm-default/fade-left.png) top left repeat-y;*/
+	background: url(../images/palm-default/fade-left.png) top left repeat-y;
 }
 body.palm-dark .graph > .graph .labels
 {
-	/*background: url(../images/palm-dark/fade-left.png) top left repeat-y;*/
+	background: url(../images/palm-dark/fade-left.png) top left repeat-y;
 }
 .graph > .graph .labels div
 {
