@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 6
+ * 	Highest Version: 7
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -28,7 +28,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	(
 	 // Screenstate 500/1000
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'Screenstate 500/1000',
 		 locked:		false,
 		 governor:	'screenstate',
@@ -40,7 +40,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // Screenstate 500/800
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'Screenstate 500/800',
 		 locked:		false,
 		 governor:	'screenstate',
@@ -52,7 +52,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // Fixed Speed 800
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'Fixed Speed 800',
 		 locked:		false,
 		 governor:	'performance',
@@ -64,7 +64,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // Fixed Speed 720
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'Fixed Speed 720',
 		 locked:		false,
 		 governor:	'performance',
@@ -76,7 +76,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // Fixed Speed 600
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'Fixed Speed 600',
 		 locked:		false,
 		 governor:	'performance',
@@ -88,20 +88,20 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
 	 
 	 // UberKernel Default
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'UberKernel Default',
 		 locked:		false,
 		 governor:	'userspace',
 		 settingsStandard: [
 				    {name:	'scaling_min_freq',	value:	'125000'},
-				    {name:	'scaling_max_freq',	value:	'800000'},
+				    {name:	'scaling_max_freq',	value: '1000000'},
 				    {name:	'scaling_setspeed',	value:	'500000'}
 				    ],
 		 },
 
 	 // The stock palm settings
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'Palm Default',
 		 locked:		true,			// don't lock any other profiles but this one
 		 governor:	'userspace',
@@ -119,7 +119,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 	(
 	 // Fixed Speed 600
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'Fixed Speed 600',
 		 locked:		false,
 		 governor:	'performance',
@@ -131,7 +131,7 @@ if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 	 
 	 // The stock palm settings
 	 {
-	     version:	6,
+	     version:	7,
 		 name:		'Palm Default',
 		 locked:		true,			// don't lock any other profiles but this one
 		 governor:	'ondemandtcl',
