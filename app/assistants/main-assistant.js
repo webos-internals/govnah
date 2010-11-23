@@ -104,7 +104,7 @@ MainAssistant.prototype.setup = function()
 	
 	this.controller.get('main-scene-profile').innerHTML = $L("Profile");
 	this.controller.get('main-scene-frequency').innerHTML = $L("Frequency");
-	// this.controller.get('main-scene-temperature').innerHTML = $L("Temperature");
+	this.controller.get('main-scene-temperature').innerHTML = $L("Temperature");
 	this.controller.get('main-scene-battery-current').innerHTML = $L("Battery Current");
 	this.controller.get('main-scene-load-average').innerHTML = $L("Load Average");
 	this.controller.get('main-scene-memory-swap').innerHTML = $L("Memory / Swap");
