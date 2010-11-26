@@ -11,6 +11,8 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.7.7',log: [ 'Added default profiles for the Pre 2',
+							   'Updated german translations, courtesy of Markus Leutwyler (swisstomcat) and Frank Adler (Ice8lue)' ] },
 	 { version: '0.7.6',log: [ 'Updated the UberKernel Default profile' ] },
 	 { version: '0.7.5',log: [ 'Added a Changelog button to the Help scene' ] },
 	 { version: '0.7.4',log: [ 'Added "Generate Support Email" option to help scene',
