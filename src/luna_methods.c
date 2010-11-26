@@ -395,6 +395,13 @@ static bool read_single_integer(LSHandle* lshandle, LSMessage *message, char *fi
 }
 
 //
+// Get the machine name, and return the output to webOS.
+//
+bool get_machine_name_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return simple_command(lshandle, message, "/bin/cat /etc/prefs/properties/machineName 2>&1");
+}
+
+//
 // Read /proc/version
 //
 bool get_proc_version_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -2029,6 +2036,8 @@ bool setProfile_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 
 LSMethod luna_methods[] = {
   { "status",			dummy_method },
+
+  { "getMachineName",		get_machine_name_method },
 
   { "get_proc_version",		get_proc_version_method },
   { "get_proc_cpuinfo",		get_proc_cpuinfo_method },
