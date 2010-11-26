@@ -2,6 +2,18 @@ service.identifier = 'palm://org.webosinternals.govnah';
 
 function service(){};
 
+service.getMachineName = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'getMachineName',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+
+
 service.get_proc_version = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,

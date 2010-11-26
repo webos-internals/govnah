@@ -8,7 +8,7 @@ function profilesModel()
 	this.profiles =		[];
 	
 	this.load();
-	this.loadDefaults();
+	this.fixModelName();
 	
 	this.setRequests = new Array();
 	this.setRequests["cpufreq"]  = false;
@@ -253,6 +253,22 @@ profilesModel.prototype.getListObjects = function()
 		}
 	}
 	return returnArray;
+};
+profilesModel.prototype.fixModelName = function()
+{
+	this.request = service.getMachineName(this.fixModelNameResponse.bindAsEventListener(this));
+};
+profilesModel.prototype.fixModelNameResponse = function(response)
+{
+	if (response && response.returnValue === true) {
+		if (response.stdOut[0] == "roadrunner") {
+			Mojo.Environment.DeviceInfo.modelNameAscii = "Pre2";
+		}
+	}
+	// now we populate our default profiles
+	profilesModel.populateDefaults();
+	// then we load defaults
+	this.loadDefaults();
 };
 profilesModel.prototype.loadDefaults = function()
 {
