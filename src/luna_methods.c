@@ -785,7 +785,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
       }
       json_t *value = json_find_first_label(governorEntry, "value");
       if (!value || (value->child->type != JSON_STRING) ||
-	  (strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) {
+	  (strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) {
 	if (!LSMessageReply(lshandle, message,
 			    "{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value governorEntry\"}",
 			    &lserror)) goto error;
@@ -1008,7 +1008,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
 	  (strspn(name->child->text, ALLOWED_CHARS) != strlen(name->child->text))) goto loop2;
       json_t *value = json_find_first_label(governorEntry, "value");
       if (!value || (value->child->type != JSON_STRING) ||
-	  (strspn(value->child->text, ALLOWED_CHARS) != strlen(value->child->text))) goto loop2;
+	  (strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) goto loop2;
 
       // fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
       sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
