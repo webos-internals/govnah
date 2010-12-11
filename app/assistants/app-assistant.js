@@ -4,6 +4,7 @@ var vers =  new versionCookie();
 
 // stage names
 var mainStageName = 'govnah-main';
+var dockStageName = 'govnah-dock';
 var dashStageName = 'govnah-dash';
 
 var dataHandler = new dataHandlerModel();
@@ -13,7 +14,6 @@ function AppAssistant() {}
 
 AppAssistant.prototype.handleLaunch = function(params)
 {
-	var mainStageController = this.controller.getStageController(mainStageName);
 	
 	/*
 	alert('--------------------------');
@@ -29,6 +29,7 @@ AppAssistant.prototype.handleLaunch = function(params)
 		if (!params) 
 		{
 			dataHandler.closeDash(true);
+			var mainStageController = this.controller.getStageController(mainStageName);
 	        if (mainStageController) 
 			{
 				mainStageController.popScenesTo('main');
@@ -37,6 +38,15 @@ AppAssistant.prototype.handleLaunch = function(params)
 			else
 			{
 				this.controller.createStageWithCallback({name: mainStageName, lightweight: true}, this.launchFirstScene.bind(this));
+			}
+		}
+		// launch dockmode
+		else if (params.dockMode)
+		{
+			var dockStageController = this.controller.getStageController(dockStageName);
+	        if (!dockStageController)
+			{
+				this.controller.createStageWithCallback({name: dockStageName, lightweight: true}, this.launchDockScene.bind(this), "dockMode");
 			}
 		}
 		// relaunch dash
@@ -104,6 +114,10 @@ AppAssistant.prototype.launchFirstScene = function(controller)
     else {
 		controller.pushScene('main');
 	}
+};
+AppAssistant.prototype.launchDockScene = function(controller)
+{
+	controller.pushScene('dock');
 };
 
 AppAssistant.prototype.cleanup = function(event)

@@ -1,7 +1,7 @@
 {
 	"title": "Govnah",
 	"id": "org.webosinternals.govnah",
-	"version": "0.7.7",
+	"version": "0.7.8",
 	"release_date":	"27-Nov-2010",
 	"vendor": "WebOS Internals",
 	"vendor_email":	"support@webos-internals.org",
@@ -12,5 +12,6 @@
 	"miniicon": "miniicon.png",
 	"removable": "true",
 	"noWindow": true,
-	"noDeprecatedStyles": true 
+	"noDeprecatedStyles": true,
+	"dockMode": true
 }
