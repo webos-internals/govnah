@@ -60,7 +60,6 @@ GraphAssistant.prototype.setup = function()
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 	
-	dataHandler.setGraphAssistant(this);
 };
 
 GraphAssistant.prototype.gestureStartHandler = function(event)
@@ -109,6 +108,8 @@ GraphAssistant.prototype.orientationChanged = function(orientation)
 }
 GraphAssistant.prototype.activate = function(event)
 {
+	dataHandler.setGraphAssistant(this);
+	
 	if (this.controller.stageController.setWindowOrientation)
 	{
     	this.controller.stageController.setWindowOrientation("free");

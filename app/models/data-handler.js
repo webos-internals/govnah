@@ -30,6 +30,7 @@ function dataHandlerModel()
 	this.mainAssistant = false;
 	this.graphAssistant = false;
 	this.settingsAssistant = false;
+	this.dockAssistant = false;
 	this.dashAssistant = false;
 	
 	this.currentMode = "card";
@@ -185,6 +186,8 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 {
 	this.graphAssistant = assistant;
+	this.currentMode = "graph";
+	this.rate = parseInt(prefs.get().cardPollSpeed) * 1000;
 	
 	this.fullGraph = new lineGraph
 	(
@@ -213,6 +216,12 @@ dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 dataHandlerModel.prototype.setSettingsAssistant = function(assistant)
 {
 	this.settingsAssistant = assistant;
+};
+dataHandlerModel.prototype.setDockAssistant = function(assistant)
+{
+	this.dockAssistant = assistant;
+	this.currentMode = "dock";
+	this.rate = parseInt(prefs.get().dockPollSpeed) * 1000;
 };
 dataHandlerModel.prototype.setDashAssistant = function(assistant)
 {
@@ -531,8 +540,8 @@ dataHandlerModel.prototype.timerFunction = function()
 		this.tempReq = service.get_omap34xx_temp(this.tempHandler);
 	}
 
-	if (this.currentMode == "card")
-	{ // we really only need these when in card mode...
+	if (this.currentMode == "card" || this.currentMode == "dock")
+	{
 		this.freqReq  = service.get_scaling_cur_freq(this.freqHandler);
 		this.currReq  = service.get_battery_current(this.currHandler);
 		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
@@ -630,6 +639,10 @@ dataHandlerModel.prototype.loadHandler = function(payload)
 		{
 			this.mainAssistant.loadCurrent.innerHTML = value1 + ' ' + value5 + ' ' + value15;
 		}
+		if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible)
+		{
+			this.dockAssistant.loadCurrent.innerHTML = value1 + ' ' + value5 + ' ' + value15;
+		}
 		
 		var dataObj = this.lineData.get(timestamp)
 		if (!dataObj) dataObj = {};
@@ -686,6 +699,10 @@ dataHandlerModel.prototype.memHandler = function(payload)
 		if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible)
 		{
 			this.mainAssistant.memCurrent.innerHTML = Math.floor((MemTotal-MemFree)/1024) + " / " + Math.floor((SwapTotal-SwapFree)/1024) + '<div class="unit">MB</div>';
+		}
+		if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible)
+		{
+			this.dockAssistant.memCurrent.innerHTML = Math.floor((MemTotal-MemFree)/1024) + " / " + Math.floor((SwapTotal-SwapFree)/1024) + '<div class="unit">MB</div>';
 		}
 		
 		var dataObj = this.lineData.get(timestamp)

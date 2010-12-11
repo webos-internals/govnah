@@ -40,8 +40,6 @@ SettingsAssistant.prototype.setup = function()
 	this.controller.setupWidget('list', { itemTemplate: "settings/row", swipeToDelete: false, reorderable: false }, this.listModel);
 	this.controller.listen(this.listElement, Mojo.Event.listTap, this.rowTapHandler);
 	
-	dataHandler.setSettingsAssistant(this);
-	
 	this.controller.get('advanced-settings-title').innerHTML = $L("Advanced Settings");
 };
 
@@ -112,6 +110,8 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 
 SettingsAssistant.prototype.activate = function(event)
 {
+	dataHandler.setSettingsAssistant(this);
+	
 	if (this.alreadyActivated)
 	{
 		dataHandler.updateParams();

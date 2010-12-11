@@ -24,9 +24,13 @@ preferenceCookie.prototype.get = function(reload)
 				cardPollSpeed: 5,
 				cardIconUpdate: false,
 				
+				// Dock Group
+				dockPollSpeed: 10,
+				dockIconUpdate: false,
+				
 				// Dashboard Group
 				useDash: false,
-				dashPollSpeed: 10,
+				dashPollSpeed: 15,
 				dashIconUpdate: false,
 				
 				// Profiles Group

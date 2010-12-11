@@ -98,9 +98,6 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 	
 	this.visible();
-
-	dataHandler.setMainAssistant(this);
-	dataHandler.start();
 	
 	this.controller.get('main-scene-profile').innerHTML = $L("Profile");
 	this.controller.get('main-scene-frequency').innerHTML = $L("Frequency");
@@ -128,6 +125,9 @@ MainAssistant.prototype.graphTap = function(event, display)
 
 MainAssistant.prototype.activate = function(event)
 {
+	dataHandler.setMainAssistant(this);
+	dataHandler.start();
+	
 	if (this.controller.stageController.setWindowOrientation)
 	{
     	this.controller.stageController.setWindowOrientation("up");

@@ -1,16 +1,22 @@
 function DockAssistant()
 {
-	this.isVisible = false;
+	this.isVisible = true;
 };
 
 DockAssistant.prototype.setup = function()
 {
 	this.controller.document.body.className = "dock";
 	
+	this.loadCurrent =	this.controller.get('loadCurrent');
+	this.memCurrent =	this.controller.get('memCurrent');
+	
 };
 
 DockAssistant.prototype.activate = function(event)
 {
+	dataHandler.setDockAssistant(this);
+	dataHandler.start();
+	
 	if (this.notFirstActivate)
 	{
 		
@@ -24,17 +30,6 @@ DockAssistant.prototype.activate = function(event)
 DockAssistant.prototype.deactivate = function(event)
 {
 };
-DockAssistant.prototype.visible = function(event)
-{
-	if (!this.isVisible)
-	{
-		this.isVisible = true;
-	}
-};
-DockAssistant.prototype.invisible = function(event)
-{
-	this.isVisible = false;
-};
 
 DockAssistant.prototype.handleCommand = function(event)
 {
@@ -42,6 +37,8 @@ DockAssistant.prototype.handleCommand = function(event)
 
 DockAssistant.prototype.cleanup = function(event)
 {
+	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
+	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 };
 
 // Local Variables:

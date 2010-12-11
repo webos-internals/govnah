@@ -17,9 +17,6 @@ DashboardAssistant.prototype.setup = function()
 	this.dashTapHandler =	this.dashTapped.bindAsEventListener(this);
 	this.controller.listen(this.dashboardElement, Mojo.Event.tap, this.dashTapHandler);
 	
-	dataHandler.setDashAssistant(this);
-	dataHandler.start();
-	
 	this.visible = this.visible.bindAsEventListener(this);
 	this.invisible = this.invisible.bindAsEventListener(this);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
@@ -31,6 +28,12 @@ DashboardAssistant.prototype.setup = function()
 
 DashboardAssistant.prototype.dashTapped = function(event)
 {
+}
+
+DashboardAssistant.prototype.activate = function()
+{
+	dataHandler.setDashAssistant(this);
+	dataHandler.start();
 }
 
 DashboardAssistant.prototype.visible = function(event)
