@@ -25,8 +25,8 @@ function dataHandlerModel()
 		'battery_scaleback_percent':	{ type: 'listPcnt', 		nice: $L("batt low thresh")	},
 		'battery_scaleback_speed':		{ type: 'listFreq',			nice: $L("batt low speed")	},
 		'override_charger':				{ type: 'toggleTF'			},
-		'vdemand_vsel_vdd1':			{ type: 'sceneVolts3',		},
-		'vdemand_vsel_vdd2':			{ type: 'sceneVolts3',		},
+		'vdemand_vsel_vdd1':			{ type: 'sceneVolts3',		nice: $L("CPU Voltage")},
+		'vdemand_vsel_vdd2':			{ type: 'sceneVolts3',		nice: $L("System Voltage")},
 	};
 	
 	this.mainAssistant = false;
