@@ -647,7 +647,8 @@ profileModel.prototype.getDataSettingString = function(name, value)
 				return [dataHandler.settingLabel(name), value + ' C'];
 				break;
 
-			case 'sceneVolts':
+			case 'sceneVoltsFreq':
+			case 'sceneVolts3':
 				return [dataHandler.settingLabel(name), value];
 				break;
 		}

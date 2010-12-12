@@ -512,14 +512,25 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 							
-						case 'sceneVolts':
+						case 'sceneVoltsFreq':
 							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name, name: dataHandler.settingLabel(tmpParam.name), value: tmpParam.value}, template: 'settings/scene-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, name)
 							{
-								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name]}, this);
+								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name], group: $L('Frequencies'), labels: this.scalingFrequencyChoices}, this);
+							}.bindAsEventListener(this, tmpParam.name));
+							break;
+							
+						case 'sceneVolts3':
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name, name: dataHandler.settingLabel(tmpParam.name), value: tmpParam.value}, template: 'settings/scene-widget'})});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, name)
+							{
+								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name], group: $L('CPU Load'), labels: [{label: $L('Max')}, {label: $L('Mid')}, {label: $L('Low')}]}, this);
 							}.bindAsEventListener(this, tmpParam.name));
 							break;
 					}
