@@ -224,6 +224,53 @@ dataHandlerModel.prototype.setDockAssistant = function(assistant)
 	this.dockAssistant = assistant;
 	this.currentMode = "dock";
 	this.rate = parseInt(prefs.get().dockPollSpeed) * 1000;
+	//this.rate = 0.5 * 1000;
+	
+	this.graphs["freq"] = new lineGraph
+	(
+		this.dockAssistant.controller.get('freqCanvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 60,
+			padding: {top: 1}
+		}
+	);
+	this.graphs["temp"] = new lineGraph
+	(
+		this.dockAssistant.controller.get('tempCanvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 60,
+			padding: {top: 1}
+		}
+	);
+	this.graphs["curr"] = new lineGraph
+	(
+		this.dockAssistant.controller.get('currCanvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 60,
+			padding: {top: 1}
+		}
+	);
+	this.graphs["load"] = new lineGraph
+	(
+		this.dockAssistant.controller.get('loadCanvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 60,
+			padding: {top: 1}
+		}
+	);
+	this.graphs["mem"] = new lineGraph
+	(
+		this.dockAssistant.controller.get('memCanvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 60,
+			padding: {top: 1}
+		}
+	);
 };
 dataHandlerModel.prototype.setDashAssistant = function(assistant)
 {
@@ -567,6 +614,10 @@ dataHandlerModel.prototype.tempHandler = function(payload)
 			this.mainAssistant.iconElement.className = 'icon temp-' + value;
 			this.mainAssistant.tempCurrent.innerHTML = value + '<div class="unit">&deg;C</div>';
 		}
+		if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible)
+		{
+			this.dockAssistant.tempCurrent.innerHTML = value + ' &deg;C';
+		}
 		if (this.dashAssistant && this.dashAssistant.controller && this.dashAssistant.isVisible)
 		{
 			this.dashAssistant.iconElement.className = 'palm-dashboard-icon temp-' + value;
@@ -606,6 +657,17 @@ dataHandlerModel.prototype.freqHandler = function(payload)
 			else
 			{
 				this.mainAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
+			}
+		}
+		if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible)
+		{
+			if ((value / 1000) >= 1000)
+			{
+				this.dockAssistant.freqCurrent.innerHTML = ((value / 1000) / 1000) + '<div class="unit">GHz</div>';
+			}
+			else
+			{
+				this.dockAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
 			}
 		}
 		
@@ -774,6 +836,10 @@ dataHandlerModel.prototype.currHandler = function(payload)
 		{
 			this.mainAssistant.currCurrent.innerHTML = Math.round(value / 1000) + '<div class="unit">mA</div>';
 		}
+		if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible)
+		{
+			this.dockAssistant.currCurrent.innerHTML = Math.round(value / 1000) + '<div class="unit">mA</div>';
+		}
 		
 		var dataObj = this.lineData.get(timestamp)
 		if (!dataObj) dataObj = {};
@@ -861,7 +927,8 @@ dataHandlerModel.prototype.resetIcon = function()
 
 dataHandlerModel.prototype.renderMiniLine = function(item)
 {
-	if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible) {
+	if ((this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible) ||
+		(this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible)) {
 
 		this.graphs[item].clearLines();
 		
@@ -912,12 +979,23 @@ dataHandlerModel.prototype.renderMiniLine = function(item)
 		
 		if (item == "curr")
 		{
-			this.graphs[item].addLine({data: data1,  stroke: this.strokes[item+'1'], fill: this.fills[item+'1']});
-			this.graphs[item].addLine({data: data2, stroke: this.strokes[item+'2'], fill: this.fills[item+'2']});
+			if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible) {
+				this.graphs[item].addLine({data: data1, stroke: this.strokes[item+'1'], fill: this.fills[item+'1']});
+				this.graphs[item].addLine({data: data2, stroke: this.strokes[item+'2'], fill: this.fills[item+'2']});
+			}
+			if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible) {
+				this.graphs[item].addLine({data: data1, stroke: this.strokes[item+'1'], fill: false, width: 3});
+				this.graphs[item].addLine({data: data2, stroke: this.strokes[item+'2'], fill: false, width: 3});
+			}
 		}
 		else
 		{
-			this.graphs[item].addLine({data: data1, stroke: this.strokes[item], fill: this.fills[item]});
+			if (this.mainAssistant && this.mainAssistant.controller && this.mainAssistant.isVisible) {
+				this.graphs[item].addLine({data: data1, stroke: this.strokes[item], fill: this.fills[item]});
+			}
+			if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible) {
+				this.graphs[item].addLine({data: data1, stroke: this.strokes[item], fill: false, width: 3});
+			}
 		}
 		
 		this.graphs[item].render();

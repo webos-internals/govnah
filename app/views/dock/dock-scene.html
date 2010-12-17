@@ -1,9 +1,48 @@
 <div class="dock">
 	
-	<br>
-	Govnah Exhibition Works! Yay!
-	<br><br>
-	Load: <div id="loadCurrent" style="text-decoration: underline;"></div><br>
-	Mem: <div id="memCurrent" style="text-decoration: underline;"></div>
+	
+	<div class="palm-list" id="list">
+		
+		<div class="palm-row" id="freqRow">
+			<div class="palm-row-wrapper">
+				<canvas id="freqCanvas" width="320" height="61"></canvas>
+				<div class="label left"id="main-scene-frequency">Frequency</div>
+				<div class="title right" id="freqCurrent">N/A</div>
+			</div>
+		</div>
+		
+		<div class="palm-row" id="tempRow">
+			<div class="palm-row-wrapper">
+				<canvas id="tempCanvas" width="320" height="61"></canvas>
+				<div class="label left" id="main-scene-temperature">Temperature</div>
+				<div class="title right" id="tempCurrent">N/A</div>
+			</div>
+		</div>
+		
+		<div class="palm-row" id="currRow">
+			<div class="palm-row-wrapper">
+				<canvas id="currCanvas" width="320" height="61"></canvas>
+				<div class="label left" id="main-scene-battery-current">Battery Current</div>
+				<div class="title right" id="currCurrent">N/A</div>
+			</div>
+		</div>		
+		
+		<div class="palm-row" id="loadRow">
+			<div class="palm-row-wrapper">
+				<canvas id="loadCanvas" width="320" height="61"></canvas>
+				<div class="label left" id="main-scene-load-average">Load Average</div>
+				<div class="title right" id="loadCurrent">N/A</div>
+			</div>
+		</div>
+		
+		<div class="palm-row" id="memRow">
+			<div class="palm-row-wrapper">
+				<canvas id="memCanvas" width="320" height="61"></canvas>
+				<div class="label left" id="main-scene-memory-swap">Memory / Swap</div>
+				<div class="title right" id="memCurrent">N/A</div>
+			</div>
+		</div>
+
+	</div>
 	
 </div>

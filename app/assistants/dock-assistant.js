@@ -7,8 +7,16 @@ DockAssistant.prototype.setup = function()
 {
 	this.controller.document.body.className = "dock";
 	
-	this.loadCurrent =	this.controller.get('loadCurrent');
-	this.memCurrent =	this.controller.get('memCurrent');
+	this.freqRow =			this.controller.get('freqRow');
+	this.freqCurrent =		this.controller.get('freqCurrent');
+	this.tempRow =			this.controller.get('tempRow');
+	this.tempCurrent =		this.controller.get('tempCurrent');
+	this.currRow =			this.controller.get('currRow');
+	this.currCurrent =		this.controller.get('currCurrent');
+	this.loadRow =			this.controller.get('loadRow');
+	this.loadCurrent =		this.controller.get('loadCurrent');
+	this.memRow =			this.controller.get('memRow');
+	this.memCurrent =		this.controller.get('memCurrent');
 	
 };
 
@@ -16,6 +24,11 @@ DockAssistant.prototype.activate = function(event)
 {
 	dataHandler.setDockAssistant(this);
 	dataHandler.start();
+	
+	if (this.controller.stageController.setWindowOrientation)
+	{
+    	this.controller.stageController.setWindowOrientation("free");
+	}
 	
 	if (this.notFirstActivate)
 	{
@@ -37,8 +50,6 @@ DockAssistant.prototype.handleCommand = function(event)
 
 DockAssistant.prototype.cleanup = function(event)
 {
-	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
-	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 };
 
 // Local Variables:

@@ -115,67 +115,6 @@ body.palm-dark .palm-separator
 	color: #aaa;
 }
 
-.main #graph
-{
-	position: relative;
-	height: 104px;
-	padding: 0px;
-}
-.main #graph .title,
-.main #graph .label
-{
-	padding: 0px;
-	margin: 0px;
-	float: none;
-}
-.main #graph .label
-{
-    line-height: 19px;
-    height: 21px;
-    min-width: 31px;
-	vertical-align: middle;
-    -webkit-border-image: url(../images/graphBubble-left.png) 5 10 5 10 stretch stretch;
-    -webkit-box-sizing: border-box;
-    border-width: 5px 10px 5px 10px;
-}
-.main #graph .label .count
-{
-	position: absolute;
-	top: -4px;
-	left: -3px;
-}
-.main #graph #scale
-{
-	position: absolute;
-	color: #ccc;
-	height: 50px;
-	width: 200px;
-	text-align: center;
-	font-weight: bold;
-	font-size: 22px;
-}
-.main #graph #vertTop
-{
-	position: absolute;
-	z-index: 10;
-	margin-left: 11px;
-	margin-top: 5px;
-	top: 0px;
-}
-.main #graph #vertBot
-{
-	position: absolute;
-	z-index: 10;
-	margin-left: 11px;
-	top: 77px;
-}
-.main #graph #graphCanvas
-{
-	position: absolute;
-	z-index: 0;
-	top: 1px;
-}
-
 .main .palm-row-wrapper
 {
 	position: relative;
@@ -199,11 +138,53 @@ body.palm-dark .palm-separator
  */
 body.dock
 {
-	background: #000;
+	background: #000 !important;
 	color: #fff;
 	font-weight: bold;
 }
-
+.dock .palm-list
+{
+	margin-top: 30px;
+}
+.dock .palm-row
+{
+	background: none;
+	/*border-bottom: 2px solid rgba(255, 255, 255, 0.3);*/
+}
+.dock .palm-row-wrapper
+{
+	position: relative;
+}
+.dock canvas#freqCanvas,
+.dock canvas#tempCanvas,
+.dock canvas#currCanvas,
+.dock canvas#loadCanvas,
+.dock canvas#memCanvas,
+.dock canvas#stateCanvas
+{
+	position: absolute;
+	z-index: -5;
+	top: 22px;
+}
+.dock .palm-row .title.right .unit
+{
+	float: right;
+	padding-left: 8px;
+	padding-top: 4px;
+	text-align: left;
+	color: rgba(255, 255, 255, 0.4);
+	font-size: 16px;
+}
+.dock .palm-row .title
+{
+	color: rgba(255, 255, 255, 0.8);
+	padding-top: 43px;
+}
+.dock .palm-row .label
+{
+	color: rgba(255, 255, 255, 0.6);
+	margin-top: 48px;
+}
 
 
 /*
