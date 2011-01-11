@@ -123,8 +123,14 @@ helpData.lookup =
 	
 	'vdd1_vsel':
 	{
-		title: $L('Core Voltages'),
-		data: $L('These values represent the various voltage levels for each frequency supported by the kernel.')
+		title: $L('CPU Voltages'),
+		data: $L('These values represent the various voltage levels for each CPU frequency supported by the kernel.')
+	},
+	
+	'vdd2_vsel':
+	{
+		title: $L('System Voltages'),
+		data: $L('These values represent the various voltage levels for each System frequency supported by the kernel.')
 	},
 	
 	'cpu_hightemp_reset':

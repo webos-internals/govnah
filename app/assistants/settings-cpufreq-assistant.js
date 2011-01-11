@@ -24,6 +24,8 @@ function SettingsCpufreqAssistant()
 	
 	this.scalingFrequencyChoices = dataHandler.scalingFrequencyChoices;
 	
+	this.systemFrequencyChoices = dataHandler.systemFrequencyChoices;
+
 	this.samplingRates = {min:false, max:false}; 
 	
 	this.samplingDownChoices = [];
@@ -60,7 +62,8 @@ function SettingsCpufreqAssistant()
 		this.tempChoices.push({label:x + ' C', value:x});
 	}
 	
-	this.voltageLimits = {min:false, max:false}; 
+	this.cpuVoltageLimits = {min:false, max:false}; 
+	this.sysVoltageLimits = {min:false, max:false}; 
 	
 };
 
@@ -269,12 +272,39 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 					break;
 
 				case 'vdd1_vsel_max':
-					this.voltageLimits.max = parseInt(trim(tmpParam.value));
-					//alert(this.voltageLimits.max);
+					this.cpuVoltageLimits.max = parseInt(trim(tmpParam.value));
+					//alert(this.cpuVoltageLimits.max);
 					break;
 				case 'vdd1_vsel_min':
-					this.voltageLimits.min = parseInt(trim(tmpParam.value));
-					//alert(this.voltageLimits.min);
+					this.cpuVoltageLimits.min = parseInt(trim(tmpParam.value));
+					//alert(this.cpuVoltageLimits.min);
+					break;
+
+				case 'vdd2_freq':
+					this.systemFrequencyChoices = [];
+					var data = tmpParam.value.split(" ");
+					if (data.length > 0) {
+						for (d = 0; d < data.length; d++) {
+							var tmpFreq = parseInt(trim(data[d]));
+							if (tmpFreq) {
+								if ((tmpFreq) >= 1000) {
+									this.systemFrequencyChoices.push({label:((tmpFreq)/1000) + ' GHz', value:tmpFreq});
+								}
+								else {
+									this.systemFrequencyChoices.push({label:(tmpFreq) + ' MHz', value:tmpFreq});
+								}
+							}
+						}
+					}
+					break;
+					
+				case 'vdd2_vsel_max':
+					this.sysVoltageLimits.max = parseInt(trim(tmpParam.value));
+					//alert(this.sysVoltageLimits.max);
+					break;
+				case 'vdd2_vsel_min':
+					this.sysVoltageLimits.min = parseInt(trim(tmpParam.value));
+					//alert(this.sysVoltageLimits.min);
 					break;
 			}
 		}
@@ -481,56 +511,36 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							);
 							break;
 							
-						case 'listVolts':
-							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
-							newCount++;
-							this.settingsModel[tmpParam.name] = tmpParam.value;
-							this.settingsLocation[tmpParam.name] = location;
-							var voltageChoices = [];
-							if (this.voltageLimits.max !== false && this.voltageLimits.min !== false)
-							{
-								for (var s = this.voltageLimits.min; s <= this.voltageLimits.max; s = s + 1)
-								{
-									var display = ((s * 12.5) + 600) +' mV';
-									voltageChoices.push({label:display, value:s});
-								}
-							}
-							else
-							{
-								var display = ((tmpParam.value * 12.5) + 600) +' mV';
-								voltageChoices.push({label:display, value:tmpParam.value});
-							}
-							this.controller.setupWidget
-							(
-								tmpParam.name,
-								{
-									label: dataHandler.settingLabel(tmpParam.name),
-									modelProperty: tmpParam.name,
-									choices: voltageChoices
-								},
-								this.settingsModel
-							);
-							break;
-							
-						case 'sceneVoltsFreq':
+						case 'sceneVoltsCpuFreq':
 							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name, name: dataHandler.settingLabel(tmpParam.name), value: tmpParam.value}, template: 'settings/scene-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, name)
 							{
-								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name], group: $L('Frequencies'), labels: this.scalingFrequencyChoices}, this);
+								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name], group: $L('Frequencies'), labels: this.scalingFrequencyChoices, limits:this.cpuVoltageLimits}, this);
 							}.bindAsEventListener(this, tmpParam.name));
 							break;
 							
-						case 'sceneVolts3':
+						case 'sceneVoltsSysFreq':
 							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name, name: dataHandler.settingLabel(tmpParam.name), value: tmpParam.value}, template: 'settings/scene-widget'})});
 							newCount++;
 							this.settingsModel[tmpParam.name] = tmpParam.value;
 							this.settingsLocation[tmpParam.name] = location;
 							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, name)
 							{
-								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name], group: $L('CPU Load'), labels: [{label: $L('Max')}, {label: $L('Mid')}, {label: $L('Low')}]}, this);
+								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name], group: $L('Frequencies'), labels: this.systemFrequencyChoices, limits:this.sysVoltageLimits}, this);
+							}.bindAsEventListener(this, tmpParam.name));
+							break;
+							
+						case 'sceneVoltsLoad':
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name, name: dataHandler.settingLabel(tmpParam.name), value: tmpParam.value}, template: 'settings/scene-widget'})});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.listen(this.controller.get(tmpParam.name), Mojo.Event.tap, function(e, name)
+							{
+								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name], group: $L('CPU Load'), labels: [{label: $L('Max')}, {label: $L('Mid')}, {label: $L('Low')}], limits:this.cpuVoltageLimits}, this);
 							}.bindAsEventListener(this, tmpParam.name));
 							break;
 					}

@@ -19,14 +19,15 @@ function dataHandlerModel()
 		'max_floor_window':				{ type: 'listWindow'		},
 		'compcache_enabled':			{ type: 'toggleTF'			},
 		'compcache_memlimit':			{ type: 'listMem',			status: 'compcache_enabled' },
-		'vdd1_vsel':					{ type: 'sceneVoltsFreq',	nice: $L("core voltages")	},
+		'vdd1_vsel':					{ type: 'sceneVoltsCpuFreq',nice: $L("CPU Voltage")	},
+		'vdd2_vsel':					{ type: 'sceneVoltsSysFreq',nice: $L("System Voltage")	},
 		'cpu_hightemp_reset':			{ type: 'listTemp',			nice: $L("temp reset")		},
 		'cpu_hightemp_alarm':			{ type: 'listTemp',			nice: $L("temp limit")		},
 		'battery_scaleback_percent':	{ type: 'listPcnt', 		nice: $L("batt low thresh")	},
 		'battery_scaleback_speed':		{ type: 'listFreq',			nice: $L("batt low speed")	},
 		'override_charger':				{ type: 'toggleTF'			},
-		'vdemand_vsel_vdd1':			{ type: 'sceneVolts3',		nice: $L("CPU Voltage")},
-		'vdemand_vsel_vdd2':			{ type: 'sceneVolts3',		nice: $L("System Voltage")},
+		'vdemand_vsel_vdd1':			{ type: 'sceneVoltsLoad',	nice: $L("CPU Voltage")},
+		'vdemand_vsel_vdd2':			{ type: 'sceneVoltsLoad',	nice: $L("System Voltage")},
 	};
 	
 	this.mainAssistant = false;
@@ -50,6 +51,7 @@ function dataHandlerModel()
 	this.congestion = false;
 	
 	this.scalingFrequencyChoices = [];
+	this.systemFrequencyChoices = [];
 	this.currentLimits = {min:false, max:false}; 
 	
 	this.iconDirty = false;
@@ -380,6 +382,9 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 				}
 				else if (num == 3)
 				{
+					if (tmpParam.name == 'vdd2_freq') {
+						this.systemFrequencyChoices = [{label:parseInt(tmpParam.value/1000) + ' MHz', value:parseInt(tmpParam.value)}];
+					}
 					this.settingsOverride.push({name:tmpParam.name, value:String(tmpParam.value)});
 				}
 				else if (num == 4)

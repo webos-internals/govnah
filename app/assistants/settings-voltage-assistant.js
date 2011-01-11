@@ -38,12 +38,12 @@ SettingsVoltageAssistant.prototype.setup = function()
 		this.voltageModel['volt_'+num] = this.voltages[num];
 		
 		var voltageChoices = [];
-		if (this.parent.voltageLimits.max !== false && this.parent.voltageLimits.min !== false)
+		if (this.param.limits.max !== false && this.param.limits.min !== false)
 		{
 			var voltMin = parseInt(this.voltages[num])-2;
 			var voltMax = parseInt(this.voltages[num])+2
-			if (voltMin < this.parent.voltageLimits.min) voltMin = this.parent.voltageLimits.min;
-			if (voltMax > this.parent.voltageLimits.max) voltMax = this.parent.voltageLimits.max;
+			if (voltMin < this.param.limits.min) voltMin = this.param.limits.min;
+			if (voltMax > this.param.limits.max) voltMax = this.param.limits.max;
 			for (var s = voltMax; s >= voltMin; s--)
 			{
 				var display = ((s * 12.5) + 600) +' mV';

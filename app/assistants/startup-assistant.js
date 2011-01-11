@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.7.10',log: [ 'Added support for UberKernel System Voltage control' ] },
 	 { version: '0.7.9',log: [ 'Added voltage selector scene for CPU Voltage and System Voltage vdemand governor settings' ] },
 	 { version: '0.7.8',log: [ 'Added support for the vdemand governor' ] },
 	 { version: '0.7.7',log: [ 'Added default profiles for the Pre 2',
