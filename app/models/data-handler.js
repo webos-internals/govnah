@@ -26,6 +26,11 @@ function dataHandlerModel()
 		'battery_scaleback_percent':	{ type: 'listPcnt', 		nice: $L("batt low thresh")	},
 		'battery_scaleback_speed':		{ type: 'listFreq',			nice: $L("batt low speed")	},
 		'override_charger':				{ type: 'toggleTF'			},
+		'charger_override':				{ type: 'toggleTF'			},
+		'charger_poll_rate':			{ type: 'listJiffies'		},
+		'vdemand_factor':				{ type: 'listFactor'		},
+		'vdemand_enable':				{ type: 'toggleTF'			},
+		'vdemand_poll_rate':			{ type: 'listJiffies'		},
 		'vdemand_vsel_vdd1':			{ type: 'sceneVoltsLoad',	nice: $L("CPU Voltage")},
 		'vdemand_vsel_vdd2':			{ type: 'sceneVoltsLoad',	nice: $L("System Voltage")},
 	};

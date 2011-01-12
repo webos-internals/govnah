@@ -65,6 +65,23 @@ function SettingsCpufreqAssistant()
 	this.cpuVoltageLimits = {min:false, max:false}; 
 	this.sysVoltageLimits = {min:false, max:false}; 
 	
+	this.factorChoices = [];
+	this.factorChoices.push({label:"Low", value:1});
+	this.factorChoices.push({label:"Medium", value:2});
+	this.factorChoices.push({label:"High", value:3});
+	this.factorChoices.push({label:"OMG?", value:4});
+	
+	this.jiffiesChoices = [];
+	this.jiffiesChoices.push({label:90, value:90});
+	for (var x = 100; x < 1000; x += 100)
+	{
+		this.jiffiesChoices.push({label:x, value:x});
+	}
+	for (var x = 1000; x < 10000; x = x + 1000)
+	{
+		this.jiffiesChoices.push({label:x, value:x});
+	}
+	
 };
 
 SettingsCpufreqAssistant.prototype.setup = function()
@@ -542,6 +559,40 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							{
 								this.controller.stageController.pushScene({name: 'settings-voltage'}, {name: name, value: this.settingsModel[name], group: $L('CPU Load'), labels: [{label: $L('Max')}, {label: $L('Mid')}, {label: $L('Low')}], limits:this.cpuVoltageLimits}, this);
 							}.bindAsEventListener(this, tmpParam.name));
+							break;
+
+						case 'listFactor':
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: dataHandler.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: this.factorChoices
+								},
+								this.settingsModel
+							);
+							break;
+
+						case 'listJiffies':
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: dataHandler.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: this.jiffiesChoices
+								},
+								this.settingsModel
+							);
 							break;
 					}
 				}
