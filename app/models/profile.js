@@ -7,6 +7,8 @@ function profilesModel()
 
 	this.profiles =		[];
 	
+	this.kernel = false;
+
 	this.load();
 	this.fixModelName();
 	
@@ -254,10 +256,12 @@ profilesModel.prototype.getListObjects = function()
 	}
 	return returnArray;
 };
+
 profilesModel.prototype.fixModelName = function()
 {
 	this.request = service.getMachineName(this.fixModelNameResponse.bindAsEventListener(this));
 };
+
 profilesModel.prototype.fixModelNameResponse = function(response)
 {
 	if (response && response.returnValue === true) {
@@ -265,11 +269,58 @@ profilesModel.prototype.fixModelNameResponse = function(response)
 			Mojo.Environment.DeviceInfo.modelNameAscii = "Pre2";
 		}
 	}
+	this.getKernelType();
+};
+
+
+profilesModel.prototype.getKernelType = function()
+{
+	this.request = service.get_proc_version(this.getKernelTypeResponse.bindAsEventListener(this));
+};
+
+profilesModel.prototype.getKernelTypeResponse = function(response)
+{
+	if (response && response.returnValue === true) {
+		if (response.stdOut.length && response.stdOut[0].length) {
+			var fields = response.stdOut[0].split(' ');
+			if (fields.length >= 4) {
+				var kernelstring = fields[3];
+				if (kernelstring == "(na@na)") {
+					this.kernel = "Palm";
+				}
+				else if (kernelstring.indexOf("uber-kernel") != -1) {
+					this.kernel = "UberKernel";
+				}
+				else if (kernelstring.indexOf("psycho-f102a-kernel") != -1) {
+					this.kernel = "F102A";
+				}
+				else if (kernelstring.indexOf("psycho-f104a-kernel") != -1) {
+					this.kernel = "F104A";
+				}
+				else if (kernelstring.indexOf("psycho-f105-kernel") != -1) {
+					this.kernel = "F105";
+				}
+				else if (kernelstring.indexOf("psycho-sr71-kernel") != -1) {
+					this.kernel = "SR71";
+				}
+				else if (kernelstring.indexOf("psycho-av8b-kernel") != -1) {
+					this.kernel = "AV8B";
+				}
+				else if (kernelstring.indexOf("warthog-kernel") != -1) {
+					this.kernel = "Warthog";
+				}
+				else {
+					this.kernel = "unknown";
+				}
+			}
+		}
+	}
 	// now we populate our default profiles
 	profilesModel.populateDefaults();
 	// then we load defaults
 	this.loadDefaults();
 };
+
 profilesModel.prototype.loadDefaults = function()
 {
 	try

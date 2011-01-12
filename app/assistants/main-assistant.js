@@ -51,6 +51,7 @@ MainAssistant.prototype.setup = function()
 	this.iconElement =		this.controller.get('icon');
 	this.titleElement =		this.controller.get('main-title');
 	this.versionElement =	this.controller.get('version');
+	this.kernelElement =	this.controller.get('kernel');
 	this.subTitleElement =	this.controller.get('subTitle');
 	this.profileRow =		this.controller.get('profileRow');
 	this.profileCurrent =	this.controller.get('profileCurrent');
@@ -71,6 +72,7 @@ MainAssistant.prototype.setup = function()
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
 	this.versionElement.innerHTML = "v" + Mojo.Controller.appInfo.version;
+	this.kernelElement.innerHTML = '('+profiles.kernel+')';
 	this.subTitleElement.innerHTML = this.getRandomSubTitle();
 	
 	// setup menu

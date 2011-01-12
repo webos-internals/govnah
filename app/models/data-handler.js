@@ -340,6 +340,10 @@ dataHandlerModel.prototype.updateParams = function(num)
 											this.settingsCompcache);
 		if (this.mainAssistant && this.mainAssistant.controller)
 		{
+			if (profiles.kernel) {
+				this.mainAssistant.kernelElement.innerHTML = '('+profiles.kernel+')';
+			}
+
 			if (this.profile)
 			{
 				this.mainAssistant.profileCurrent.innerHTML = this.profile.name;
