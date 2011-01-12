@@ -26,7 +26,7 @@
 #include "luna_service.h"
 #include "luna_methods.h"
 
-#define ALLOWED_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
+#define ALLOWED_CHARS "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
 
 //
 // We use static buffers instead of continually allocating and deallocating stuff,
