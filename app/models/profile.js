@@ -291,19 +291,20 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 				else if (kernelstring.indexOf("uber-kernel") != -1) {
 					this.kernel = "UberKernel";
 				}
-				else if (kernelstring.indexOf("psycho-f102a-kernel") != -1) {
+				// Capture both testing and stable versions (different appid)
+				else if (kernelstring.indexOf("f102a-kernel") != -1) {
 					this.kernel = "F102A";
 				}
-				else if (kernelstring.indexOf("psycho-f104a-kernel") != -1) {
+				else if (kernelstring.indexOf("f104a-kernel") != -1) {
 					this.kernel = "F104A";
 				}
-				else if (kernelstring.indexOf("psycho-f105-kernel") != -1) {
+				else if (kernelstring.indexOf("f105-kernel") != -1) {
 					this.kernel = "F105";
 				}
-				else if (kernelstring.indexOf("psycho-sr71-kernel") != -1) {
+				else if (kernelstring.indexOf("sr71-kernel") != -1) {
 					this.kernel = "SR71";
 				}
-				else if (kernelstring.indexOf("psycho-av8b-kernel") != -1) {
+				else if (kernelstring.indexOf("av8b-kernel") != -1) {
 					this.kernel = "AV8B";
 				}
 				else if (kernelstring.indexOf("warthog-kernel") != -1) {
