@@ -20,7 +20,7 @@ helpData.lookup =
 	'governor':
 	{
 		title: $L('Governor'),
-		data: $L('A governor is what controls the operating frequency of the kernel in real time. Different governors have different parameters, and each governor is unique in the way that it operates. The governors available depend upon the installed kernel. The standard set of governors available when the UberKernel is installed are:<ul><li><b>ondemand</b> - Increases clock speed in response to increases in CPU load.</li><li><b>conservative</b> - Similar to the ondemand governor. It differs in behaviour in that it gracefully increases and decreases the CPU speed rather than jumping to max speed the moment there is any load on the CPU.</li><li><b>userspace</b> - Sets the CPU speed to a defined rate as chosen by LunaSysMgr.</li><li><b>powersave</b> - Sets the CPU speed to the min frequency value.</li><li><b>performance</b> - Sets the CPU speed to the max frequency value.</li><li><b>screenstate</b> - Runs at a higher speed when the screen is on and a lower speed when the screen is off.</li></ul>Note: Not all governors are available for all kernels. Some kernels are designed to use a specific governor.')
+		data: $L('A governor is what controls the operating frequency of the kernel in real time. Different governors have different parameters, and each governor is unique in the way that it operates. The governors available depend upon the installed kernel. The standard set of governors available when the UberKernel is installed are:<ul><li><b>ondemand</b> - Increases clock speed in response to increases in CPU load.</li><li><b>conservative</b> - Similar to the ondemand governor. It differs in behaviour in that it gracefully increases and decreases the CPU speed rather than jumping to max speed the moment there is any load on the CPU.</li><li><b>userspace</b> - Sets the CPU speed to a defined rate as chosen by LunaSysMgr.</li><li><b>powersave</b> - Sets the CPU speed to the min frequency value.</li><li><b>performance</b> - Sets the CPU speed to the max frequency value.</li><li><b>screenstate</b> - Runs at a higher speed when the screen is on and a lower speed when the screen is off.</li><li><b>screenstate-v2</b> - Similar to the original screenstate, but includes vdemand, which decreases and increases voltage in response to CPU load.</li><li><b>vdemand</b> - Sets CPU to max frequency with added voltage scaling in response to CPU load.</li></ul>Note: Not all governors are available for all kernels. Some kernels are designed to use a specific governor.')
 	},
 	
 	'scheduler':
@@ -161,5 +161,30 @@ helpData.lookup =
 	{
 		title: $L('Override Charger'),
 		data: $L('By default kernels from WebOS Internals running the screenstate governor will scale back to 500MHz to help maintain a lower temperature while charging. However, if you enable override_charger you will be able to run a faster CPU speed while charging. Note: please monitor you CPU temperature while running a higher than stock frequency during charging.')
+	},
+
+	'vdemand_enable':
+	{
+		title: $L('Enable vDemand'),
+		data: $L('Enable or disable vDemand CPU voltage scaling.')
+	},
+
+	'vdemand_poll_rate':
+	{
+		title: $L('vDemand Polling Rate'),
+		data: $L('This setting controls how fast the kernel will poll for operating parameters.  The lower the number the faster the polling.')
+	},
+
+	'vdemand_factor':
+	{
+		title: $L('vDemand Scaling Factor'),
+		data: $L('This setting controls the level of voltage scaling the kernel will perform on the CPU in response to CPU load.  A setting of Low will do minimal voltage scaling, a setting of High will do more.  Only select OMG if you have a Terminator or Chuck Norris Pre.')
+	},
+
+	'charger_poll_rate':
+	{
+		title: $L('Charger Polling Rate'),
+		data: $L('This setting controls how fast the kernel will check for wether or not a charger is plugged in.  The lower the number the faster the polling. This should not be set for a fast poll. The default is fine for most.')
 	}
+
 };
