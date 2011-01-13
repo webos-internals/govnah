@@ -562,8 +562,8 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   DIR *dp = opendir (directory);
   if (!dp) {
-    // Don't give an actual errorCode, since it's expected for some governors.
-    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": false }", directory);
+    // Don't report an error, since some governors do not have specific parameters.
+    sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": true }", directory);
     // fprintf(stderr, "Message is %s\n", buffer);
     if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
     return true;
