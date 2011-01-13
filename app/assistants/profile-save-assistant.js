@@ -84,7 +84,7 @@ ProfileSaveAssistant.prototype.reloadSettings = function()
 
 ProfileSaveAssistant.prototype.onGetParams = function(payload, location)
 {
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 

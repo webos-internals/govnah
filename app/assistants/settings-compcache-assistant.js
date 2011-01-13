@@ -77,7 +77,7 @@ SettingsCompcacheAssistant.prototype.onSetParams = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 
@@ -95,7 +95,7 @@ SettingsCompcacheAssistant.prototype.reloadSettings = function()
 
 SettingsCompcacheAssistant.prototype.onGetParams = function(payload, location)
 {
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
@@ -425,13 +425,15 @@ SettingsCompcacheAssistant.prototype.saveCompleteCompcache = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
-	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
-	}
-		
 	this.saveButtonElement.mojo.deactivate();
-	//this.reloadSettings();
-	this.controller.stageController.popScene();
+
+	if (payload.returnValue == false) {
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
+		this.reloadSettings();
+	}
+	else {
+		this.controller.stageController.popScene();
+	}
 };
 
 SettingsCompcacheAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)

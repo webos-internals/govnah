@@ -172,7 +172,7 @@ SettingsCpufreqAssistant.prototype.onSetParams = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 
@@ -190,7 +190,7 @@ SettingsCpufreqAssistant.prototype.reloadSettings = function()
 
 SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 {
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
@@ -733,13 +733,15 @@ SettingsCpufreqAssistant.prototype.saveCompleteCpufreq = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
-	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
-	}
-	
 	this.saveButtonElement.mojo.deactivate();
-	//this.reloadSettings();
-	this.controller.stageController.popScene();
+
+	if (payload.returnValue == false) {
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
+		this.reloadSettings();
+	}
+	else {
+		this.controller.stageController.popScene();
+	}
 };
 
 SettingsCpufreqAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)

@@ -94,7 +94,7 @@ SettingsTcpcongAssistant.prototype.onSetParams = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 
@@ -109,7 +109,7 @@ SettingsTcpcongAssistant.prototype.reloadSettings = function()
 
 SettingsTcpcongAssistant.prototype.onGetAvailable = function(payload)
 {
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
@@ -135,7 +135,7 @@ SettingsTcpcongAssistant.prototype.onGetAvailable = function(payload)
 
 SettingsTcpcongAssistant.prototype.onGetCongestion = function(payload)
 {
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
@@ -185,13 +185,15 @@ SettingsTcpcongAssistant.prototype.saveCompleteCongestion = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
-	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
-	}
-	
 	this.saveButtonElement.mojo.deactivate();
-	//this.reloadSettings();
-	this.controller.stageController.popScene();
+
+	if (payload.returnValue == false) {
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
+		this.reloadSettings();
+	}
+	else {
+		this.controller.stageController.popScene();
+	}
 };
 
 SettingsTcpcongAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)

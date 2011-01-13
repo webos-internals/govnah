@@ -93,7 +93,7 @@ SettingsIoschedAssistant.prototype.onSetParams = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 
@@ -108,7 +108,7 @@ SettingsIoschedAssistant.prototype.reloadSettings = function()
 
 SettingsIoschedAssistant.prototype.onGetScheduler = function(payload)
 {
-	if (payload.errorCode != undefined) {
+	if (payload.returnValue == false) {
 		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
 	}
 	
@@ -173,13 +173,15 @@ SettingsIoschedAssistant.prototype.saveCompleteScheduler = function(payload)
 	//alert('===========');
 	//for (p in payload) alert(p+' : '+payload[p]);
 	
-	if (payload.errorCode != undefined) {
-		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
-	}
-	
 	this.saveButtonElement.mojo.deactivate();
-	//this.reloadSettings();
-	this.controller.stageController.popScene();
+
+	if (payload.returnValue == false) {
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
+		this.reloadSettings();
+	}
+	else {
+		this.controller.stageController.popScene();
+	}
 };
 
 SettingsIoschedAssistant.prototype.errorMessage = function(title, message, stdErr, okFunction)
