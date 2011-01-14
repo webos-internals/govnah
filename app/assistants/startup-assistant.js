@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.7.16',log: [ 'Added the active kernel version to the main scene' ] },
 	 { version: '0.7.15',log: [ 'Gracefully handle governors that do not have governor-specific parameters' ] },
 	 { version: '0.7.14',log: [ 'More aggressive error reporting' ] },
 	 { version: '0.7.13',log: [ 'Display active kernel on the main scene' ] },

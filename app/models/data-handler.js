@@ -341,7 +341,10 @@ dataHandlerModel.prototype.updateParams = function(num)
 		if (this.mainAssistant && this.mainAssistant.controller)
 		{
 			if (profiles.kernel) {
-				this.mainAssistant.kernelElement.innerHTML = '('+profiles.kernel+')';
+				this.mainAssistant.kernelElement.innerHTML = profiles.kernel;
+				if (profiles.kernelVersion) {
+					this.mainAssistant.kernelElement.innerHTML += '-'+profiles.kernelVersion;
+				}
 			}
 
 			if (this.profile)

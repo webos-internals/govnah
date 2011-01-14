@@ -72,7 +72,7 @@ MainAssistant.prototype.setup = function()
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
 	this.versionElement.innerHTML = "v" + Mojo.Controller.appInfo.version;
-	this.kernelElement.innerHTML = '('+profiles.kernel+')';
+	this.kernelElement.innerHTML = '';
 	this.subTitleElement.innerHTML = this.getRandomSubTitle();
 	
 	// setup menu

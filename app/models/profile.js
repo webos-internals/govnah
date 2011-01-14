@@ -8,6 +8,7 @@ function profilesModel()
 	this.profiles =		[];
 	
 	this.kernel = false;
+	this.kernelVersion = false;
 
 	this.load();
 	this.fixModelName();
@@ -285,33 +286,50 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 			var fields = response.stdOut[0].split(' ');
 			if (fields.length >= 4) {
 				var kernelstring = fields[3];
-				if (kernelstring == "(na@na)") {
+				var kernelRegExp = new RegExp(/^\((v[0-9.]+)-([0-9]+)@org\.webosinternals\.kernels\.([^-]+)-kernel-(.+)\)/);
+				var match = kernelRegExp.exec(kernelstring);
+				if (match) {
+					alert("Got a match");
+					this.kernelVersion = match[2];
+					alert("match[1]"+match[1]);
+					alert("match[2]"+match[2]);
+					alert("match[3]"+match[3]);
+					alert("match[4]"+match[4]);
+					switch (match[3]) {
+					case "uber":
+						this.kernel = "UberKernel";
+						break;
+					case "f102a":
+					case "psycho-f102a":
+						this.kernel = "F102A";
+						break;
+					case "psycho-f104a":
+						this.kernel = "F104A";
+						break;
+					case "psycho-f105":
+						this.kernel = "F105";
+						break;
+					case "psycho-sr71":
+						this.kernel = "SR71";
+						break;
+					case "psycho-av8b":
+						this.kernel = "AV8B";
+						break;
+					case "warthog":
+						this.kernel = "Warthog";
+						break;
+					default:
+						this.kernel = match[3];
+						break;
+					}
+				}
+				else if (kernelstring == "(na@na)") {
 					this.kernel = "Palm";
-				}
-				else if (kernelstring.indexOf("uber-kernel") != -1) {
-					this.kernel = "UberKernel";
-				}
-				// Capture both testing and stable versions (different appid)
-				else if (kernelstring.indexOf("f102a-kernel") != -1) {
-					this.kernel = "F102A";
-				}
-				else if (kernelstring.indexOf("f104a-kernel") != -1) {
-					this.kernel = "F104A";
-				}
-				else if (kernelstring.indexOf("f105-kernel") != -1) {
-					this.kernel = "F105";
-				}
-				else if (kernelstring.indexOf("sr71-kernel") != -1) {
-					this.kernel = "SR71";
-				}
-				else if (kernelstring.indexOf("av8b-kernel") != -1) {
-					this.kernel = "AV8B";
-				}
-				else if (kernelstring.indexOf("warthog-kernel") != -1) {
-					this.kernel = "Warthog";
+					this.kernelVersion = false;
 				}
 				else {
 					this.kernel = "unknown";
+					this.kernelVersion = false;
 				}
 			}
 		}
