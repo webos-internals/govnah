@@ -286,7 +286,7 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 			var fields = response.stdOut[0].split(' ');
 			if (fields.length >= 4) {
 				var kernelstring = fields[3];
-				var kernelRegExp = new RegExp(/^\((v[0-9.]+)-([0-9]+)@org\.webosinternals\.kernels\.([^-]+)-kernel-(.+)\)/);
+				var kernelRegExp = new RegExp(/^\((v[0-9.]+)-([0-9]+)@org\.webosinternals\.kernels\.(.+)-kernel-(.+)\)/);
 				var match = kernelRegExp.exec(kernelstring);
 				if (match) {
 					this.kernelVersion = match[2];
