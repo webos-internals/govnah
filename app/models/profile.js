@@ -289,12 +289,7 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 				var kernelRegExp = new RegExp(/^\((v[0-9.]+)-([0-9]+)@org\.webosinternals\.kernels\.([^-]+)-kernel-(.+)\)/);
 				var match = kernelRegExp.exec(kernelstring);
 				if (match) {
-					alert("Got a match");
 					this.kernelVersion = match[2];
-					alert("match[1]"+match[1]);
-					alert("match[2]"+match[2]);
-					alert("match[3]"+match[3]);
-					alert("match[4]"+match[4]);
 					switch (match[3]) {
 					case "uber":
 						this.kernel = "UberKernel";
