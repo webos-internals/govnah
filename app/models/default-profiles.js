@@ -114,7 +114,7 @@ var f104a_default_pre = {
 	version:	9,
 	name:		'F104A Default',
 	locked:		false,
-	governor:	'screenstate-v2',
+	governor:	'screenstate',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'250000'},
 {name:	'scaling_max_freq',	value: '1100000'},
@@ -134,12 +134,23 @@ var av8b_default_pre = {
 
 var f105_default_pre = {
 	version:	9,
-	name:		'AV8B Default',
+	name:		'F105 Default',
 	locked:		false,
-	governor:	'vdemand',
+	governor:	'screenstate-v2',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '500000'},
 {name:	'scaling_max_freq',	value: '1005000'},
+					   ],
+		};
+
+var sr71_default_pre = {
+	version:	9,
+	name:		'SR71 Default',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '500000'},
+{name:	'scaling_max_freq',	value: '1200000'},
 					   ],
 		};
 
@@ -311,6 +322,10 @@ profilesModel.populateDefaults = function()
 		};
 		case "F105": {
 			profilesModel.defaultProfiles.push(f105_default_pre);
+			break;
+		};
+		case "SR71": {
+			profilesModel.defaultProfiles.push(sr71_default_pre);
 			break;
 		};
 		case "Warthog": {
