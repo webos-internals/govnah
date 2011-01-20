@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 9
+ * 	Highest Version: 10
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -140,6 +140,17 @@ var f105_default_pre = {
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '500000'},
 {name:	'scaling_max_freq',	value: '1005000'},
+					   ],
+		};
+
+var f14_default_pre = {
+	version:	10,
+	name:		'F14 Default',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '150000'},
+{name:	'scaling_max_freq',	value: '1400000'},
 					   ],
 		};
 
@@ -357,7 +368,13 @@ profilesModel.populateDefaults = function()
 	
 	case "Pre2": {
 
-		// The stock palm settings
+		switch (profiles.kernel) {
+		case "F14": {
+			profilesModel.defaultProfiles.push(f14_default_pre);
+			break;
+		};
+		};
+
 		profilesModel.defaultProfiles.push(palm_default_pre2);
 		break;
 	};

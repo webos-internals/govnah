@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.7.19',log: [ 'Added support for the F14 Tomcat experimental kernel' ] },
 	 { version: '0.7.18',log: [ 'Added default profiles for experimental kernels' ] },
 	 { version: '0.7.17',log: [ 'Now supports display of experimental kernel versions' ] },
 	 { version: '0.7.16',log: [ 'Added the active kernel version to the main scene' ] },
