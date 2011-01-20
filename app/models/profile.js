@@ -251,7 +251,8 @@ profilesModel.prototype.getListObjects = function()
 		{
 			if (this.profiles[p]) 
 			{
-				returnArray.push(this.profiles[p].getListObject());
+				var profile = this.profiles[p].getListObject();
+				if (profile) returnArray.push(profile);
 			}
 		}
 	}
@@ -270,6 +271,7 @@ profilesModel.prototype.fixModelNameResponse = function(response)
 			Mojo.Environment.DeviceInfo.modelNameAscii = "Pre2";
 		}
 	}
+
 	this.getKernelType();
 };
 
@@ -332,6 +334,8 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 			}
 		}
 	}
+
+
 	// now we populate our default profiles
 	profilesModel.populateDefaults();
 	// then we load defaults
@@ -466,44 +470,52 @@ profilesModel.prototype.reorderProfiles = function(from, to)
 		var reorderedProfiles = [];
 		var reorderedCookie = [];
 		
-		if (from > to) 
-		{
-			for (var p = 0; p < to; p++)
-			{
+		//alert("from = "+from+", fromId = "+this.profiles[from].id+", to = "+to+", toId = "+this.profiles[to].id);
+
+		if (from > to) {
+
+			// Then copy all the entries until we find toId
+			for (var p = 0; p < to; p++) {
 				reorderedProfiles.push(this.profiles[p]);
 				reorderedCookie.push(this.profiles[p].id);
+				//alert("Copying p = "+p+", id = "+this.profiles[p].id);
 			}
 			
+			// Then insert the fromId entry
 			reorderedProfiles.push(this.profiles[from]);
 			reorderedCookie.push(this.profiles[from].id);
+			//alert("Copying fromEntry, id = "+this.profiles[from].id);
 			
-			for (var p = to; p < this.profiles.length; p++)
-			{
-				if (p > from || p < from)
-				{
+			// Then copy all the rest of the entries, skipping fromId
+			for (var p = to; p < this.profiles.length; p++) {
+				if (p != from) {
 					reorderedProfiles.push(this.profiles[p]);
 					reorderedCookie.push(this.profiles[p].id);
+					//alert("Copying p = "+p+", id = "+this.profiles[p].id);
 				}
 			}
 		}
-		else if (from < to)
-		{
-			for (var p = 0; p < to+1; p++)
-			{
-				if (p > from || p < from)
-				{
+		else if (from < to) {
+
+			// Then copy all the entries until we find toId, skipping fromId
+			for (var p = 0; p <= to; p++) {
+				if (p != from) {
 					reorderedProfiles.push(this.profiles[p]);
 					reorderedCookie.push(this.profiles[p].id);
+					//alert("Copying p = "+p+", id = "+this.profiles[p].id);
 				}
 			}
 			
+			// Then insert the fromId entry
 			reorderedProfiles.push(this.profiles[from]);
 			reorderedCookie.push(this.profiles[from].id);
+			//alert("Copying fromEntry, id = "+this.profiles[from].id);
 			
-			for (var p = to+1; p < this.profiles.length; p++)
-			{
+			// Then copy the rest of the entries
+			for (var p = to+1; p < this.profiles.length; p++) {
 				reorderedProfiles.push(this.profiles[p]);
 				reorderedCookie.push(this.profiles[p].id);
+				//alert("Copying p = "+p+", id = "+this.profiles[p].id);
 			}
 		}
 		
@@ -515,7 +527,7 @@ profilesModel.prototype.reorderProfiles = function(from, to)
 	} 
 	catch (e)
 	{
-		Mojo.Log.logException(e, 'profiles#deleteProfile');
+		Mojo.Log.logException(e, 'profiles#reorderProfile');
 	}
 };
 profilesModel.prototype.applyComplete = function(payload, location)
@@ -566,6 +578,9 @@ function profileModel(params)
 	this.settingsSpecific  = params.settingsSpecific;
 	this.settingsOverride  = params.settingsOverride;
 	this.settingsCompcache = params.settingsCompcache;
+
+	this.kernels =			params.kernels;
+
 };
 profileModel.prototype.apply = function()
 {
@@ -621,6 +636,11 @@ profileModel.prototype.apply = function()
 };
 profileModel.prototype.getListObject = function()
 {
+	// Omit incompatible kernels
+	if (this.kernels && (this.kernels.indexOf(profiles.kernel) == -1)) {
+		return false;
+	}
+
 	var tmpName = this.name;
 	if (dataHandler.profile && dataHandler.profile.name == this.name) tmpName = '<b>' + this.name + '</b>';
 	

@@ -115,7 +115,8 @@ ProfilesAssistant.prototype.listDeleteHandler = function(event)
 }
 ProfilesAssistant.prototype.listReorderHandler = function(event)
 {
-	profiles.reorderProfiles(event.fromIndex, event.toIndex);
+    profiles.reorderProfiles(this.profileListModel.items[event.fromIndex].key,
+			     this.profileListModel.items[event.toIndex].key);
 }
 
 ProfilesAssistant.prototype.handleCommand = function(event)
