@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 12
+ * 	Highest Version: 14
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -220,6 +220,18 @@ var screenstate_500_1050 = {
 	kernels: [ "UberKernel" ]
 };
 
+var screenstate_300_1200 = {
+	version:	14,
+	name:		'Screenstate 300/1200',
+	locked:		false,
+	governor:	'screenstate',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'300000'},
+{name:	'scaling_max_freq',	value: '1200000'},
+					   ],
+	kernels: [ "SR71" ]
+};
+
 var fixed_speed_600 = {
 	version:	12,
 	name:		'Fixed Speed 600',
@@ -379,6 +391,7 @@ profilesModel.populateDefaults = function()
 
 		profilesModel.defaultProfiles.push(ondemandtcl_1400);
 		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre2);
+		profilesModel.defaultProfiles.push(screenstate_300_1200);
 
 		profilesModel.defaultProfiles.push(palm_default_pre2);
 
