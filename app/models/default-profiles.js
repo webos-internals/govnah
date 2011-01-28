@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 11
+ * 	Highest Version: 12
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -22,7 +22,7 @@
 
 
 var palm_default_pre = {
-	version:	11,
+	version:	12,
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'userspace',
@@ -35,7 +35,7 @@ var palm_default_pre = {
 };
 
 var palm_default_pixi = {
-	version:	11,
+	version:	12,
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -55,7 +55,7 @@ var palm_default_pixi = {
 };
 
 var palm_default_pre2 = {
-	version:	11,
+	version:	12,
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -75,7 +75,7 @@ var palm_default_pre2 = {
 };
 
 var uberkernel_default_pre = {
-	version:	11,
+	version:	12,
 	name:		'UberKernel Default',
 	locked:		false,
 	governor:	'userspace',
@@ -87,21 +87,21 @@ var uberkernel_default_pre = {
 	kernels: [ "UberKernel" ]
 };
 
-var f102a_default_pre = {
-	version:	11,
-	name:		'F102A Default',
+var screenstate2_500_800 = {
+	version:	12,
+	name:		'Screenstate2 500/800',
 	locked:		false,
 	governor:	'screenstate-v2',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'500000'},
 {name:	'scaling_max_freq',	value:  '800000'},
 					   ],
-	kernels: [ "F102A" ]
+	kernels: [ "F102B" ]
 };
 
-var f104a_default_pre = {
-	version:	11,
-	name:		'F104A Default',
+var screenstate_250_1100 = {
+	version:	12,
+	name:		'Screenstate 250/1100',
 	locked:		false,
 	governor:	'screenstate',
 	settingsStandard: [
@@ -111,9 +111,9 @@ var f104a_default_pre = {
 	kernels: [ "F104A" ]
 };
 
-var av8b_default_pre = {
-	version:	11,
-	name:		'AV8B Default',
+var vdemand_1005 = {
+	version:	12,
+	name:		'VDemand 1005',
 	locked:		false,
 	governor:	'vdemand',
 	settingsStandard: [
@@ -123,9 +123,9 @@ var av8b_default_pre = {
 	kernels: [ "AV8B" ]
 };
 
-var f105_default_pre = {
-	version:	11,
-	name:		'F105 Default',
+var screenstate2_500_1005 = {
+	version:	12,
+	name:		'Screenstate2 500/1005',
 	locked:		false,
 	governor:	'screenstate-v2',
 	settingsStandard: [
@@ -135,9 +135,9 @@ var f105_default_pre = {
 	kernels: [ "F105" ]
 };
 
-var f14_default_pre = {
-	version:	11,
-	name:		'F14 Default',
+var ondemandtcl_1400 = {
+	version:	12,
+	name:		'OnDemandTcl 1400',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
@@ -147,9 +147,9 @@ var f14_default_pre = {
 	kernels: [ "F14" ]
 };
 
-var sr71_default_pre = {
-	version:	11,
-	name:		'SR71 Default',
+var ondemandtcl_1200_pre = {
+	version:	13,
+	name:		'OnDemandTcl 1200',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
@@ -159,8 +159,20 @@ var sr71_default_pre = {
 	kernels: [ "SR71" ]
 };
 
+var ondemandtcl_1200_pre2 = {
+	version:	13,
+	name:		'OnDemandTcl 1200',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '300000'},
+{name:	'scaling_max_freq',	value: '1200000'},
+					   ],
+	kernels: [ "SR71" ]
+};
+
 var warthog_default_pre = {
-	version:	11,
+	version:	12,
 	name:		'Warthog Default',
 	locked:		false,
 	governor:	'userspace',
@@ -173,7 +185,7 @@ var warthog_default_pre = {
 };
 
 var screenstate_500_800 = {
-	version:	11,
+	version:	12,
 	name:		'Screenstate 500/800',
 	locked:		false,
 	governor:	'screenstate',
@@ -181,11 +193,11 @@ var screenstate_500_800 = {
 {name:	'scaling_min_freq',	value:	'500000'},
 {name:	'scaling_max_freq',	value:	'800000'}
 					   ],
-	kernels: [ "UberKernel" ]
+		kernels: [ "UberKernel", "F102A" ]
 };
 
 var screenstate_500_1000 = {
-	version:	11,
+	version:	12,
 	name:		'Screenstate 500/1000',
 	locked:		false,
 	governor:	'screenstate',
@@ -197,7 +209,7 @@ var screenstate_500_1000 = {
 };
 
 var screenstate_500_1050 = {
-	version:	11,
+	version:	12,
 	name:		'Screenstate 500/1050',
 	locked:		false,
 	governor:	'screenstate',
@@ -209,7 +221,7 @@ var screenstate_500_1050 = {
 };
 
 var fixed_speed_600 = {
-	version:	11,
+	version:	12,
 	name:		'Fixed Speed 600',
 	locked:		false,
 	governor:	'performance',
@@ -221,7 +233,7 @@ var fixed_speed_600 = {
 };
 
 var fixed_speed_720 = {
-	version:	11,
+	version:	12,
 	name:		'Fixed Speed 720',
 	locked:		false,
 	governor:	'performance',
@@ -233,7 +245,7 @@ var fixed_speed_720 = {
 };
 
 var fixed_speed_800 = {
-	version:	11,
+	version:	12,
 	name:		'Fixed Speed 800',
 	locked:		false,
 	governor:	'performance',
@@ -245,7 +257,7 @@ var fixed_speed_800 = {
 };
 
 var ondemandtcl_749 = {
-	version:	11,
+	version:	12,
 	name:		'OnDemandTcl 749',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -265,7 +277,7 @@ var ondemandtcl_749 = {
 };
 
 var ondemandtcl_768 = {
-	version:	11,
+	version:	12,
 	name:		'OnDemandTcl 768',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -285,7 +297,7 @@ var ondemandtcl_768 = {
 };
 
 var ondemandtcl_787 = {
-	version:	11,
+	version:	12,
 	name:		'OnDemandTcl 787',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -305,7 +317,7 @@ var ondemandtcl_787 = {
 };
 
 var ondemandtcl_806 = {
-	version:    11,
+	version:    12,
 	name:		'OnDemandTcl 806',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -339,11 +351,11 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(fixed_speed_600);
 
 		profilesModel.defaultProfiles.push(uberkernel_default_pre);
-		profilesModel.defaultProfiles.push(av8b_default_pre);
-		profilesModel.defaultProfiles.push(f102a_default_pre);
-		profilesModel.defaultProfiles.push(f104a_default_pre);
-		profilesModel.defaultProfiles.push(f105_default_pre);
-		profilesModel.defaultProfiles.push(sr71_default_pre);
+		profilesModel.defaultProfiles.push(vdemand_1005);
+		profilesModel.defaultProfiles.push(screenstate2_500_800);
+		profilesModel.defaultProfiles.push(screenstate_250_1100);
+		profilesModel.defaultProfiles.push(screenstate2_500_1005);
+		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre);
 		profilesModel.defaultProfiles.push(warthog_default_pre);
 
 		profilesModel.defaultProfiles.push(palm_default_pre);
@@ -365,7 +377,8 @@ profilesModel.populateDefaults = function()
 	
 	case "Pre2": {
 
-		profilesModel.defaultProfiles.push(f14_default_pre);
+		profilesModel.defaultProfiles.push(ondemandtcl_1400);
+		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre2);
 
 		profilesModel.defaultProfiles.push(palm_default_pre2);
 

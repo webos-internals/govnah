@@ -297,8 +297,11 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 						this.kernel = "UberKernel";
 						break;
 					case "f102a":
-					case "psycho-f102a":
 						this.kernel = "F102A";
+						break;
+					case "psycho-f102a":
+					case "psycho-f102b":
+						this.kernel = "F102B";
 						break;
 					case "psycho-f104a":
 						this.kernel = "F104A";
