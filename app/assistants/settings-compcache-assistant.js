@@ -15,6 +15,9 @@ function SettingsCompcacheAssistant()
 	
 	this.memoryChoices = [];
 	this.memoryChoices.push({label:  "8MB", value:  8*1024});
+	this.memoryChoices.push({label: "10MB", value: 10*1024});
+	this.memoryChoices.push({label: "12MB", value: 12*1024});
+	this.memoryChoices.push({label: "14MB", value: 14*1024});
 	this.memoryChoices.push({label: "16MB", value: 16*1024});
 	this.memoryChoices.push({label: "24MB", value: 24*1024});
 	this.memoryChoices.push({label: "32MB", value: 32*1024});

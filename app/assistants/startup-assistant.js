@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.7.25',log: [ 'Added support for 10MB, 12MB and 14MB compcache limits' ] },
 	 { version: '0.7.24',log: [ 'Added support for 8MB compcache lower limit' ] },
 	 { version: '0.7.23',log: [ 'Added support for Pre 2 screenstate in SR71' ] },
 	 { version: '0.7.22',log: [ 'Added support for the 1.2GHz Pre 2 SR71 experimental kernel' ] },
