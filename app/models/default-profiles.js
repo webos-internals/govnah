@@ -1,4 +1,4 @@
-
+1
 /* 
  * 	The value of the version field is important:
  * 
@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 14
+ * 	Highest Version: 15
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -99,13 +99,13 @@ var screenstate2_500_800 = {
 	kernels: [ "F102B" ]
 };
 
-var screenstate_250_1100 = {
-	version:	12,
-	name:		'Screenstate 250/1100',
+var screenstate2_500_1100 = {
+	version:	15,
+	name:		'Screenstate2 500/1100',
 	locked:		false,
-	governor:	'screenstate',
+	governor:	'screenstate-v2',
 	settingsStandard: [
-{name:	'scaling_min_freq',	value:	'250000'},
+{name:	'scaling_min_freq',	value:	'500000'},
 {name:	'scaling_max_freq',	value: '1100000'},
 					   ],
 	kernels: [ "F104A" ]
@@ -365,8 +365,8 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(uberkernel_default_pre);
 		profilesModel.defaultProfiles.push(vdemand_1005);
 		profilesModel.defaultProfiles.push(screenstate2_500_800);
-		profilesModel.defaultProfiles.push(screenstate_250_1100);
 		profilesModel.defaultProfiles.push(screenstate2_500_1005);
+		profilesModel.defaultProfiles.push(screenstate2_500_1100);
 		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre);
 		profilesModel.defaultProfiles.push(warthog_default_pre);
 
