@@ -135,6 +135,24 @@ var screenstate2_500_1005 = {
 	kernels: [ "F105" ]
 };
 
+var f104a_default_pre = {
+	version:	15,
+	name:		'F104A Default',
+	locked:		false,
+	governor:	'ondemand',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'500000'},
+{name:	'scaling_max_freq',	value: '1100000'},
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'80'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'}
+					   ],
+	kernels: [ "F104A" ]
+};
+
 var ondemandtcl_1400 = {
 	version:	12,
 	name:		'OnDemandTcl 1400',
@@ -367,6 +385,7 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(screenstate2_500_800);
 		profilesModel.defaultProfiles.push(screenstate2_500_1005);
 		profilesModel.defaultProfiles.push(screenstate2_500_1100);
+		profilesModel.defaultProfiles.push(f104a_default_pre);
 		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre);
 		profilesModel.defaultProfiles.push(warthog_default_pre);
 

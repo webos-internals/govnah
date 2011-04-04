@@ -46,7 +46,7 @@ SettingsVoltageAssistant.prototype.setup = function()
 			if (voltMax > this.param.limits.max) voltMax = this.param.limits.max;
 			for (var s = voltMax; s >= voltMin; s--)
 			{
-				var display = ((s * 12.5) + 600) +' mV';
+				var display = ((s * 12.5) + 600) +' mV ('+s+')';
 				voltageChoices.push({label: display, value: s});
 			}
 		}
@@ -56,7 +56,7 @@ SettingsVoltageAssistant.prototype.setup = function()
 			var voltMax = parseInt(this.voltages[num])+2
 			for (var s = voltMax; s >= voltMin; s--)
 			{
-				var display = ((s * 12.5) + 600) +' mV';
+				var display = ((s * 12.5) + 600) +' mV ('+s+')';
 				voltageChoices.push({label: display, value: s});
 			}
 			
