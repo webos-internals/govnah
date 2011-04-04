@@ -181,6 +181,12 @@ helpData.lookup =
 		data: $L('This setting controls the level of voltage scaling the kernel will perform on the CPU in response to CPU load.  A setting of Low will do minimal voltage scaling, a setting of High will do more.  Only select OMG if you have a Terminator or Chuck Norris Pre.')
 	},
 
+	'charger_override':
+	{
+		title: $L('Charger Override'),
+		data: $L('By default kernels from WebOS Internals running the screenstate governor will scale back to 500MHz to help maintain a lower temperature while charging. However, if you enable charger_override you will be able to run a faster CPU speed while charging. Note: please monitor you CPU temperature while running a higher than stock frequency during charging.')
+	},
+
 	'charger_poll_rate':
 	{
 		title: $L('Charger Polling Rate'),
