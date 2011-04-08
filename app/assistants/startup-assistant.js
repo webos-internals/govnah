@@ -5,7 +5,7 @@ function StartupAssistant(changelog)
     // on first start, this message is displayed, along with the current version message from below
     this.firstMessage = $L('Here are some tips for first-timers:<ul><li>We recommend using the WebOS Internals UberKernel</li><li>Please check the Preferences screen for more options</li></ul><b>Note that overclocking your device is likely to void your warranty.</b>');
 	
-    this.secondMessage = $L('We hope you enjoy being able to take full control over your CPU.<br>Please consider making a <a href=http://www.webos-internals.org/wiki/WebOS_Internals:Site_support>donation</a> if you wish to show your appreciation.');
+    this.secondMessage = $L('We hope you enjoy being able to take full control over your CPU.<br>Please consider making a <a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L8ALFGFJ7VJVJ\">donation</a> if you wish to show your appreciation.');
 	
     // on new version start
     this.newMessages =
