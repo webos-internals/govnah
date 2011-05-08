@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 15
+ * 	Highest Version: 16
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -140,6 +140,24 @@ var f104a_default_pre = {
 	name:		'F104A Default',
 	locked:		false,
 	governor:	'ondemand',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'500000'},
+{name:	'scaling_max_freq',	value: '1100000'},
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'80'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'}
+					   ],
+	kernels: [ "F104A" ]
+};
+
+var f104a_default_pre2 = {
+	version:	16,
+	name:		'F104A Default',
+	locked:		false,
+	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'500000'},
 {name:	'scaling_max_freq',	value: '1100000'},
@@ -411,6 +429,8 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(ondemandtcl_1400);
 		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre2);
 		profilesModel.defaultProfiles.push(screenstate_300_1200);
+
+		profilesModel.defaultProfiles.push(f104a_default_pre2);
 
 		profilesModel.defaultProfiles.push(palm_default_pre2);
 
