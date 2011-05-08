@@ -191,7 +191,7 @@ helpData.lookup =
 	{
 		title: $L('Charger Polling Rate'),
 		data: $L('This setting controls how fast the kernel will check for wether or not a charger is plugged in, in seconds.  The lower the number the faster the polling. This should not be set for a fast poll. The default is fine for most.')
-	}
+	},
 
 	'ondemand_enable':
 	{
