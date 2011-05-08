@@ -33,6 +33,7 @@ function dataHandlerModel()
 		'vdemand_poll_rate':			{ type: 'listJiffies'		},
 		'vdemand_vsel_vdd1':			{ type: 'sceneVoltsLoad',	nice: $L("CPU Voltage")},
 		'vdemand_vsel_vdd2':			{ type: 'sceneVoltsLoad',	nice: $L("System Voltage")},
+		'ondemand_enable':				{ type: 'toggleTF'			},
 	};
 	
 	this.mainAssistant = false;
