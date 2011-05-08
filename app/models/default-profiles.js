@@ -159,14 +159,16 @@ var f104a_default_pre2 = {
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
-{name:	'scaling_min_freq',	value:	'500000'},
-{name:	'scaling_max_freq',	value: '1100000'},
+{name:	'scaling_min_freq',	value:	'300000'},
+{name:	'scaling_max_freq',	value: '1000000'},
 					   ],
 	settingsSpecific: [
 {name:	'sampling_rate',		value:	'200000'},
-{name:	'up_threshold',			value:	'80'},
+{name:	'up_threshold',			value:	'40'},
 {name:	'ignore_nice_load',		value:	'0'},
-{name:	'powersave_bias',		value:	'0'}
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'}
 					   ],
 	kernels: [ "F104A" ]
 };
@@ -181,6 +183,18 @@ var ondemandtcl_1400 = {
 {name:	'scaling_max_freq',	value: '1400000'},
 					   ],
 	kernels: [ "F14" ]
+};
+
+var screenstate3_300_1100 = {
+	version:	15,
+	name:		'Screenstate3 300/1100',
+	locked:		false,
+	governor:	'screenstate-v3',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'300000'},
+{name:	'scaling_max_freq',	value: '1100000'},
+					   ],
+	kernels: [ "F104A" ]
 };
 
 var ondemandtcl_1200_pre = {
@@ -429,7 +443,7 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(ondemandtcl_1400);
 		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre2);
 		profilesModel.defaultProfiles.push(screenstate_300_1200);
-
+		profilesModel.defaultProfiles.push(screenstate3_300_1100);
 		profilesModel.defaultProfiles.push(f104a_default_pre2);
 
 		profilesModel.defaultProfiles.push(palm_default_pre2);
