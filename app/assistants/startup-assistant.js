@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.7.29',log: [ 'Small fix in profile for the Pre 2 F104A experimental kernel' ] },
 	 { version: '0.7.28',log: [ 'Updated profiles for the Pre 2 F104A experimental kernel' ] },
 	 { version: '0.7.27',log: [ 'Display raw value as well as actual voltage for cpu and system' ] },
 	 { version: '0.7.26',log: [ 'Updated profiles for the F104A experimental kernel' ] },
