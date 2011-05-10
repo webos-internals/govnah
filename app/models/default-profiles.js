@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 16
+ * 	Highest Version: 17
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -154,7 +154,7 @@ var f104a_default_pre = {
 };
 
 var f104a_default_pre2 = {
-	version:	16,
+	version:	17,
 	name:		'F104A Default',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -186,7 +186,7 @@ var ondemandtcl_1400 = {
 };
 
 var screenstate3_300_1100 = {
-	version:	15,
+	version:	17,
 	name:		'Screenstate3 300/1100',
 	locked:		false,
 	governor:	'screenstate-v3',
