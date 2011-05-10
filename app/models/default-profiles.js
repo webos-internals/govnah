@@ -160,7 +160,7 @@ var f104a_default_pre2 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'300000'},
-{name:	'scaling_max_freq',	value: '1000000'},
+{name:	'scaling_max_freq',	value: '1100000'},
 					   ],
 	settingsSpecific: [
 {name:	'sampling_rate',		value:	'200000'},
