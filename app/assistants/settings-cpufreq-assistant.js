@@ -82,6 +82,22 @@ function SettingsCpufreqAssistant()
 		this.jiffiesChoices.push({label:x, value:x});
 	}
 	
+	this.secondsChoices = [];
+	for (var x = 1; x < 10; x += 1)
+	{
+		this.secondsChoices.push({label:x + " Sec", value:x});
+	}
+	for (var x = 10; x <= 60; x += 10)
+	{
+		this.secondsChoices.push({label:x + " Sec", value:x});
+	}
+	
+	this.milliSecondsChoices = [];
+	for (var x = 100; x <= 1500; x += 100)
+	{
+		this.milliSecondsChoices.push({label:x/1000 + " Sec", value:x});
+	}
+	
 };
 
 SettingsCpufreqAssistant.prototype.setup = function()
@@ -590,6 +606,40 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.jiffiesChoices
+								},
+								this.settingsModel
+							);
+							break;
+
+						case 'listMilliSeconds':
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: dataHandler.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: this.milliSecondsChoices
+								},
+								this.settingsModel
+							);
+							break;
+
+						case 'listSeconds':
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: dataHandler.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: this.secondsChoices
 								},
 								this.settingsModel
 							);
