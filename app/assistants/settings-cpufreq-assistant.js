@@ -374,6 +374,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 						case 'listPcnt':
 							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
@@ -391,6 +393,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 						case 'listPowr':
 							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
@@ -407,6 +411,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 						case 'listSamp':
 							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
@@ -458,6 +464,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 						case 'listSampDown':
 							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
@@ -474,6 +482,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 						case 'listMem':
 							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
@@ -490,6 +500,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 							
 						case 'toggleTF':
@@ -509,6 +521,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 
 						case 'listWindow':
@@ -526,6 +540,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 
 
@@ -544,6 +560,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 							
 						case 'sceneVoltsCpuFreq':
@@ -594,6 +612,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 
 						case 'listJiffies':
@@ -611,6 +631,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 
 						case 'listMilliSeconds':
@@ -628,6 +650,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 
 						case 'listSeconds':
@@ -645,6 +669,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 								},
 								this.settingsModel
 							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
 							break;
 					}
 				}
@@ -670,6 +696,8 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 						},
 						this.settingsModel
 					);
+					this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+										   this.modifiedSetting.bindAsEventListener(this));
 				}
 			}
 		}
@@ -703,6 +731,12 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 		if (this.getRequest) this.getRequest.cancel();
 		this.getRequest = false;
 	}
+};
+
+SettingsCpufreqAssistant.prototype.modifiedSetting = function(event)
+{
+	this.settingsModified[event.property] = true;
+	//alert(event.property+" changed to "+event.value);
 };
 
 SettingsCpufreqAssistant.prototype.helpButtonTapped = function(event)
@@ -745,31 +779,29 @@ SettingsCpufreqAssistant.prototype.saveButtonPressed = function(event)
 	
 	standardParams.push({name:"scaling_governor", value:this.governorModel.value});
 
-	for (var m in this.settingsModel)
-	{
-		if (this.settingsLocation[m] == "standard")
-		{
-			if ((m == "scaling_min_freq") &&
-				(parseFloat(this.settingsModel[m]) > parseFloat(dataHandler.currentLimits.max))) {
-				alert("newmin: "+this.settingsModel[m]+" greater than oldmax: "+dataHandler.currentLimits.max);
-				// Push the max frequency first to allow for the new min
-				standardParams.push({name:"scaling_max_freq", value:String(this.settingsModel["scaling_max_freq"])});
+	for (var m in this.settingsModel) {
+		if (this.settingsModified[m]) {
+			if (this.settingsLocation[m] == "standard") {
+				if ((m == "scaling_min_freq") &&
+					(parseFloat(this.settingsModel[m]) > parseFloat(dataHandler.currentLimits.max))) {
+					alert("newmin: "+this.settingsModel[m]+" greater than oldmax: "+dataHandler.currentLimits.max);
+					// Push the max frequency first to allow for the new min
+					standardParams.push({name:"scaling_max_freq", value:String(this.settingsModel["scaling_max_freq"])});
+				}
+				if ((m == "scaling_max_freq") &&
+					(parseFloat(this.settingsModel[m]) < parseFloat(dataHandler.currentLimits.min))) {
+					alert("newmmax: "+this.settingsModel[m]+" less than oldmin: "+dataHandler.currentLimits.min);
+					// Push the min frequency first to allow for the new max
+					standardParams.push({name:"scaling_min_freq", value:String(this.settingsModel["scaling_min_freq"])});
+				}
+				standardParams.push({name:m, value:String(this.settingsModel[m])});
 			}
-			if ((m == "scaling_max_freq") &&
-				(parseFloat(this.settingsModel[m]) < parseFloat(dataHandler.currentLimits.min))) {
-				alert("newmmax: "+this.settingsModel[m]+" less than oldmin: "+dataHandler.currentLimits.min);
-				// Push the min frequency first to allow for the new max
-				standardParams.push({name:"scaling_min_freq", value:String(this.settingsModel["scaling_min_freq"])});
+			else if (this.settingsLocation[m] == "specific") {
+				specificParams.push({name:m, value:String(this.settingsModel[m])});
 			}
-			standardParams.push({name:m, value:String(this.settingsModel[m])});
-		}
-		else if (this.settingsLocation[m] == "specific")
-		{
-			specificParams.push({name:m, value:String(this.settingsModel[m])});
-		}
-		else if (this.settingsLocation[m] == "override")
-		{
-			overrideParams.push({name:m, value:String(this.settingsModel[m])});
+			else if (this.settingsLocation[m] == "override") {
+				overrideParams.push({name:m, value:String(this.settingsModel[m])});
+			}
 		}
 	}
 	

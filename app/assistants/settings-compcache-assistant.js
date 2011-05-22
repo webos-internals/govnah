@@ -15,7 +15,6 @@ function SettingsCompcacheAssistant()
 	
 	this.settingsModel = {};
 	this.settingsLocation = {};
-	this.settingsModified = {};
 
 	this.memoryChoices = [];
 	this.memoryChoices.push({label:  "8MB", value:  8*1024});
@@ -96,7 +95,6 @@ SettingsCompcacheAssistant.prototype.reloadSettings = function()
 {
 	this.settingsModel = {};
 	this.settingsLocation = {};
-	this.settingsModified = {};
 	
 	if (this.getRequest) this.getRequest.cancel();
 	this.getRequest = service.get_compcache_config(this.onGetParamsCompcache);

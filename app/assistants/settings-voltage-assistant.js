@@ -117,6 +117,8 @@ SettingsVoltageAssistant.prototype.handleCommand = function(event)
 SettingsVoltageAssistant.prototype.cleanup = function(event)
 {
 	this.parent.settingsModel[this.param.name] = this.getNewString();
+	this.parent.settingsModified[this.param.name] = true;
+	//alert(this.param.name+" changed to "+this.parent.settingsModel[this.param.name]);
 };
 
 
