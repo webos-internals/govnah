@@ -19,6 +19,8 @@ function SettingsVoltageAssistant(param, parent)
 		]
 	};
 	
+	this.voltageModified = false;
+
 };
 
 SettingsVoltageAssistant.prototype.setup = function()
@@ -82,6 +84,7 @@ SettingsVoltageAssistant.prototype.setup = function()
 
 SettingsVoltageAssistant.prototype.freqVoltChanged = function(event, num)
 {
+	this.voltageModified = true;
 	//alert(this.getNewString());
 };
 
@@ -117,7 +120,7 @@ SettingsVoltageAssistant.prototype.handleCommand = function(event)
 SettingsVoltageAssistant.prototype.cleanup = function(event)
 {
 	this.parent.settingsModel[this.param.name] = this.getNewString();
-	this.parent.settingsModified[this.param.name] = true;
+	this.parent.settingsModified[this.param.name] = this.voltageModified;
 	//alert(this.param.name+" changed to "+this.parent.settingsModel[this.param.name]);
 };
 

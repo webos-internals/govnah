@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.8.1',log: [ 'Only set new voltages if the user actually changes them' ] },
 	 { version: '0.8.0',log: [ 'On settings save, only set those parameters that have been modified by the user' ] },
 	 { version: '0.7.30',log: [ 'Updated the units for charger and vdemand polling rates' ] },
 	 { version: '0.7.29',log: [ 'Small fix in profile for the Pre 2 F104A experimental kernel' ] },
