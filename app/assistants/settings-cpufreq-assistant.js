@@ -21,6 +21,7 @@ function SettingsCpufreqAssistant()
 	
 	this.settingsModel = {};
 	this.settingsLocation = {};
+	this.settingsModified = {};
 	
 	this.scalingFrequencyChoices = dataHandler.scalingFrequencyChoices;
 	
@@ -199,6 +200,7 @@ SettingsCpufreqAssistant.prototype.reloadSettings = function()
 {
 	this.settingsModel = {};
 	this.settingsLocation = {};
+	this.settingsModified = {};
 	
 	if (this.getRequest) this.getRequest.cancel();
 	this.getRequest  = service.get_cpufreq_params(this.onGetParamsStandard);
