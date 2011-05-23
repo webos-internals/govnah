@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 18
+ * 	Highest Version: 19
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -96,7 +96,7 @@ var screenstate2_500_800 = {
 {name:	'scaling_min_freq',	value:	'500000'},
 {name:	'scaling_max_freq',	value:  '800000'},
 					   ],
-	kernels: [ "F102B" ]
+	kernels: [ "F102A", "F102B" ]
 };
 
 var screenstate2_500_1100 = {
@@ -112,12 +112,12 @@ var screenstate2_500_1100 = {
 };
 
 var vdemand_1005 = {
-	version:	12,
+	version:	19,
 	name:		'VDemand 1005',
 	locked:		false,
 	governor:	'vdemand',
 	settingsStandard: [
-{name:	'scaling_min_freq',	value: '1005000'},
+{name:	'scaling_min_freq',	value:  '500000'},
 {name:	'scaling_max_freq',	value: '1005000'},
 					   ],
 	kernels: [ "AV8B" ]
@@ -243,7 +243,7 @@ var screenstate_500_800 = {
 {name:	'scaling_min_freq',	value:	'500000'},
 {name:	'scaling_max_freq',	value:	'800000'}
 					   ],
-		kernels: [ "UberKernel", "F102A" ]
+		kernels: [ "UberKernel" ]
 };
 
 var screenstate_500_1000 = {
