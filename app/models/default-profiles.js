@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 17
+ * 	Highest Version: 18
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -270,11 +270,11 @@ var screenstate_500_1050 = {
 	kernels: [ "UberKernel" ]
 };
 
-var screenstate_300_1200 = {
-	version:	14,
-	name:		'Screenstate 300/1200',
+var screenstate2_300_1200 = {
+	version:	18,
+	name:		'Screenstate2 300/1200',
 	locked:		false,
-	governor:	'screenstate',
+	governor:	'screenstate-v2',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'300000'},
 {name:	'scaling_max_freq',	value: '1200000'},
@@ -442,7 +442,7 @@ profilesModel.populateDefaults = function()
 
 		profilesModel.defaultProfiles.push(ondemandtcl_1400);
 		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre2);
-		profilesModel.defaultProfiles.push(screenstate_300_1200);
+		profilesModel.defaultProfiles.push(screenstate2_300_1200);
 		profilesModel.defaultProfiles.push(screenstate3_300_1100);
 		profilesModel.defaultProfiles.push(f104a_default_pre2);
 
