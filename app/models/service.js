@@ -261,6 +261,16 @@ service.get_battery_current = function(callback)
 	});
 	return request;
 };
+service.get_a6_current = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_a6_current',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 service.get_io_scheduler = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
