@@ -20,7 +20,7 @@ helpData.lookup =
 	'governor':
 	{
 		title: $L('Governor'),
-		data: $L('A governor is what controls the operating frequency of the kernel in real time. Different governors have different parameters, and each governor is unique in the way that it operates. The governors available depend upon the installed kernel. The standard set of governors available when the UberKernel is installed are:<ul><li><b>ondemand</b> - Increases clock speed in response to increases in CPU load.</li><li><b>conservative</b> - Similar to the ondemand governor. It differs in behaviour in that it gracefully increases and decreases the CPU speed rather than jumping to max speed the moment there is any load on the CPU.</li><li><b>userspace</b> - Sets the CPU speed to a defined rate as chosen by LunaSysMgr.</li><li><b>powersave</b> - Sets the CPU speed to the min frequency value.</li><li><b>performance</b> - Sets the CPU speed to the max frequency value.</li><li><b>screenstate</b> - Runs at a higher speed when the screen is on and a lower speed when the screen is off.</li><li><b>screenstate-v2</b> - Similar to the original screenstate, but includes vdemand, which decreases and increases voltage in response to CPU load.</li><li><b>screenstate-v3</b> - Similar to screenstate-v2, but includes ondemand while screen is on.</li><li><b>vdemand</b> - Sets CPU to max frequency with added voltage scaling in response to CPU load.</li></ul>Note: Not all governors are available for all kernels. Some kernels are designed to use a specific governor.')
+		data: $L('A governor is what controls the operating frequency of the kernel in real time. Different governors have different parameters, and each governor is unique in the way that it operates. The governors available depend upon the installed kernel. The standard set of governors available when the UberKernel is installed are:<ul><li><b>ondemand</b> - Increases clock speed in response to increases in CPU load.</li><li><b>conservative</b> - Similar to the ondemand governor. It differs in behaviour in that it gracefully increases and decreases the CPU speed rather than jumping to max speed the moment there is any load on the CPU.</li><li><b>userspace</b> - Sets the CPU speed to a defined rate as chosen by LunaSysMgr.</li><li><b>powersave</b> - Sets the CPU speed to the min frequency value.</li><li><b>performance</b> - Sets the CPU speed to the max frequency value.</li><li><b>screenstate</b> - Runs at a higher speed when the screen is on and a lower speed when the screen is off.</li><li><b>screenstate-v2</b> - Similar to the original screenstate, but includes vdemand, which decreases and increases voltage in response to CPU load. Voltage scaling is done by a factor method; Low - High, in respective to CPU load. </li><li><b>screenstate-v3</b> - Similar to screenstate-v2, but includes ondemand frequency scaling while screen is on. Screenstate-v3 also performs more agressive voltage scaling. The ondemand feature is tuned for interactive response, not ramp-up like original ondemand governor. No voltage scaling is performed when screen is on and ondemand is enabled, it will voltage scale when screen is off only. When ondemand is disabled, full voltage scaling is performed all the time.</li><li><b>vdemand</b> - Sets CPU to max frequency per policy, with added voltage scaling in response to CPU load. No frequency scaling is performed. The minimum frequency parameter is ignored. Voltage scaling parameters are statically set to user preference to suit the characteristics of their phone.</li></ul>Note: Not all governors are available for all kernels. Some kernels are designed to use a specific governor.')
 	},
 	
 	'scheduler':
@@ -118,25 +118,25 @@ helpData.lookup =
 	'compcache_memlimit':
 	{
 		title: $L('Compcache Memlimit'),
-		data: $L('This value is how much of your physical memory that you would like to use for compressed memory. Thus a higher compcache_memlimit will give you the ability to open more cards. However, due to the slow access of the compressed memory you could miss things like phone calls if the compcache_memlimit is set too high as the device can not open the phone app quick enough to catch the call.')
+		data: $L('This value is how much of your physical memory that you would like to use for compressed memory. Thus a higher compcache_memlimit will give you the ability to open more cards. However, due to the slow access of the compressed memory you could miss things like phone calls if the compcache_memlimit is set too high as the device can not open the phone app quick enough to catch the call. The value of this parameter is dependent on device platform. Do not set this value high if you do not have enough free available real RAM.')
 	},
 	
 	'vdd1_vsel':
 	{
 		title: $L('CPU Voltages'),
-		data: $L('These values represent the various voltage levels for each CPU frequency supported by the kernel.')
+		data: $L('These values represent the various voltage levels for each CPU frequency supported by the kernel. Setting this too low can result in a RSOD.')
 	},
 	
 	'vdd2_vsel':
 	{
 		title: $L('System Voltages'),
-		data: $L('These values represent the various voltage levels for each System frequency supported by the kernel.')
+		data: $L('These values represent the various voltage levels for each System frequency supported by the kernel.  Setting this too low can result in a RSOD or random Luna restarts.')
 	},
 	
 	'cpu_hightemp_reset':
 	{
 		title: $L('Temp Reset'),
-		data: $L('When the CPU cools down to this temperature the CPU frequency will go back the max frequency that the user has set.')
+		data: $L('When the CPU cools down to this temperature the CPU frequency will go back the max frequency that the user has set in their profile policy.')
 	},
 	
 	'cpu_hightemp_alarm':
@@ -148,13 +148,13 @@ helpData.lookup =
 	'battery_scaleback_percent':
 	{
 		title: $L('Battery Low Threshold'),
-		data: $L('This value represents how low the battery can go before the kernel will lower the CPU speed to conserve battery power. By default this value is set to 25%. Once this threshold is crossed the kernel will lower the CPU frequency.')
+		data: $L('This value represents how low the battery can go before the kernel will lower the CPU speed to conserve battery power. By default this value is set to 20%. Once this threshold is crossed the kernel will lower the CPU frequency.')
 	},
 	
 	'battery_scaleback_speed':
 	{
 		title: $L('Battery Low Speed'),
-		data: $L('This setting is the frequency that the device will be lowered to once the Battery Low Threshold has been crossed. For example: by default if the the battery reaches 25% charge the CPU speed will be decreased to 500MHz to conserve battery power.')
+		data: $L('This setting is the frequency that the device will be lowered to once the Battery Low Threshold has been crossed. For example: by default if the the battery reaches 20% charge the CPU speed will be decreased to 500MHz to conserve battery power. The scale back speed is dependent on platform.')
 	},
 	
 	'override_charger':
@@ -166,19 +166,19 @@ helpData.lookup =
 	'vdemand_enable':
 	{
 		title: $L('Enable vDemand'),
-		data: $L('Enable or disable vDemand CPU voltage scaling.')
+		data: $L('Enable or disable vDemand CPU voltage scaling. Enabling this can save battery. This option is only available in Screenstate governors.')
 	},
 
 	'vdemand_poll_rate':
 	{
 		title: $L('vDemand Polling Rate'),
-		data: $L('This setting controls how fast the kernel will poll for operating parameters, in milliseconds.  The lower the number the faster the polling.')
+		data: $L('This setting controls how fast the kernel will poll for operating parameters, in milliseconds.  The lower the number the faster the polling. Setting this too low can result in needless CPU cycles wasted.')
 	},
 
 	'vdemand_factor':
 	{
 		title: $L('vDemand Scaling Factor'),
-		data: $L('This setting controls the level of voltage scaling the kernel will perform on the CPU in response to CPU load.  A setting of Low will do minimal voltage scaling, a setting of High will do more.  Only select OMG if you have a Terminator or Chuck Norris Pre.')
+		data: $L('This setting controls the level of voltage scaling the kernel will perform on the CPU in response to CPU load.  A setting of Low will do minimal voltage scaling, a setting of High will do more. Not all devices will perform the same with all factors. Only select OMG if you have a Terminator or Chuck Norris Pre.')
 	},
 
 	'charger_override':
@@ -190,12 +190,12 @@ helpData.lookup =
 	'charger_poll_rate':
 	{
 		title: $L('Charger Polling Rate'),
-		data: $L('This setting controls how fast the kernel will check for wether or not a charger is plugged in, in seconds.  The lower the number the faster the polling. This should not be set for a fast poll. The default is fine for most.')
+		data: $L('This setting controls how fast the kernel will check for wether or not a charger is plugged in, in seconds.  The lower the number the faster the polling. The default is fine for most.')
 	},
 
 	'ondemand_enable':
 	{
 		title: $L('Enable Ondemand'),
-		data: $L('Enable CPU frequency scaling in the Screenstate-v3 governor.')
+		data: $L('Enable or disable CPU frequency scaling in the Screenstate-v3 governor. This option also disables vdemand when screen is on, but resumes vdemand when screen is off.')
 	}
 };
