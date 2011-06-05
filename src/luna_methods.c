@@ -513,6 +513,13 @@ bool get_battery_current_method(LSHandle* lshandle, LSMessage *message, void *ct
 }
 
 //
+// Read current (amps)
+//
+bool get_a6_current_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return read_single_integer(lshandle, message, "/sys/class/misc/a6_0/regs/getcurrent");
+}
+
+//
 // Read scaling_cur_freq
 //
 bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -2046,6 +2053,7 @@ LSMethod luna_methods[] = {
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
   { "get_tmp105_temp",		get_tmp105_temp_method },
   { "get_battery_current",	get_battery_current_method },
+  { "get_a6_current",		get_a6_current_method },
 
   { "get_scaling_cur_freq",     get_scaling_cur_freq_method },
   { "get_scaling_governor",     get_scaling_governor_method },

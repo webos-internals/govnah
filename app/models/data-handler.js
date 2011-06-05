@@ -610,7 +610,12 @@ dataHandlerModel.prototype.timerFunction = function()
 	if (this.currentMode == "card" || this.currentMode == "dock")
 	{
 		this.freqReq  = service.get_scaling_cur_freq(this.freqHandler);
-		this.currReq  = service.get_battery_current(this.currHandler);
+		if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer") {
+			this.currReq  = service.get_a6_current(this.currHandler);
+		}
+		else {
+			this.currReq  = service.get_battery_current(this.currHandler);
+		}
 		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
 		this.memReq   = service.get_proc_meminfo(this.memHandler);
 		this.stateReq = service.get_time_in_state(this.stateHandler);

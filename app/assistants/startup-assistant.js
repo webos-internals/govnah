@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+	 { version: '0.8.4',log: [ 'Added battery current support for the Veer' ] },
 	 { version: '0.8.3',log: [ 'Small fix in profile for the Pre AV8B experimental kernel and the Pre F102A stable kernel' ] },
 	 { version: '0.8.2',log: [ 'Small fix in profile for the Pre 2 SR71 experimental kernel' ] },
 	 { version: '0.8.1',log: [ 'Only set new voltages if the user actually changes them' ] },
