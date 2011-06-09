@@ -610,7 +610,7 @@ dataHandlerModel.prototype.timerFunction = function()
 	if (this.currentMode == "card" || this.currentMode == "dock")
 	{
 		this.freqReq  = service.get_scaling_cur_freq(this.freqHandler);
-		if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer") {
+		if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 			this.currReq  = service.get_a6_current(this.currHandler);
 		}
 		else {
