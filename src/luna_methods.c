@@ -2059,6 +2059,7 @@ LSMethod luna_methods[] = {
   { "get_proc_loadavg",		get_proc_loadavg_method },
   { "get_omap34xx_temp",	get_omap34xx_temp_method },
   { "get_tmp105_temp",		get_tmp105_temp_method },
+  { "get_a6_temp",			get_a6_temp_method },
   { "get_battery_current",	get_battery_current_method },
   { "get_a6_current",		get_a6_current_method },
 
