@@ -11,7 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
- 	 { version: '0.8.10',log: [ 'Add battery temperature support for Veer and TouchPad' ] },
+ 	 { version: '0.8.11',log: [ 'Add battery temperature support for Veer and TouchPad' ] },
 	 { version: '0.8.8',log: [ 'Added battery current support for the TouchPad' ] },
 	 { version: '0.8.6',log: [ 'Added battery current support for the Veer' ] },
 	 { version: '0.8.5',log: [ 'Added more detail in the help for various settings' ] },

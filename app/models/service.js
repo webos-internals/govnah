@@ -74,6 +74,16 @@ service.get_tmp105_temp = function(callback)
 	});
 	return request;
 };
+service.get_a6_temp = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'get_a6_temp',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 service.get_scaling_cur_freq = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,
