@@ -603,8 +603,11 @@ dataHandlerModel.prototype.timerFunction = function()
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 		this.tempReq = service.get_tmp105_temp(this.tempHandler);
 	}
+	else if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pre") {
+		this.tempReq = service.get_omap34xx_temp(this.tempHandler);	    
+	}
 	else {
-		this.tempReq = service.get_omap34xx_temp(this.tempHandler);
+		this.tempReq = service.get_a6_temp(this.tempHandler);
 	}
 
 	if (this.currentMode == "card" || this.currentMode == "dock")

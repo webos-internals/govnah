@@ -444,6 +444,13 @@ bool get_tmp105_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 }
 
 //
+// Read a6_temp (Veer & TouchPad)
+//
+bool get_a6_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  return read_single_integer(lshandle, message, "/sys/class/misc/a6_0/regs/gettemp");
+}
+
+//
 // Read current (amps)
 //
 bool get_battery_current_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
