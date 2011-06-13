@@ -9,7 +9,11 @@ function SettingsCpufreqAssistant()
 			{
 				label: $L("Help"),
 				command: 'do-help'
-			}
+			}	,
+				{
+					label: $L("Back"),
+					command: 'do-back'
+				}
 		]
 	};
 	
@@ -866,6 +870,9 @@ SettingsCpufreqAssistant.prototype.handleCommand = function(event)
 		{
 			case 'do-help':
 				this.controller.stageController.pushScene('help');
+				break;
+			case 'do-back':
+				this.controller.stageController.popScene();
 				break;
 		}
 	}

@@ -9,7 +9,11 @@ function GraphAssistant(display)
 			{
 				label: $L("Help"),
 				command: 'do-help'
-			}
+			}	,
+				{
+					label: $L("Back"),
+					command: 'do-back'
+				}
 		]
 	};
 	
@@ -153,6 +157,9 @@ GraphAssistant.prototype.handleCommand = function(event)
 		{
 			case 'do-help':
 				this.controller.stageController.pushScene('help');
+				break;
+			case 'do-back':
+				this.controller.stageController.popScene();
 				break;
 		}
 	}

@@ -13,5 +13,6 @@
 	"removable": "true",
 	"noWindow": true,
 	"noDeprecatedStyles": true,
-	"dockMode": true
+	"dockMode": true,
+	"uiRevision":"2"
 }
