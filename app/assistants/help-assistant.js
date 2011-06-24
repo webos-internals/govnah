@@ -40,11 +40,6 @@ HelpAssistant.prototype.setup = function()
 		Class: 'img_email',
 		type: 'supportEmail'
 	});
-	this.supportModel.items.push({
-		text: $L('Back'),
-		Class: 'img_back',
-		type: 'back'
-	})
 	
 	this.controller.setupWidget
 	(
@@ -97,9 +92,7 @@ HelpAssistant.prototype.listTapHandler = function(event)
 		case 'scene':
 			this.controller.stageController.pushScene(event.item.detail);
 			break;
-		case 'back':
-			this.controller.stageController.popScene();
-			break;
+			
 		case 'supportEmail':
 			this.generateEmail();
 			break;
