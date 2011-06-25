@@ -75,9 +75,14 @@ SettingsTcpcongAssistant.prototype.setup = function()
 	
 	this.controller.get('congestion-title').innerHTML = $L("TCP Congestion");
 	this.controller.get('congestion-control-title').innerHTML = $L("TCP Congestion Control");
+	this.backElement = this.controller.get('header');
+	this.backTapHandler = this.backTap.bindAsEventListener(this);
+	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
-
-
+SettingsTcpcongAssistant.prototype.backTap = function(event)
+{
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+};
 SettingsTcpcongAssistant.prototype.congestionChange = function(event)
 {
 	//alert('===========');

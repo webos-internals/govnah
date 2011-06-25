@@ -41,9 +41,14 @@ SettingsAssistant.prototype.setup = function()
 	this.controller.listen(this.listElement, Mojo.Event.listTap, this.rowTapHandler);
 	
 	this.controller.get('advanced-settings-title').innerHTML = $L("Advanced Settings");
+	this.backElement = this.controller.get('header');
+	this.backTapHandler = this.backTap.bindAsEventListener(this);
+	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
-
-
+SettingsAssistant.prototype.backTap = function(event)
+{
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+};
 SettingsAssistant.prototype.rowTap = function(event)
 {
 	if (event.item.scene)

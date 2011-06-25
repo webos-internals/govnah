@@ -59,9 +59,14 @@ GraphAssistant.prototype.setup = function()
 	this.invisible = this.invisible.bindAsEventListener(this);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
-	
+	this.backElement = this.controller.get('header');
+	this.backTapHandler = this.backTap.bindAsEventListener(this);
+	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
-
+GraphAssistant.prototype.backTap = function(event)
+{
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+};
 GraphAssistant.prototype.gestureStartHandler = function(event)
 {
 };

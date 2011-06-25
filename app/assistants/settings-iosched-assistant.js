@@ -74,8 +74,14 @@ SettingsIoschedAssistant.prototype.setup = function()
 	
 	this.controller.get('io-scheduler-title').innerHTML = $L("I/O Scheduler");
 	this.controller.get('scheduler-selection-title').innerHTML = $L("Scheduler Selection");
+	this.backElement = this.controller.get('header');
+	this.backTapHandler = this.backTap.bindAsEventListener(this);
+	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
-
+SettingsIoAssistant.prototype.backTap = function(event)
+{
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+};
 
 SettingsIoschedAssistant.prototype.schedulerChange = function(event)
 {

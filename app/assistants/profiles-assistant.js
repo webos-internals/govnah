@@ -62,6 +62,9 @@ ProfilesAssistant.prototype.setup = function()
 		this.controller.listen(this.profileListElement, Mojo.Event.listReorder,	this.listReorderHandler);
 		
 		this.controller.listen(this.advancedRow, Mojo.Event.tap, this.advancedTapHandler);
+		this.backElement = this.controller.get('profiles-scene-profiles');
+		this.backTapHandler = this.backTap.bindAsEventListener(this);
+		this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 		
 	} 
 	catch (e) 
@@ -69,7 +72,10 @@ ProfilesAssistant.prototype.setup = function()
 		Mojo.Log.logException(e, 'profiles#setup');
 	}
 }
-
+ProfilesAssistant.prototype.backTap = function(event)
+{
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+};
 ProfilesAssistant.prototype.activate = function(event)
 {
     profiles.controller = this.controller;

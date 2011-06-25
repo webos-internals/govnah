@@ -194,15 +194,22 @@ PreferencesAssistant.prototype.setup = function()
 		this.controller.get('settings-title').innerHTML = $L("Settings");
 		this.controller.get('preferences-scene-manual-entry').innerHTML = $L("Manual Entry");
 		this.controller.get('note-for-experienced-users').innerHTML = $L("* For Experienced Users Only.");
+		this.backElement = this.controller.get('header');
+		this.backTapHandler = this.backTap.bindAsEventListener(this);
+		this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 		
 	}
 	catch (e)
 	{
 		Mojo.Log.logException(e, 'preferences#setup');
 	}
+	
 
 };
-
+PreferencesAssistant.prototype.backTap = function(event)
+{
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+};
 PreferencesAssistant.prototype.listChanged = function(event)
 {
 	this.cookie.put(this.prefs);

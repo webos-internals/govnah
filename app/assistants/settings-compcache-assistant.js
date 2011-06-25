@@ -76,8 +76,14 @@ SettingsCompcacheAssistant.prototype.setup = function()
 	
 	this.controller.get('compressed-swap-title').innerHTML = $L("Compressed Swap");
 	this.controller.get('compcache-configuration-title').innerHTML = $L("Compcache Configuration");
+	this.backElement = this.controller.get('header');
+	this.backTapHandler = this.backTap.bindAsEventListener(this);
+	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
-
+SettingsCompcacheAssistant.prototype.backTap = function(event)
+{
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+};
 
 SettingsCompcacheAssistant.prototype.onSetParams = function(payload)
 {

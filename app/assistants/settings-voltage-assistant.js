@@ -79,9 +79,14 @@ SettingsVoltageAssistant.prototype.setup = function()
 		
 		this.controller.listen('volt_'+num, Mojo.Event.propertyChange, this.freqVoltChanged.bindAsEventListener(this, num));
 	}
-	
+	this.backElement = this.controller.get('header');
+	this.backTapHandler = this.backTap.bindAsEventListener(this);
+	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
-
+SettingsVoltageAssistant.prototype.backTap = function(event)
+{
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+};
 SettingsVoltageAssistant.prototype.freqVoltChanged = function(event, num)
 {
 	this.voltageModified = true;
