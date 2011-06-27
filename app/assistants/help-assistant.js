@@ -53,14 +53,14 @@ HelpAssistant.prototype.setup = function()
 	);
 	
 	this.controller.listen('supportList', Mojo.Event.listTap, this.listTapHandler.bindAsEventListener(this));
-	this.backElement = this.controller.get('header');
+	this.backElement = this.controller.get('icon');
 	this.backTapHandler = this.backTap.bindAsEventListener(this);
 	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 	
 };
 HelpAssistant.prototype.backTap = function(event)
 {
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+	this.controller.stageController.popScene();
 };
 HelpAssistant.prototype.listTapHandler = function(event)
 {
@@ -212,6 +212,7 @@ HelpAssistant.prototype.activate = function(event)
 HelpAssistant.prototype.deactivate = function(event) {};
 HelpAssistant.prototype.cleanup = function(event)
 {
+	this.controller.stopListening(this.backElement,  Mojo.Event.tap, this.backTapHandler);
 	this.controller.stopListening('supportList', Mojo.Event.listTap, this.listTapHandler.bindAsEventListener(this));
 };
 

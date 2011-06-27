@@ -145,6 +145,12 @@ helpData.lookup =
 		data: $L('When the CPU reaches this temperature the CPU speed will be clamped to 500MHz until the CPU cools down to a user configurable lower temperature.')
 	},
 	
+	'cpu_hightemp_scaleback_speed':
+	{
+		title: $L('Temp Scaleback Speed'),
+		data: $L('This setting is the frequency the device will be lowered to once the CPU High Temp Alarm has been crossed. For example: by default if the the CPU temp reaches 50C, the CPU speed will be decreased to the default factory stock speed of the device. The scale back speed is dependent on platform.')
+	},
+	
 	'battery_scaleback_percent':
 	{
 		title: $L('Battery Low Threshold'),

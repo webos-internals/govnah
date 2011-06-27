@@ -65,7 +65,7 @@ GraphAssistant.prototype.setup = function()
 };
 GraphAssistant.prototype.backTap = function(event)
 {
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+	this.controller.stageController.popScene();
 };
 GraphAssistant.prototype.gestureStartHandler = function(event)
 {

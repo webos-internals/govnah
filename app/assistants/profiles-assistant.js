@@ -74,7 +74,7 @@ ProfilesAssistant.prototype.setup = function()
 }
 ProfilesAssistant.prototype.backTap = function(event)
 {
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+    this.controller.stageController.popScene();
 };
 ProfilesAssistant.prototype.activate = function(event)
 {
@@ -153,6 +153,7 @@ ProfilesAssistant.prototype.deactivate = function(event)
 }
 ProfilesAssistant.prototype.cleanup = function(event)
 {
+	this.controller.stopListening(this.backElement,  Mojo.Event.tap, this.backTapHandler);
 	this.controller.stopListening(this.profileListElement, Mojo.Event.listTap, this.listTapHandler);
 	this.controller.stopListening(this.profileListElement, Mojo.Event.listDelete, this.listDeleteHandler);
 }

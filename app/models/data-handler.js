@@ -23,6 +23,7 @@ function dataHandlerModel()
 		'vdd2_vsel':					{ type: 'sceneVoltsSysFreq',nice: $L("System Voltage")	},
 		'cpu_hightemp_reset':			{ type: 'listTemp',			nice: $L("temp reset")		},
 		'cpu_hightemp_alarm':			{ type: 'listTemp',			nice: $L("temp limit")		},
+		'cpu_hightemp_scaleback_speed':	{ type: 'listFreq',			nice: $L('temp scaleback')	},
 		'battery_scaleback_percent':	{ type: 'listPcnt', 		nice: $L("batt low thresh")	},
 		'battery_scaleback_speed':		{ type: 'listFreq',			nice: $L("batt low speed")	},
 		'override_charger':				{ type: 'toggleTF'			},

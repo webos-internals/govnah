@@ -11,6 +11,8 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '0.9.0',log: [ 'Added support for the TouchPad, using the full screen area',
+							   'Added CPU high temperature scaleback speed support' ] },
  	 { version: '0.8.12',log: [ 'Add battery temperature support for Veer and TouchPad' ] },
 	 { version: '0.8.8',log: [ 'Added battery current support for the TouchPad' ] },
 	 { version: '0.8.6',log: [ 'Added battery current support for the Veer' ] },
@@ -154,10 +156,15 @@ StartupAssistant.prototype.setup = function()
     this.titleContainer = this.controller.get('title');
     this.dataContainer =  this.controller.get('data');
 	
+	this.backElement = this.controller.get('header');
+	
     // set title
 	if (this.justChangelog)
 	{
 		this.titleContainer.innerHTML = $L('Changelog');
+		// setup back tap
+		this.backTapHandler = this.backTap.bindAsEventListener(this);
+		this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 	}
 	else
 	{
@@ -229,14 +236,23 @@ StartupAssistant.prototype.setup = function()
 
 StartupAssistant.prototype.activate = function(event)
 {
-    // start continue button timer
-    this.timer = this.controller.window.setTimeout(this.showContinue.bind(this), 5 * 1000);
+	if (!this.justChangelog) {
+		// start continue button timer
+		this.timer = this.controller.window.setTimeout(this.showContinue.bind(this), 5 * 1000);
+	}
 };
 
 StartupAssistant.prototype.showContinue = function()
 {
     // show the command menu
     this.controller.setMenuVisible(Mojo.Menu.commandMenu, true);
+};
+
+StartupAssistant.prototype.backTap = function(event)
+{
+    if (this.justChangelog) {
+		this.controller.stageController.popScene();
+    }
 };
 
 StartupAssistant.prototype.handleCommand = function(event)

@@ -194,7 +194,7 @@ PreferencesAssistant.prototype.setup = function()
 		this.controller.get('settings-title').innerHTML = $L("Settings");
 		this.controller.get('preferences-scene-manual-entry').innerHTML = $L("Manual Entry");
 		this.controller.get('note-for-experienced-users').innerHTML = $L("* For Experienced Users Only.");
-		this.backElement = this.controller.get('header');
+		this.backElement = this.controller.get('icon');
 		this.backTapHandler = this.backTap.bindAsEventListener(this);
 		this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 		
@@ -208,7 +208,7 @@ PreferencesAssistant.prototype.setup = function()
 };
 PreferencesAssistant.prototype.backTap = function(event)
 {
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+	this.controller.stageController.popScene();
 };
 PreferencesAssistant.prototype.listChanged = function(event)
 {
@@ -283,7 +283,9 @@ PreferencesAssistant.prototype.deactivate = function(event)
 	var tmp = prefs.get(true);
 };
 
-PreferencesAssistant.prototype.cleanup = function(event) {};
+PreferencesAssistant.prototype.cleanup = function(event) {
+	this.controller.stopListening(this.backElement,  Mojo.Event.tap, this.backTapHandler);
+};
 
 // Local Variables:
 // tab-width: 4

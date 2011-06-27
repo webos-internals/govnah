@@ -71,13 +71,13 @@ ProfileSaveAssistant.prototype.setup = function()
 	
 	this.controller.get('save-as-title').innerHTML = $L("Save As New Profile");
 	this.controller.get('profile-name-title').innerHTML = $L("Profile Name");
-	this.backElement = this.controller.get('header');
+	this.backElement = this.controller.get('icon');
 	this.backTapHandler = this.backTap.bindAsEventListener(this);
 	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
 ProfileSaveAssistant.prototype.backTap = function(event)
 {
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+	this.controller.stageController.popScene();
 };
 ProfileSaveAssistant.prototype.reloadSettings = function()
 {
@@ -224,7 +224,7 @@ ProfileSaveAssistant.prototype.handleCommand = function(event)
 
 ProfileSaveAssistant.prototype.cleanup = function(event)
 {
-	
+	this.controller.stopListening(this.backElement,  Mojo.Event.tap, this.backTapHandler);
 };
 
 

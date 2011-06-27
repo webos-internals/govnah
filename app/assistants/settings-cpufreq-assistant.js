@@ -170,13 +170,13 @@ SettingsCpufreqAssistant.prototype.setup = function()
 	this.controller.get('frequency-selection-title').innerHTML = $L("Frequency Selection");
 	this.controller.get('governor-parameters-title').innerHTML = $L("Governor Parameters");
 	this.controller.get('override-parameters-title').innerHTML = $L("Override Parameters");
-	this.backElement = this.controller.get('header');
+	this.backElement = this.controller.get('icon');
 	this.backTapHandler = this.backTap.bindAsEventListener(this);
 	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
 SettingsCpufreqAssistant.prototype.backTap = function(event)
 {
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') this.controller.stageController.popScene();
+	this.controller.stageController.popScene();
 };
 SettingsCpufreqAssistant.prototype.governorChange = function(event)
 {
@@ -886,7 +886,7 @@ SettingsCpufreqAssistant.prototype.onlyNumbers = function (charCode)
 
 SettingsCpufreqAssistant.prototype.cleanup = function(event)
 {
-	
+	this.controller.stopListening(this.backElement,  Mojo.Event.tap, this.backTapHandler);
 };
 
 
