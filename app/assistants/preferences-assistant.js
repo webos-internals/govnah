@@ -216,7 +216,15 @@ PreferencesAssistant.prototype.listChanged = function(event)
 };
 PreferencesAssistant.prototype.themeChanged = function(event)
 {
-	this.controller.document.body.className = event.value;
+	// set the theme right away with the body class
+	var deviceTheme = '';
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'Pixi' ||
+		Mojo.Environment.DeviceInfo.modelNameAscii == 'Veer')
+		deviceTheme += ' small-device';
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad' ||
+		Mojo.Environment.DeviceInfo.modelNameAscii == 'Emulator')
+		deviceTheme += ' no-gesture';
+	this.controller.document.body.className = event.value + deviceTheme;
 	this.cookie.put(this.prefs);
 };
 PreferencesAssistant.prototype.pollSpeedChanged = function(event)

@@ -26,7 +26,9 @@ HelpDataAssistant.prototype.activate = function(event)
 {
 	if (this.controller.stageController.setWindowOrientation)
 	{
-    	this.controller.stageController.setWindowOrientation("up");
+		if (Mojo.Environment.DeviceInfo.modelNameAscii != 'TouchPad' &&
+			Mojo.Environment.DeviceInfo.modelNameAscii != 'Emulator')
+			this.controller.stageController.setWindowOrientation("up");
 	}
 };
 HelpDataAssistant.prototype.deactivate = function(event) {};

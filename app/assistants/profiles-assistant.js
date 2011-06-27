@@ -33,7 +33,7 @@ ProfilesAssistant.prototype.setup = function()
 {
 	try
 	{
-		this.controller.get('profiles-scene-profiles').innerHTML = $L("Profiles");
+		this.controller.get('title').innerHTML = $L("Profiles");
 		this.controller.get('profiles-scene-advanced-settings').innerHTML = $L("Advanced Settings");
 		
 		// set view
@@ -62,7 +62,12 @@ ProfilesAssistant.prototype.setup = function()
 		this.controller.listen(this.profileListElement, Mojo.Event.listReorder,	this.listReorderHandler);
 		
 		this.controller.listen(this.advancedRow, Mojo.Event.tap, this.advancedTapHandler);
-		this.backElement = this.controller.get('profiles-scene-profiles');
+
+		if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad' ||
+		    Mojo.Environment.DeviceInfo.modelNameAscii == 'Emulator')
+		    this.backElement = this.controller.get('back');
+		else
+		    this.backElement = this.controller.get('header');
 		this.backTapHandler = this.backTap.bindAsEventListener(this);
 		this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 		

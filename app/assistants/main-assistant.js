@@ -43,9 +43,15 @@ function MainAssistant()
 
 MainAssistant.prototype.setup = function()
 {
-	
 	// set theme because this can be the first scene pushed
-	this.controller.document.body.className = prefs.get().theme;
+	var deviceTheme = '';
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'Pixi' ||
+		Mojo.Environment.DeviceInfo.modelNameAscii == 'Veer')
+		deviceTheme += ' small-device';
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad' ||
+		Mojo.Environment.DeviceInfo.modelNameAscii == 'Emulator')
+		deviceTheme += ' no-gesture';
+	this.controller.document.body.className = prefs.get().theme + deviceTheme;
 	
 	// get elements
 	this.iconElement =		this.controller.get('icon');
