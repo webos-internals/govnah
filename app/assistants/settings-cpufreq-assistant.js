@@ -35,6 +35,12 @@ function SettingsCpufreqAssistant()
 		this.samplingDownChoices.push({label:x, value:x});
 	}
 			
+	this.downDifferentialChoices = [];
+	for (var x = 1; x <= 30; x++)
+	{
+		this.downDifferentialChoices.push({label:x, value:x});
+	}
+			
 	this.percentChoices = [];
 	for (var x = 0; x <= 100; x = x + 5)
 	{
@@ -484,6 +490,24 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 									label: dataHandler.settingLabel(tmpParam.name),
 									modelProperty: tmpParam.name,
 									choices: this.samplingDownChoices
+								},
+								this.settingsModel
+							);
+							this.controller.listen(tmpParam.name, Mojo.Event.propertyChange,
+												   this.modifiedSetting.bindAsEventListener(this));
+							break;
+						case 'listDownDiff':
+							this.forms[location].insert({bottom: Mojo.View.render({object: {id: tmpParam.name}, template: 'settings/listselect-widget'})});
+							newCount++;
+							this.settingsModel[tmpParam.name] = tmpParam.value;
+							this.settingsLocation[tmpParam.name] = location;
+							this.controller.setupWidget
+							(
+								tmpParam.name,
+								{
+									label: dataHandler.settingLabel(tmpParam.name),
+									modelProperty: tmpParam.name,
+									choices: this.downDifferentialChoices
 								},
 								this.settingsModel
 							);

@@ -10,6 +10,7 @@ function dataHandlerModel()
 		'scaling_setspeed':				{ type: 'listFreq',			nice: $L("setspeed")		},
 		'up_threshold':					{ type: 'listPcnt'			},
 		'down_threshold':				{ type: 'listPcnt'			},
+		'down_differential':			{ type: 'listDownDiff'		},
 		'freq_step':					{ type: 'listPcnt'			},
 		'sampling_rate':				{ type: 'listSamp'			},
 		'sampling_down_factor':			{ type: 'listSampDown'		},
@@ -388,7 +389,10 @@ dataHandlerModel.prototype.getParamsHandler = function(payload, num)
 					if (tmpParam.name == 'scaling_max_freq') {
 						this.currentLimits.max = trim(tmpParam.value);
 					}
-					this.settingsStandard.push({name:tmpParam.name, value:String(tmpParam.value)});
+					if ((tmpParam.name != 'scaling_setspeed') ||
+						(tmpParam.value != '<unsupported>')) {
+						this.settingsStandard.push({name:tmpParam.name, value:String(tmpParam.value)});
+					}
 				}
 				else if (num == 2)
 				{

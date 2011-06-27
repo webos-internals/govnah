@@ -14,7 +14,7 @@
  * 
  ********
  * 
- * 	Highest Version: 19
+ * 	Highest Version: 20
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -70,6 +70,27 @@ var palm_default_pre2 = {
 {name:	'powersave_bias',		value:	'0'},
 {name:	'max_tickle_window',	value:	'3000'},
 {name:	'max_floor_window',		value:	'3000'}
+					   ],
+	kernels: [ "Palm", "UberKernel" ]
+};
+
+var palm_default_touchpad = {
+	version:	20,
+	name:		'Palm Default',
+	locked:		true,			// don't lock any other profiles but this one
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'192000'},
+{name:	'scaling_max_freq',	value:	'1188000'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'},
+{name:	'down_differential',	value:	'3'}
 					   ],
 	kernels: [ "Palm", "UberKernel" ]
 };
@@ -447,6 +468,13 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(f104a_default_pre2);
 
 		profilesModel.defaultProfiles.push(palm_default_pre2);
+
+		break;
+	};
+
+	case "TouchPad": {
+
+		profilesModel.defaultProfiles.push(palm_default_touchpad);
 
 		break;
 	};

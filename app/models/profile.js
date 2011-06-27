@@ -35,7 +35,6 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 		{
 			if (this.profiles[p]) 
 			{
-				//alert(this.profiles[p].governor);
 
 				// look for exact match
 				if (this.profiles[p].governor == governor &&
@@ -54,7 +53,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					
 					if (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length > 0)
 					{
-						alert("Checking settingsStandard");
+						//alert("Checking settingsStandard");
 
 						for (var s = 0; s < this.profiles[p].settingsStandard.length; s++)
 						{
@@ -67,7 +66,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsSpecific && this.profiles[p].settingsSpecific.length > 0)
 					{
-						alert("Checking settingsSpecific");
+						//alert("Checking settingsSpecific");
 
 						for (var s = 0; s < this.profiles[p].settingsSpecific.length; s++)
 						{
@@ -80,7 +79,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsOverride && this.profiles[p].settingsOverride.length > 0)
 					{
-						alert("Checking settingsOverride");
+						//alert("Checking settingsOverride");
 
 						for (var s = 0; s < this.profiles[p].settingsOverride.length; s++)
 						{
@@ -93,7 +92,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length > 0)
 					{
-						alert("Checking settingsCompcache");
+						//alert("Checking settingsCompcache");
 
 						for (var s = 0; s < this.profiles[p].settingsCompcache.length; s++)
 						{
@@ -136,7 +135,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					
 					if (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length > 0)
 					{
-						alert("Checking settingsStandard");
+						//alert("Checking settingsStandard");
 
 						for (var s = 0; s < this.profiles[p].settingsStandard.length; s++)
 						{
@@ -149,7 +148,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsSpecific && this.profiles[p].settingsSpecific.length > 0)
 					{
-						alert("Checking settingsSpecific");
+						//alert("Checking settingsSpecific");
 
 						for (var s = 0; s < this.profiles[p].settingsSpecific.length; s++)
 						{
@@ -162,7 +161,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsOverride && this.profiles[p].settingsOverride.length > 0)
 					{
-						alert("Checking settingsOverride");
+						//alert("Checking settingsOverride");
 
 						for (var s = 0; s < this.profiles[p].settingsOverride.length; s++)
 						{
@@ -175,7 +174,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length > 0)
 					{
-						alert("Checking settingsCompcache");
+						//alert("Checking settingsCompcache");
 
 						for (var s = 0; s < this.profiles[p].settingsCompcache.length; s++)
 						{
@@ -326,7 +325,8 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 						break;
 					}
 				}
-				else if (kernelstring == "(na@na)") {
+				else if ((kernelstring == "(na@na)") ||
+						 (kernelstring == "(reviewdaemon@buildoe-43)")) {
 					this.kernel = "Palm";
 					this.kernelVersion = false;
 				}
@@ -721,6 +721,9 @@ profileModel.prototype.getDataSettingString = function(name, value)
 				return [dataHandler.settingLabel(name), display];
 				break;
 			case 'listSampDown':
+				return [dataHandler.settingLabel(name), value];
+				break;
+			case 'listDownDiff':
 				return [dataHandler.settingLabel(name), value];
 				break;
 			case 'listMem':
