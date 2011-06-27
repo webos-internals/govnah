@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '0.9.2',log: [ 'Added back buttons for devices without a gesture area' ] },
  	 { version: '0.9.1',log: [ 'Added the Palm Default profile for the TouchPad' ] },
  	 { version: '0.9.0',log: [ 'Added support for the TouchPad, using the full screen area',
 							   'Added CPU high temperature scaleback speed support' ] },
