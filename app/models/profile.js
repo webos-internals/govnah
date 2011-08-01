@@ -311,6 +311,9 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 					case "psycho-f14":
 						this.kernel = "F14";
 						break;
+					case "psycho-f15c":
+						this.kernel = "F15C";
+						break;
 					case "psycho-sr71":
 						this.kernel = "SR71";
 						break;
@@ -325,8 +328,7 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 						break;
 					}
 				}
-				else if ((kernelstring == "(na@na)") ||
-						 (kernelstring == "(reviewdaemon@buildoe-43)")) {
+				else if ((kernelstring == "(na@na)") || (kernelstring.indexOf("reviewdaemon@") != -1)) {
 					this.kernel = "Palm";
 					this.kernelVersion = false;
 				}

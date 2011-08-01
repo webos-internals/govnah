@@ -634,6 +634,11 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 	}
       }
 	
+      // Special case for unsupported setspeed
+      if (!strcmp(ep->d_name, "scaling_setspeed") && !strcmp(line, "<unsupported>")) {
+	writeable = false;
+      }
+
       if (error) {
 	sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
 		errorText);

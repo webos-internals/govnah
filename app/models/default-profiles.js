@@ -206,6 +206,18 @@ var ondemandtcl_1400 = {
 	kernels: [ "F14" ]
 };
 
+var ondemandtcl_1512 = {
+	version:	12,
+	name:		'OnDemandTcl 1512',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_max_freq',	value: '1512000'},
+					   ],
+	kernels: [ "UberKernel", "F15C" ]
+};
+
 var screenstate3_300_1100 = {
 	version:	17,
 	name:		'Screenstate3 300/1100',
@@ -474,6 +486,7 @@ profilesModel.populateDefaults = function()
 
 	case "TouchPad": {
 
+		profilesModel.defaultProfiles.push(ondemandtcl_1512);
 		profilesModel.defaultProfiles.push(palm_default_touchpad);
 
 		break;

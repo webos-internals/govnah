@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '0.9.4',log: [ 'Added support for TouchPad overclocking' ] },
  	 { version: '0.9.3',log: [ 'Added the missing device stylesheet' ] },
  	 { version: '0.9.2',log: [ 'Added back buttons for devices without a gesture area' ] },
  	 { version: '0.9.1',log: [ 'Added the Palm Default profile for the TouchPad' ] },
