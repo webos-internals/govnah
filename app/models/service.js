@@ -305,6 +305,30 @@ service.set_io_scheduler = function(callback, value)
 	});
 	return request;
 };
+service.stick_io_scheduler = function(callback, value)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'stick_io_scheduler',
+		parameters:
+		{
+			value: value
+		},
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
+service.unstick_io_scheduler = function(callback)
+{
+	var request = new Mojo.Service.Request(service.identifier,
+	{
+		method: 'unstick_io_scheduler',
+		onSuccess: callback,
+		onFailure: callback
+	});
+	return request;
+};
 service.get_tcp_available_congestion_control = function(callback)
 {
 	var request = new Mojo.Service.Request(service.identifier,

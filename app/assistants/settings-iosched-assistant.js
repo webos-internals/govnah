@@ -15,7 +15,7 @@ function SettingsIoschedAssistant()
 	
 	this.schedulerModel = 
 	{
-		value: dataHandler.scheduler,
+		value: dataHandler.ioScheduler,
 		choices: []
 	};
 	

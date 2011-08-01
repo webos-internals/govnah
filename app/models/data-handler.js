@@ -55,7 +55,7 @@ function dataHandlerModel()
 	this.settingsSpecific = [];
 	this.settingsOverride = [];
 	this.settingsCompcache = [];
-	this.scheduler = false;
+	this.ioScheduler = false;
 	this.congestion = false;
 	
 	this.scalingFrequencyChoices = [];
@@ -303,7 +303,7 @@ dataHandlerModel.prototype.updateParams = function(num)
 			this.settingsSpecific = [];
 			this.settingsOverride = [];
 			this.settingsCompcache = [];
-			this.scheduler = false;
+			this.ioScheduler = false;
 			
 			if (this.updateReq) this.updateReq.cancel();
 			this.updateReq = service.get_cpufreq_params(this.getParamsStandard);
@@ -340,7 +340,8 @@ dataHandlerModel.prototype.updateParams = function(num)
 											this.settingsStandard,
 											this.settingsSpecific,
 											this.settingsOverride,
-											this.settingsCompcache);
+											this.settingsCompcache,
+											this.ioScheduler);
 		if (this.mainAssistant && this.mainAssistant.controller)
 		{
 			if (profiles.kernel) {
@@ -435,7 +436,7 @@ dataHandlerModel.prototype.getIoScheduler = function(payload, num)
 				var tmpSched = trim(data[d]);
 				if (tmpSched != "") {
 					if (tmpSched.indexOf("[") == 0) {
-						this.scheduler = tmpSched.substr(1,tmpSched.length-2);
+						this.ioScheduler = tmpSched.substr(1,tmpSched.length-2);
 					}
 				}
 			}
@@ -469,7 +470,7 @@ dataHandlerModel.prototype.dumpCurrent = function()
 	var r = '';
 	
 	r += '<b>Governor:</b> '+this.governor+'<br>';
-	r += '<b>Scheduler:</b> '+this.scheduler+'<br>';
+	r += '<b>Scheduler:</b> '+this.ioScheduler+'<br>';
 	r += '<b>Congestion:</b> '+this.congestion+'<br>';
 	
 	if (this.settingsStandard)

@@ -16,18 +16,22 @@ function profilesModel()
 	this.setRequests = new Array();
 	this.setRequests["cpufreq"]  = false;
 	this.setRequests["compcache"] = false;
+	this.setRequests["iosched"] = false;
 	
 	this.applyCompleteCpufreq  = this.applyComplete.bindAsEventListener(this, "cpufreq");
 	this.applyCompleteCompcache  = this.applyComplete.bindAsEventListener(this, "compcache");
+	this.applyCompleteIoSched  = this.applyComplete.bindAsEventListener(this, "iosched");
 
 	this.stickRequests = new Array();
 	this.stickRequests["cpufreq"]  = false;
 	this.stickRequests["compcache"] = false;
+	this.stickRequests["iosched"] = false;
 
 	this.stickCompleteCpufreq  = this.stickComplete.bindAsEventListener(this, "cpufreq");
 	this.stickCompleteCompcache  = this.stickComplete.bindAsEventListener(this, "compcache");
+	this.stickCompleteIoSched  = this.stickComplete.bindAsEventListener(this, "iosched");
 };
-profilesModel.prototype.findProfile = function(governor, settingsStandard, settingsSpecific, settingsOverride, settingsCompcache)
+profilesModel.prototype.findProfile = function(governor, settingsStandard, settingsSpecific, settingsOverride, settingsCompcache, ioScheduler)
 {
 	if (this.profiles.length > 0)
 	{
@@ -35,6 +39,14 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 		{
 			if (this.profiles[p]) 
 			{
+
+				//alert("Profile: "+JSON.stringify(this.profiles[p]));
+				//alert("governor: "+governor);
+				//alert("settingsStandard: "+JSON.stringify(settingsStandard));
+				//alert("settingsSpecific: "+JSON.stringify(settingsSpecific));
+				//alert("settingsOverride: "+JSON.stringify(settingsOverride));
+				//alert("settingsCompcache: "+JSON.stringify(settingsCompcache));
+				//alert("ioScheduler: "+ioScheduler);
 
 				// look for exact match
 				if (this.profiles[p].governor == governor &&
@@ -45,11 +57,12 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					((!this.profiles[p].settingsOverride && settingsOverride.length == 0) ||
 					  (this.profiles[p].settingsOverride && this.profiles[p].settingsOverride.length == settingsOverride.length)) &&
 					((!this.profiles[p].settingsCompcache && settingsCompcache.length == 0) ||
-					  (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length == settingsCompcache.length)))
+					  (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length == settingsCompcache.length)) &&
+					((!this.profiles[p].ioScheduler && !ioScheduler) || (this.profiles[p].ioScheduler == ioScheduler)))
 				{
 					var match = true;
 					
-					//alert("Checking match");
+					//alert("Checking exact match");
 					
 					if (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length > 0)
 					{
@@ -127,11 +140,12 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					(!this.profiles[p].settingsOverride || !this.profiles[p].settingsOverride.length ||
 					 (this.profiles[p].settingsOverride.length == settingsOverride.length)) &&
 					(!this.profiles[p].settingsCompcache || !this.profiles[p].settingsCompcache.length ||
-					 (this.profiles[p].settingsCompcache.length == settingsCompcache.length)))
+					 (this.profiles[p].settingsCompcache.length == settingsCompcache.length)) &&
+					(!this.profiles[p].ioScheduler || (this.profiles[p].ioScheduler == ioScheduler)))
 				{
 					var match = true;
 					
-					//alert("Checking match");
+					//alert("Checking fuzzy match");
 					
 					if (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length > 0)
 					{
@@ -546,6 +560,7 @@ profilesModel.prototype.applyComplete = function(payload, location)
 		!this.setRequests["compcache"] &&
 		!this.stickRequests["cpufreq"] &&
 		!this.stickRequests["compcache"] &&
+		!this.stickRequests["iosched"] &&
 		this.controller &&
 		this.controller.stageController) {
 		this.controller.stageController.popScene();
@@ -562,6 +577,7 @@ profilesModel.prototype.stickComplete = function(payload, location)
 		!this.setRequests["compcache"] &&
 		!this.stickRequests["cpufreq"] &&
 		!this.stickRequests["compcache"] &&
+		!this.stickRequests["iosched"] &&
 		this.controller &&
 		this.controller.stageController) {
 		this.controller.stageController.popScene();
@@ -583,6 +599,7 @@ function profileModel(params)
 	this.settingsSpecific  = params.settingsSpecific;
 	this.settingsOverride  = params.settingsOverride;
 	this.settingsCompcache = params.settingsCompcache;
+	this.ioScheduler	   = params.ioScheduler;
 
 	this.kernels =			params.kernels;
 
@@ -638,6 +655,13 @@ profileModel.prototype.apply = function()
 		if (profiles.stickRequests['compcache']) profiles.stickRequests['compcache'].cancel();
 		profiles.stickRequests["compcache"] = service.stick_compcache_config(profiles.stickCompleteCompcache, compcacheConfig);
 	}
+
+	if (this.ioScheduler) {
+		if (profiles.setRequests['iosched']) profiles.setRequests['iosched'].cancel();
+		profiles.setRequests["iosched"] = service.set_io_scheduler(profiles.applyCompleteIoSched, this.ioScheduler);
+		if (profiles.stickRequests['iosched']) profiles.stickRequests['iosched'].cancel();
+		profiles.stickRequests["iosched"] = service.stick_io_scheduler(profiles.stickCompleteIoSched, this.ioScheduler);
+	}
 };
 profileModel.prototype.getListObject = function()
 {
@@ -686,6 +710,10 @@ profileModel.prototype.getDataString = function()
 			var row = this.getDataSettingString(this.settingsCompcache[s].name, this.settingsCompcache[s].value);
 			data += '<br /><span class="name">' + row[0] + '</span><span class="value">' + row[1] + '</span>';
 		}
+	}
+	if (this.ioScheduler) {
+		var row = this.getDataSettingString("io_scheduler", this.ioScheduler);
+		data += '<br /><span class="name">' + row[0] + '</span><span class="value">' + row[1] + '</span>';
 	}
 	return data;
 };
@@ -797,6 +825,11 @@ profileModel.prototype.dump = function()
 			var row = this.getDataSettingString(this.settingsCompcache[s].name, this.settingsCompcache[s].value);
 			r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 		}
+	}
+	if (this.ioScheduler)
+	{
+		var row = this.getDataSettingString("io_scheduler", this.ioScheduler);
+		r += '<b>'+row[0]+':</b> '+row[1]+'<br>';
 	}
 	
 	return r;

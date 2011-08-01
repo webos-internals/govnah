@@ -13,15 +13,13 @@ function ProfileSaveAssistant()
 		]
 	};
 	
-	this.governorModel = 
-	{
-		value: dataHandler.governor,
-		choices: []
-	};
+	this.governor = dataHandler.governor;
 	
 	this.settingsModel = {};
 	this.settingsLocation = {};
 	
+	this.ioScheduler = dataHandler.ioScheduler;
+
 	this.profileModel = {name: 'Profile ' + (profiles.cookieData.serial + 1)};
 	
 };
@@ -63,6 +61,7 @@ ProfileSaveAssistant.prototype.setup = function()
 	this.onGetParamsSpecific  = this.onGetParams.bindAsEventListener(this, "specific");
 	this.onGetParamsOverride  = this.onGetParams.bindAsEventListener(this, "override");
 	this.onGetParamsCompcache = this.onGetParams.bindAsEventListener(this, "compcache");
+	this.onGetIoSchedHandler   = this.onGetIoSched.bindAsEventListener(this, "iosched");
 
 	// make it so nothing is selected by default
 	this.controller.setInitialFocusedElement(null);
@@ -103,23 +102,22 @@ ProfileSaveAssistant.prototype.onGetParams = function(payload, location)
 
 			if (tmpParam.writeable && tmpParam.name != 'scaling_governor')
 			{
-				//alert('-----');
-				//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
+				alert('-----');
+				alert(tmpParam.nam + " = " + tmpParam.value + " ("+location+")");
 				
 				this.settingsModel[tmpParam.name] = tmpParam.value;
 				this.settingsLocation[tmpParam.name] = location;
 			}
 			else if (tmpParam.name == 'scaling_governor')
 			{
-				this.governorModel.value = "";
-				this.governorModel.value = trim(tmpParam.value);
+				this.governor = trim(tmpParam.value);
 			}
 		}
 	}
 
 	if (location == "standard") {
 		if (this.getRequest) this.getRequest.cancel();
-		this.getRequest  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governorModel.value);
+		this.getRequest  = service.get_cpufreq_params(this.onGetParamsSpecific, this.governor);
 	}
 	else if (location == "specific") {
 		if (this.getRequest) this.getRequest.cancel();
@@ -131,6 +129,34 @@ ProfileSaveAssistant.prototype.onGetParams = function(payload, location)
 	}
 	else if (location == "compcache") {
 		if (this.getRequest) this.getRequest.cancel();
+		this.getRequest = service.get_io_scheduler(this.onGetIoSchedHandler);
+	}
+};
+
+ProfileSaveAssistant.prototype.onGetIoSched = function(payload, location)
+{
+	if (payload.returnValue == false) {
+		this.errorMessage("Govnah", payload.errorText, payload.stdErr, function(){});
+	}
+
+	if (payload.stdOut) {
+		tmpParam = payload.stdOut[0];
+			
+		var data = tmpParam.split(" ");
+		if (data.length > 0) {
+			for (d = 0; d < data.length; d++) {
+				var tmpSched = trim(data[d]);
+				if (tmpSched != "") {
+					if (tmpSched.indexOf("[") == 0) {
+						this.ioScheduler = tmpSched.substr(1,tmpSched.length-2);
+					}
+				}
+			}
+		}
+	}
+
+	if (location == "iosched") {
+		if (this.getRequest) this.getRequest.cancel();
 		this.getRequest = false;
 	}
 };
@@ -140,11 +166,12 @@ ProfileSaveAssistant.prototype.saveAsProfileButtonPressed = function(event)
 	var params =
 	{
 		name: this.profileModel.name,
-		governor: this.governorModel.value,
+		governor: this.governor,
 		settingsStandard: [],
 		settingsSpecific: [],
 		settingsOverride: [],
-		settingsCompcache: []
+		settingsCompcache: [],
+		ioScheduler: this.ioScheduler
 	};
 	
 	for (var m in this.settingsModel)

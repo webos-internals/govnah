@@ -89,7 +89,7 @@ SettingsAssistant.prototype.updateList = function(skipUpdate)
 		this.listModel.items.push(
 		{
 			name:	$L("I/O Scheduler"),
-			data:	dataHandler.scheduler,
+			data:	dataHandler.ioScheduler,
 			scene:	'settings-iosched'
 		});
 		

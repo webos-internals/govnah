@@ -143,6 +143,7 @@ ProfilesAssistant.prototype.handleCommand = function(event)
 			case 'do-unstick':
 				service.unstick_cpufreq_params(function(p){});
 				service.unstick_compcache_config(function(p){});
+				service.unstick_io_scheduler(function(p){});
 				break;
 				
 			case 'do-help':

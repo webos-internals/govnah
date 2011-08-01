@@ -1220,7 +1220,6 @@ bool set_compcache_config_method(LSHandle* lshandle, LSMessage *message, void *c
   sprintf(buffer, "{\"returnValue\": true }");
 
   json_t *object = json_parse_document(LSMessageGetPayload(message));
-
   bool enable = false;
   char *memlimit = NULL;
 
@@ -1551,7 +1550,7 @@ bool set_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 
   json_t *object = json_parse_document(LSMessageGetPayload(message));
 
-  // Extract the genericParams argument from the message
+  // Extract the value argument from the message
   json_t *value = json_find_first_label(object, "value");
   if (!value || (value->child->type != JSON_STRING)) {
     if (!LSMessageReply(lshandle, message,
@@ -1585,6 +1584,135 @@ bool set_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 	    errorText);
   }
   
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Write upstart script to make cpufreq params "sticky"
+//
+bool stick_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  char directory[MAXLINLEN];
+  char filename[MAXLINLEN];
+  char line[MAXLINLEN];
+
+  bool error = false;
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
+
+  // Extract the value argument from the message
+  json_t *value = json_find_first_label(object, "value");
+  if (!value || (value->child->type != JSON_STRING)) {
+    if (!LSMessageReply(lshandle, message,
+			"{\"returnValue\": false, \"errorCode\": -1, \"errorText\": \"Invalid or missing value\"}",
+			&lserror)) goto error;
+    return true;
+  }
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-iosched");
+  FILE *fp = fopen(filename, "w");
+  if (!fp) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  error = false;
+  if (fputs("description \"Govnah IO Scheduler Settings\"\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("start on stopped finish\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("script\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevBootPanicked`\" = \"false\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m com.palm.properties.prevShutdownClean`\" = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("[ \"`/usr/bin/lunaprop -m -n com.palm.system last_umount_clean`\"  = \"true\" ] || exit 0\n", fp) < 0) error = true;
+  if (fputs("\n", fp) < 0) error = true;
+ 
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  sprintf(filename, "/sys/block/mmcblk0/queue/scheduler");
+
+  // fprintf(stderr, "echo %s > %s\n", value->child->text, filename);
+  sprintf(line, "echo -n '%s' > %s\n", value->child->text, filename);
+
+  if (fputs(line, fp) < 0) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+      
+  if (fputs("\n", fp) < 0) error = true;
+  if (fputs("end script\n", fp) < 0) error = true;
+  if (error) {
+    (void)fclose(fp);
+    (void)unlink(filename);
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+  
+  if (fclose(fp)) {
+    sprintf(buffer,
+	    "{\"errorText\": \"Unable to close %s\", \"returnValue\": false, \"errorCode\": -1 }",
+	    filename);
+    if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+    return true;
+  }
+
+  // fprintf(stderr, "Message is %s\n", buffer);
+  if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
+}
+
+//
+// Delete cpufreq params upstart script
+//
+bool unstick_io_scheduler_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  char filename[MAXLINLEN];
+
+  sprintf(buffer, "{\"returnValue\": true }");
+
+  sprintf(filename, "/var/palm/event.d/org.webosinternals.govnah-iosched");
+  (void)unlink(filename);
+
   // fprintf(stderr, "Message is %s\n", buffer);
   if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 
@@ -2088,6 +2216,8 @@ LSMethod luna_methods[] = {
 
   { "get_io_scheduler",		get_io_scheduler_method },
   { "set_io_scheduler",		set_io_scheduler_method },
+  { "stick_io_scheduler",	stick_io_scheduler_method },
+  { "unstick_io_scheduler",	unstick_io_scheduler_method },
 
   { "get_tcp_congestion_control", get_tcp_congestion_control_method },
   { "set_tcp_congestion_control", set_tcp_congestion_control_method },
