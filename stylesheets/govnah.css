@@ -124,12 +124,14 @@ body.palm-dark .palm-separator
 {
 	position: relative;
 }
-.main canvas#freqCanvas,
+.main canvas#freq1Canvas,
+.main canvas#freq2Canvas,
 .main canvas#tempCanvas,
 .main canvas#currCanvas,
 .main canvas#loadCanvas,
 .main canvas#memCanvas,
-.main canvas#stateCanvas
+.main canvas#state1Canvas,
+.main canvas#state2Canvas
 {
 	position: absolute;
 	z-index: -5;
@@ -160,12 +162,14 @@ body.dock
 {
 	position: relative;
 }
-.dock canvas#freqCanvas,
+.dock canvas#freq1Canvas,
+.dock canvas#freq2Canvas,
 .dock canvas#tempCanvas,
 .dock canvas#currCanvas,
 .dock canvas#loadCanvas,
 .dock canvas#memCanvas,
-.dock canvas#stateCanvas
+.dock canvas#state1Canvas,
+.dock canvas#state2Canvas
 {
 	position: absolute;
 	z-index: -5;

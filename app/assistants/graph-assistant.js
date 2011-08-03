@@ -25,8 +25,10 @@ GraphAssistant.prototype.setup = function()
 	this.titleElement = this.controller.get('title');
 	this.canvasElement = this.controller.get('graphCanvas');
 	
-	if (this.display == 'freq')
-		this.titleElement.innerHTML = $L('Frequency Graph');
+	if (this.display == 'freq1')
+		this.titleElement.innerHTML = $L('CPU 1 Frequency Graph');
+	if (this.display == 'freq2')
+		this.titleElement.innerHTML = $L('CPU 2 Frequency Graph');
 	if (this.display == 'temp')
 		this.titleElement.innerHTML = $L('Temperature Graph');
     if (this.display == 'curr')
@@ -35,8 +37,10 @@ GraphAssistant.prototype.setup = function()
 		this.titleElement.innerHTML = $L('Load Average Graph');
 	if (this.display == 'mem')
 		this.titleElement.innerHTML = $L('Memory Usage Graph');
-	if (this.display == 'time')
-		this.titleElement.innerHTML = $L('Time In State');
+	if (this.display == 'time1')
+		this.titleElement.innerHTML = $L('CPU 1 Time In State');
+	if (this.display == 'time2')
+		this.titleElement.innerHTML = $L('CPU 2 Time In State');
 	
     this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
     this.gestureChangeHandler =	this.gestureChangeHandler.bindAsEventListener(this);
@@ -165,13 +169,13 @@ GraphAssistant.prototype.handleCommand = function(event)
 
 GraphAssistant.prototype.cleanup = function(event)
 {
-    this.controller.StopListening(this.canvasElement, 'gesturestart',		this.gestureStartHandler);
-    this.controller.StopListening(this.canvasElement, 'gesturechange',		this.gestureChangeHandler);
-    this.controller.StopListening(this.canvasElement, 'gestureend',			this.gestureEndHandler);
-	this.controller.StopListening(this.canvasElement, Mojo.Event.flick,		this.flickHandler);
-	this.controller.StopListening(this.canvasElement, Mojo.Event.dragStart,	this.dragStartHandler);
-	this.controller.StopListening(this.canvasElement, Mojo.Event.dragging,	this.draggingHandler);
-	this.controller.StopListening(this.canvasElement, Mojo.Event.dragEnd,	this.dragEndHandler);
+    this.controller.stopListening(this.canvasElement, 'gesturestart',		this.gestureStartHandler);
+    this.controller.stopListening(this.canvasElement, 'gesturechange',		this.gestureChangeHandler);
+    this.controller.stopListening(this.canvasElement, 'gestureend',			this.gestureEndHandler);
+	this.controller.stopListening(this.canvasElement, Mojo.Event.flick,		this.flickHandler);
+	this.controller.stopListening(this.canvasElement, Mojo.Event.dragStart,	this.dragStartHandler);
+	this.controller.stopListening(this.canvasElement, Mojo.Event.dragging,	this.draggingHandler);
+	this.controller.stopListening(this.canvasElement, Mojo.Event.dragEnd,	this.dragEndHandler);
 		
 	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.stopListening(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);

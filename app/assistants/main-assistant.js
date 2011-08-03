@@ -63,8 +63,10 @@ MainAssistant.prototype.setup = function()
 	this.profileCurrent =	this.controller.get('profileCurrent');
 	this.settingsRow =		this.controller.get('settingsRow');
 	
-	this.freqRow =			this.controller.get('freqRow');
-	this.freqCurrent =		this.controller.get('freqCurrent');
+	this.freq1Row =			this.controller.get('freq1Row');
+	this.freq1Current =		this.controller.get('freq1Current');
+	this.freq2Row =			this.controller.get('freq2Row');
+	this.freq2Current =		this.controller.get('freq2Current');
 	this.tempRow =			this.controller.get('tempRow');
 	this.tempCurrent =		this.controller.get('tempCurrent');
 	this.currRow =			this.controller.get('currRow');
@@ -73,7 +75,8 @@ MainAssistant.prototype.setup = function()
 	this.loadCurrent =		this.controller.get('loadCurrent');
 	this.memRow =			this.controller.get('memRow');
 	this.memCurrent =		this.controller.get('memCurrent');
-	this.timeRow =			this.controller.get('timeRow');
+	this.time1Row =			this.controller.get('time1Row');
+	this.time2Row =			this.controller.get('time2Row');
 	
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
@@ -92,12 +95,14 @@ MainAssistant.prototype.setup = function()
 	//this.controller.listen(this.settingsRow, Mojo.Event.tap, this.settingsTapHandler);
 	
 	
-	this.controller.listen(this.freqRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq'));
+	this.controller.listen(this.freq1Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq1'));
+	this.controller.listen(this.freq2Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq2'));
 	this.controller.listen(this.tempRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'temp'));
 	this.controller.listen(this.currRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr'));	
 	this.controller.listen(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
 	this.controller.listen(this.memRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'mem' ));
-	//this.controller.listen(this.timeRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'time'));
+	//this.controller.listen(this.time1Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'time1'));
+	//this.controller.listen(this.time2Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'time2'));
 	
 	
 	this.visible = this.visible.bindAsEventListener(this);
@@ -108,12 +113,31 @@ MainAssistant.prototype.setup = function()
 	this.visible();
 	
 	this.controller.get('main-scene-profile').innerHTML = $L("Profile");
-	this.controller.get('main-scene-frequency').innerHTML = $L("Frequency");
-	this.controller.get('main-scene-temperature').innerHTML = $L("Temperature");
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+		this.controller.get('main-scene-frequency1').innerHTML = $L("CPU 1 Frequency");
+		this.controller.get('main-scene-frequency2').innerHTML = $L("CPU 2 Frequency");
+	}
+	else {
+		this.controller.get('main-scene-frequency1').innerHTML = $L("CPU Frequency");
+		this.controller.get('main-scene-frequency2').innerHTML = $L("N/A");
+	}
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+		this.controller.get('main-scene-temperature').innerHTML = $L("Battery Temperature");
+	}
+	else {
+		this.controller.get('main-scene-temperature').innerHTML = $L("CPU Temperature");
+	}
 	this.controller.get('main-scene-battery-current').innerHTML = $L("Battery Current");
 	this.controller.get('main-scene-load-average').innerHTML = $L("Load Average");
 	this.controller.get('main-scene-memory-swap').innerHTML = $L("Memory / Swap");
-	this.controller.get('main-scene-time-in-state').innerHTML = $L("Time In State");
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+		this.controller.get('main-scene-time-in-state1').innerHTML = $L("CPU 1 Time In State");
+		this.controller.get('main-scene-time-in-state2').innerHTML = $L("CPU 2 Time In State");
+	}
+	else {
+		this.controller.get('main-scene-time-in-state1').innerHTML = $L("CPU Time In State");
+		this.controller.get('main-scene-time-in-state2').innerHTML = $L("N/A");
+	}
 	
 };
 
@@ -225,7 +249,8 @@ MainAssistant.prototype.cleanup = function(event)
 	//this.controller.stopListening(this.settingsRow, Mojo.Event.tap, this.settingsTapHandler);
 	
 	/*
-	this.controller.stopListening(this.freqRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq'));
+	this.controller.stopListening(this.freq1Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq1'));
+	this.controller.stopListening(this.freq2Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq2'));
 	this.controller.stopListening(this.tempRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'temp'));
 	this.controller.stopListening(this.currRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr'));	
 	this.controller.stopListening(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));

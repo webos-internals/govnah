@@ -73,46 +73,56 @@ function dataHandlerModel()
 	
 	this.timerHandler = this.timerFunction.bind(this);
 	
-    this.freqHandler  = this.freqHandler.bindAsEventListener(this);
+    this.freq1Handler  = this.freqHandler.bindAsEventListener(this, 1);
+    this.freq2Handler  = this.freqHandler.bindAsEventListener(this, 2);
     this.tempHandler  = this.tempHandler.bindAsEventListener(this);
     this.currHandler  = this.currHandler.bindAsEventListener(this);
     this.loadHandler  = this.loadHandler.bindAsEventListener(this);
     this.memHandler   = this.memHandler.bindAsEventListener(this);
-    this.stateHandler = this.stateHandler.bindAsEventListener(this);
+    this.state1Handler = this.stateHandler.bindAsEventListener(this, 1);
+    this.state2Handler = this.stateHandler.bindAsEventListener(this, 2);
 	
 	this.graphs = $H();
-	this.graphs["freq"] = false;
+	this.graphs["freq1"] = false;
+	this.graphs["freq2"] = false;
 	this.graphs["temp"] = false;
 	this.graphs["curr"] = false;
 	this.graphs["load"] = false;
 	this.graphs["mem"] = false;
-	this.graphs["state"] = false;
+	this.graphs["state1"] = false;
+	this.graphs["state2"] = false;
 	
 	this.strokes = $H();
-	this.strokes["freq"]  = "rgba(255, 153, 153, .4)";
+	this.strokes["freq1"]  = "rgba(255, 153, 153, .4)";
+	this.strokes["freq2"]  = "rgba(255, 153, 153, .4)";
 	this.strokes["temp"]  = "rgba(153, 205, 153, .4)";
 	this.strokes["curr1"] = "rgba(153, 205, 153, .4)";
 	this.strokes["curr2"] = "rgba(255, 153, 153, .4)";
 	this.strokes["load"]  = "rgba(153, 153, 255, .4)";
 	this.strokes["mem"]   = "rgba(153, 153, 255, .4)";
-	this.strokes["state"] = "rgba(153, 153, 153, .4)";
+	this.strokes["state1"] = "rgba(153, 153, 153, .4)";
+	this.strokes["state2"] = "rgba(153, 153, 153, .4)";
 
 	this.fills = $H();
-	this.fills["freq"]    = "rgba(255, 153, 153, .2)";
+	this.fills["freq1"]    = "rgba(255, 153, 153, .2)";
+	this.fills["freq2"]    = "rgba(255, 153, 153, .2)";
 	this.fills["temp"]    = "rgba(153, 205, 153, .2)";
 	this.fills["curr1"]   = "rgba(153, 205, 153, .2)";
 	this.fills["curr2"]   = "rgba(255, 153, 153, .2)";
 	this.fills["load"]    = "rgba(153, 153, 255, .2)";
 	this.fills["mem"]     = "rgba(153, 153, 255, .2)";
-	this.fills["state"]   = "rgba(153, 153, 153, .2)";
+	this.fills["state1"]   = "rgba(153, 153, 153, .2)";
+	this.fills["state2"]   = "rgba(153, 153, 153, .2)";
 
 	this.updateReq  = false;
-	this.freqReq  = false;
+	this.freq1Req  = false;
+	this.freq2Req  = false;
 	this.tempReq  = false;
 	this.currReq = false;
 	this.loadReq  = false;
 	this.memReq   = false;
-	this.stateReq = false;
+	this.state1Req = false;
+	this.state2Req = false;
 	
 	this.fullGraph = false;
 	
@@ -141,9 +151,18 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 	this.currentMode = "card";
 	this.rate = parseInt(prefs.get().cardPollSpeed) * 1000;
 	
-	this.graphs["freq"] = new lineGraph
+	this.graphs["freq1"] = new lineGraph
 	(
-		this.mainAssistant.controller.get('freqCanvas'),
+		this.mainAssistant.controller.get('freq1Canvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 30,
+			padding: {top: 1}
+		}
+	);
+	this.graphs["freq2"] = new lineGraph
+	(
+		this.mainAssistant.controller.get('freq2Canvas'),
 		{
 			renderWidth: 320,
 			renderHeight: 30,
@@ -186,9 +205,17 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			padding: {top: 1}
 		}
 	);
-	this.graphs["state"] = new barGraph
+	this.graphs["state1"] = new barGraph
 	(
-		this.mainAssistant.controller.get('stateCanvas'),
+		this.mainAssistant.controller.get('state1Canvas'),
+		{
+			height: 27,
+			width: 320
+		}
+	);
+	this.graphs["state2"] = new barGraph
+	(
+		this.mainAssistant.controller.get('state2Canvas'),
 		{
 			height: 27,
 			width: 320
@@ -236,9 +263,18 @@ dataHandlerModel.prototype.setDockAssistant = function(assistant)
 	this.rate = parseInt(prefs.get().dockPollSpeed) * 1000;
 	//this.rate = 0.5 * 1000;
 	
-	this.graphs["freq"] = new lineGraph
+	this.graphs["freq1"] = new lineGraph
 	(
-		this.dockAssistant.controller.get('freqCanvas'),
+		this.dockAssistant.controller.get('freq1Canvas'),
+		{
+			renderWidth: 320,
+			renderHeight: 60,
+			padding: {top: 1}
+		}
+	);
+	this.graphs["freq2"] = new lineGraph
+	(
+		this.dockAssistant.controller.get('freq2Canvas'),
 		{
 			renderWidth: 320,
 			renderHeight: 60,
@@ -590,12 +626,14 @@ dataHandlerModel.prototype.delayedTimer = function(delay)
 
 dataHandlerModel.prototype.timerFunction = function()
 {
-	if (this.freqReq)  this.freqReq.cancel();
+	if (this.freq1Req)  this.freq1Req.cancel();
+	if (this.freq2Req)  this.freq2Req.cancel();
 	if (this.tempReq)  this.tempReq.cancel();
 	if (this.currReq)  this.currReq.cancel();
 	if (this.loadReq)  this.loadReq.cancel();
 	if (this.memReq)   this.memReq.cancel();
-	if (this.stateReq) this.stateReq.cancel();
+	if (this.state1Req) this.state1Req.cancel();
+	if (this.state2Req) this.state2Req.cancel();
 
 	var keys = this.lineData.keys();
 	if (keys.length > this.cutoff)
@@ -618,7 +656,8 @@ dataHandlerModel.prototype.timerFunction = function()
 
 	if (this.currentMode == "card" || this.currentMode == "dock")
 	{
-		this.freqReq  = service.get_scaling_cur_freq(this.freqHandler);
+		this.freq1Req  = service.get_scaling_cur_freq(this.freq1Handler);
+		this.freq2Req  = service.get_scaling_cur_freq(this.freq2Handler);
 		if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 			this.currReq  = service.get_a6_current(this.currHandler);
 		}
@@ -627,7 +666,8 @@ dataHandlerModel.prototype.timerFunction = function()
 		}
 		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
 		this.memReq   = service.get_proc_meminfo(this.memHandler);
-		this.stateReq = service.get_time_in_state(this.stateHandler);
+		this.state1Req = service.get_time_in_state(this.state1Handler);
+		this.state2Req = service.get_time_in_state(this.state2Handler);
 	}
 	
 	this.delayedTimer(this.rate);
@@ -673,8 +713,18 @@ dataHandlerModel.prototype.tempHandler = function(payload)
 	this.renderMiniLine("temp");
 	this.renderFullGraph("temp");
 };
-dataHandlerModel.prototype.freqHandler = function(payload)
+dataHandlerModel.prototype.freqHandler = function(payload, cpu)
 {
+	var mainValue, dockValue;
+	if (cpu == 1) {
+		mainValue = this.mainAssistant.freq1Current;
+		dockValue = this.dockAssistant.freq1Current;
+	}
+	if (cpu == 2) {
+		mainValue = this.mainAssistant.freq2Current;
+		dockValue = this.dockAssistant.freq2Current;
+	}
+
 	if (payload.returnValue) 
 	{
 		var timestamp = Math.round(new Date().getTime()/1000.0);
@@ -684,42 +734,60 @@ dataHandlerModel.prototype.freqHandler = function(payload)
 		{
 			if ((value / 1000) >= 1000)
 			{
-				this.mainAssistant.freqCurrent.innerHTML = ((value / 1000) / 1000) + '<div class="unit">GHz</div>';
+				mainValue.innerHTML = ((value / 1000) / 1000) + '<div class="unit">GHz</div>';
 			}
 			else
 			{
-				this.mainAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
+				mainValue.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
 			}
 		}
 		if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible)
 		{
 			if ((value / 1000) >= 1000)
 			{
-				this.dockAssistant.freqCurrent.innerHTML = ((value / 1000) / 1000) + '<div class="unit">GHz</div>';
+				dockValue.innerHTML = ((value / 1000) / 1000) + '<div class="unit">GHz</div>';
 			}
 			else
 			{
-				this.dockAssistant.freqCurrent.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
+				dockValue.innerHTML = (value / 1000) + '<div class="unit">MHz</div>';
 			}
 		}
 		
 		var dataObj = this.lineData.get(timestamp)
 		if (!dataObj) dataObj = {};
-		if (!dataObj.freq)
-		{
-			dataObj.freq = {total:value, count:1, value:value};
+
+		if (cpu == 1) {
+			if (!dataObj.freq1) {
+				dataObj.freq1 = {total:value, count:1, value:value};
+			}
+			if (dataObj.freq1 && dataObj.freq1.count) {
+				dataObj.freq1.total = dataObj.freq1.total + value;
+				dataObj.freq1.count++;
+				dataObj.freq1.value = (dataObj.freq1.total / dataObj.freq1.count);
+			}
 		}
-		if (dataObj.freq && dataObj.freq.count)
-		{
-			dataObj.freq.total = dataObj.freq.total + value;
-			dataObj.freq.count++;
-			dataObj.freq.value = (dataObj.freq.total / dataObj.freq.count);
+		if (cpu == 2) {
+			if (!dataObj.freq2) {
+				dataObj.freq2 = {total:value, count:1, value:value};
+			}
+			if (dataObj.freq2 && dataObj.freq2.count) {
+				dataObj.freq2.total = dataObj.freq2.total + value;
+				dataObj.freq2.count++;
+				dataObj.freq2.value = (dataObj.freq2.total / dataObj.freq2.count);
+			}
 		}
+
 		this.lineData.set(timestamp, dataObj);
 	}
 
-	this.renderMiniLine("freq");
-	this.renderFullGraph("freq");
+	if (cpu == 1) {
+		this.renderMiniLine("freq1");
+		this.renderFullGraph("freq1");
+	}
+	if (cpu == 2) {
+		this.renderMiniLine("freq2");
+		this.renderFullGraph("freq2");
+	}
 };
 dataHandlerModel.prototype.loadHandler = function(payload)
 {
@@ -819,7 +887,7 @@ dataHandlerModel.prototype.memHandler = function(payload)
 	this.renderMiniLine("mem");
 	this.renderFullGraph("mem");
 };
-dataHandlerModel.prototype.stateHandler = function(payload)
+dataHandlerModel.prototype.stateHandler = function(payload, cpu)
 {
 	if (payload.returnValue) 
 	{
@@ -851,11 +919,22 @@ dataHandlerModel.prototype.stateHandler = function(payload)
 				}
 			}
 		}
-		this.barData.state = dataHash;
+		if (cpu == 1) {
+			this.barData.state1 = dataHash;
+		}
+		if (cpu == 2) {
+			this.barData.state2 = dataHash;
+		}
 	}
 
-	this.renderMiniBar("state");
-	this.renderFullGraph("state");
+	if (cpu == 1) {
+		this.renderMiniBar("state1");
+		this.renderFullGraph("state1");
+	}
+	if (cpu == 2) {
+		this.renderMiniBar("state2");
+		this.renderFullGraph("state2");
+	}
 };
 dataHandlerModel.prototype.currHandler = function(payload)
 {
@@ -976,9 +1055,13 @@ dataHandlerModel.prototype.renderMiniLine = function(item)
 		for (var k = start; k < keys.length; k++) {
 			var dataObj = this.lineData.get(keys[k]);
 			
-			if (item =="freq") {
-				if (dataObj.freq)
-					data1.push({x: keys[k], y: dataObj.freq.value});
+			if (item =="freq1") {
+				if (dataObj.freq1)
+					data1.push({x: keys[k], y: dataObj.freq1.value});
+			}
+			else if (item =="freq2") {
+				if (dataObj.freq2)
+					data1.push({x: keys[k], y: dataObj.freq2.value});
 			}
 			else if (item == "temp") {
 				if (dataObj.temp)
@@ -1041,17 +1124,28 @@ dataHandlerModel.prototype.renderMiniBar = function(item)
 
 		var data = [];
 		
-		if (this.barData.state) {
-			var keys = this.barData.state.keys();
-			for (var k = 0; k < keys.length; k++) {
-				var value = this.barData.state.get(keys[k]);
-				data.push({key: keys[k], value: value});
+		if (item =="state1") {
+			if (this.barData.state1) {
+				var keys = this.barData.state1.keys();
+				for (var k = 0; k < keys.length; k++) {
+					var value = this.barData.state1.get(keys[k]);
+					data.push({key: keys[k], value: value});
+				}
 			}
-		
-			this.graphs[item].setData(data, {strokeStyle: this.strokes[item], fillStyle: this.fills[item]});
-			
-			this.graphs[item].render();
 		}
+		else if (item =="state2") {
+			if (this.barData.state2) {
+				var keys = this.barData.state2.keys();
+				for (var k = 0; k < keys.length; k++) {
+					var value = this.barData.state2.get(keys[k]);
+					data.push({key: keys[k], value: value});
+				}
+			}
+		}
+				
+		this.graphs[item].setData(data, {strokeStyle: this.strokes[item], fillStyle: this.fills[item]});
+				
+		this.graphs[item].render();
 	}
 };
 
@@ -1071,8 +1165,12 @@ dataHandlerModel.prototype.renderFullGraph = function()
 		for (var k = 0; k < keys.length; k++) {
 			var dataObj = this.lineData.get(keys[k]);
 			
-			if (dataObj.freq && this.graphAssistant.display == "freq") {
-				fullData1.push({x: keys[k], y: dataObj.freq.value});
+			if (dataObj.freq1 && this.graphAssistant.display == "freq1") {
+				fullData1.push({x: keys[k], y: dataObj.freq1.value});
+			}
+			
+			if (dataObj.freq2 && this.graphAssistant.display == "freq2") {
+				fullData1.push({x: keys[k], y: dataObj.freq2.value});
 			}
 			
 			if (dataObj.temp && this.graphAssistant.display == "temp") {
@@ -1103,7 +1201,12 @@ dataHandlerModel.prototype.renderFullGraph = function()
 		
 		this.fullGraph.options.yaxis.ticFill = (this.graphAssistant.controller.document.body.hasClassName('palm-dark') ? "rgba(0, 0, 0, .08)" : "rgba(125, 125, 125, .08)");
 		
-		if (this.graphAssistant.display == "freq") {
+		if (this.graphAssistant.display == "freq1") {
+			this.fullGraph.options.yaxis.ticFormat = dataHandlerModel.freqFormat;
+			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display], fill: this.fills[this.graphAssistant.display]});
+		}
+		
+		if (this.graphAssistant.display == "freq2") {
 			this.fullGraph.options.yaxis.ticFormat = dataHandlerModel.freqFormat;
 			this.fullGraph.addLine({data: fullData1, stroke: this.strokes[this.graphAssistant.display], fill: this.fills[this.graphAssistant.display]});
 		}

@@ -7,8 +7,10 @@ DockAssistant.prototype.setup = function()
 {
 	this.controller.document.body.className = "dock";
 	
-	this.freqRow =			this.controller.get('freqRow');
-	this.freqCurrent =		this.controller.get('freqCurrent');
+	this.freq1Row =			this.controller.get('freq1Row');
+	this.freq1Current =		this.controller.get('freq1Current');
+	this.freq2Row =			this.controller.get('freq2Row');
+	this.freq2Current =		this.controller.get('freq2Current');
 	this.tempRow =			this.controller.get('tempRow');
 	this.tempCurrent =		this.controller.get('tempCurrent');
 	this.currRow =			this.controller.get('currRow');
