@@ -8,7 +8,6 @@ function MainAssistant()
 		{weight: 15, text: $L('Turn It Up To 11')},
 		{weight:  6, text: $L("<a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L8ALFGFJ7VJVJ\">Donated</a> To WebOS Internals Lately?")},
 		{weight:  5, text: $L('Much Better Than Arnie')},
-		{weight:  2, text: $L('Nomnomnom')},
 		{weight:  2, text: $L('Random Taglines Are Awesome')},
 		{weight:  2, text: $L('I Would Like To Make Some Overclock')},
 		{weight:  2, text: $L('Now With More Cowbell')}
@@ -61,7 +60,6 @@ MainAssistant.prototype.setup = function()
 	this.subTitleElement =	this.controller.get('subTitle');
 	this.profileRow =		this.controller.get('profileRow');
 	this.profileCurrent =	this.controller.get('profileCurrent');
-	this.settingsRow =		this.controller.get('settingsRow');
 	
 	this.freq1Row =			this.controller.get('freq1Row');
 	this.freq1Current =		this.controller.get('freq1Current');
@@ -89,10 +87,8 @@ MainAssistant.prototype.setup = function()
 	
 	
 	this.profileTapHandler = this.profileTap.bindAsEventListener(this);
-	//this.settingsTapHandler = this.settingsTap.bindAsEventListener(this);
 	
 	this.controller.listen(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
-	//this.controller.listen(this.settingsRow, Mojo.Event.tap, this.settingsTapHandler);
 	
 	
 	this.controller.listen(this.freq1Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq1'));
@@ -145,10 +141,6 @@ MainAssistant.prototype.setup = function()
 MainAssistant.prototype.profileTap = function(event)
 {
 	this.controller.stageController.pushScene('profiles');
-}
-MainAssistant.prototype.settingsTap = function(event)
-{
-	this.controller.stageController.pushScene('settings');
 }
 MainAssistant.prototype.graphTap = function(event, display)
 {
@@ -246,7 +238,6 @@ MainAssistant.prototype.handleCommand = function(event)
 MainAssistant.prototype.cleanup = function(event)
 {
 	this.controller.stopListening(this.profileRow, Mojo.Event.tap, this.profileTapHandler);
-	//this.controller.stopListening(this.settingsRow, Mojo.Event.tap, this.settingsTapHandler);
 	
 	/*
 	this.controller.stopListening(this.freq1Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'freq1'));

@@ -74,7 +74,7 @@ function dataHandlerModel()
 	this.timerHandler = this.timerFunction.bind(this);
 	
     this.freq1Handler  = this.freqHandler.bindAsEventListener(this, 1);
-    this.freq2Handler  = this.freqHandler.bindAsEventListener(this, 2);
+	this.freq2Handler  = this.freqHandler.bindAsEventListener(this, 2);
     this.tempHandler  = this.tempHandler.bindAsEventListener(this);
     this.currHandler  = this.currHandler.bindAsEventListener(this);
     this.loadHandler  = this.loadHandler.bindAsEventListener(this);
@@ -160,15 +160,17 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			padding: {top: 1}
 		}
 	);
-	this.graphs["freq2"] = new lineGraph
-	(
-		this.mainAssistant.controller.get('freq2Canvas'),
-		{
-			renderWidth: 320,
-			renderHeight: 30,
-			padding: {top: 1}
-		}
-	);
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+		this.graphs["freq2"] = new lineGraph
+			(
+			 this.mainAssistant.controller.get('freq2Canvas'),
+			 {
+				 renderWidth: 320,
+				 renderHeight: 30,
+				 padding: {top: 1}
+			 }
+			 );
+	}
 	this.graphs["temp"] = new lineGraph
 	(
 		this.mainAssistant.controller.get('tempCanvas'),
@@ -213,14 +215,16 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			width: 320
 		}
 	);
-	this.graphs["state2"] = new barGraph
-	(
-		this.mainAssistant.controller.get('state2Canvas'),
-		{
-			height: 27,
-			width: 320
-		}
-	);
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+		this.graphs["state2"] = new barGraph
+			(
+			 this.mainAssistant.controller.get('state2Canvas'),
+			 {
+				 height: 27,
+				 width: 320
+			 }
+			 );
+	}
 };
 dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 {
@@ -272,15 +276,17 @@ dataHandlerModel.prototype.setDockAssistant = function(assistant)
 			padding: {top: 1}
 		}
 	);
-	this.graphs["freq2"] = new lineGraph
-	(
-		this.dockAssistant.controller.get('freq2Canvas'),
-		{
-			renderWidth: 320,
-			renderHeight: 60,
-			padding: {top: 1}
-		}
-	);
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+		this.graphs["freq2"] = new lineGraph
+			(
+			 this.dockAssistant.controller.get('freq2Canvas'),
+			 {
+				 renderWidth: 320,
+				 renderHeight: 60,
+				 padding: {top: 1}
+			 }
+			 );
+	}
 	this.graphs["temp"] = new lineGraph
 	(
 		this.dockAssistant.controller.get('tempCanvas'),
@@ -657,7 +663,9 @@ dataHandlerModel.prototype.timerFunction = function()
 	if (this.currentMode == "card" || this.currentMode == "dock")
 	{
 		this.freq1Req  = service.get_scaling_cur_freq(this.freq1Handler);
-		this.freq2Req  = service.get_scaling_cur_freq(this.freq2Handler);
+		if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+			this.freq2Req  = service.get_scaling_cur_freq(this.freq2Handler);
+		}
 		if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 			this.currReq  = service.get_a6_current(this.currHandler);
 		}
@@ -667,7 +675,9 @@ dataHandlerModel.prototype.timerFunction = function()
 		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
 		this.memReq   = service.get_proc_meminfo(this.memHandler);
 		this.state1Req = service.get_time_in_state(this.state1Handler);
-		this.state2Req = service.get_time_in_state(this.state2Handler);
+		if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+			this.state2Req = service.get_time_in_state(this.state2Handler);
+		}
 	}
 	
 	this.delayedTimer(this.rate);
