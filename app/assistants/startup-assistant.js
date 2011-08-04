@@ -11,7 +11,9 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
- 	 { version: '0.9.6',log: [ 'Added dual core support' ] },
+ 	 { version: '0.9.6',log: [ 'Added dual core support',
+							   'Removed unimplemented dashboard preference',
+							   'Removed manual settings preference' ] },
  	 { version: '0.9.5',log: [ 'Added profile support for IO schedulers' ] },
  	 { version: '0.9.4',log: [ 'Added support for TouchPad overclocking' ] },
  	 { version: '0.9.3',log: [ 'Added the missing device stylesheet' ] },

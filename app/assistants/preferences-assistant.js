@@ -109,35 +109,14 @@ PreferencesAssistant.prototype.setup = function()
 		
 		this.controller.listen('profileList', Mojo.Event.propertyChange, this.listChangedHandler);
 		
-		
-		
-		// Governor Settings Group
-		this.controller.setupWidget
-		(
-			'manualEntry',
-			{
-	  			trueLabel:  $L("Yes"),
-	 			falseLabel: $L("No"),
-	  			fieldName:  'manualEntry'
-			},
-			{
-				value : this.prefs.manualEntry,
-	 			disabled: false
-			}
-		);
-		
-		this.controller.listen('manualEntry', Mojo.Event.propertyChange, this.toggleChangeHandler);
-		
 		this.controller.get('preferences-title').innerHTML = $L("Preferences");
 		this.controller.get('global-title').innerHTML = $L("Global");
 		this.controller.get('card-open-title').innerHTML = $L("Card Open");
+		this.controller.get('note-drains-battery').innerHTML = $L("* Frequent Polling Drains Battery.");
 		this.controller.get('preferences-scene-update-launcher').innerHTML = $L("Update Launcher Icon");
 		this.controller.get('note-cause-app-catalog').innerHTML = $L("* Causes App Catalog To Flicker.");
 		this.controller.get('preferences-scene-update-launcher-icon').innerHTML = $L("Update Launcher Icon");
 		this.controller.get('profiles-title').innerHTML = $L("Profiles");
-		this.controller.get('settings-title').innerHTML = $L("Settings");
-		this.controller.get('preferences-scene-manual-entry').innerHTML = $L("Manual Entry");
-		this.controller.get('note-for-experienced-users').innerHTML = $L("* For Experienced Users Only.");
 		this.backElement = this.controller.get('icon');
 		this.backTapHandler = this.backTap.bindAsEventListener(this);
 		this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);

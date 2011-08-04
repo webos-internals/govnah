@@ -366,7 +366,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 				//alert('-----');
 				//for (p in tmpParam) alert(p + " : " + tmpParam[p]);
 				
-				if (dataHandler.settings[tmpParam.name] && !prefs.get().manualEntry)
+				if (dataHandler.settings[tmpParam.name])
 				{
 					switch(dataHandler.settings[tmpParam.name].type)
 					{

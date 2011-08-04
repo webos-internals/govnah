@@ -30,10 +30,6 @@ preferenceCookie.prototype.get = function(reload)
 				
 				// Profiles Group
 				profileList: 'governor',
-				
-				// Settings Group
-				manualEntry: false
-				
 			};
 			
 			// uncomment to delete cookie for testing

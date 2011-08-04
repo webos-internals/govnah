@@ -73,7 +73,7 @@ MainAssistant.prototype.setup = function()
 	this.loadCurrent =		this.controller.get('loadCurrent');
 	this.memRow =			this.controller.get('memRow');
 	this.memCurrent =		this.controller.get('memCurrent');
-	this.time1Row =			this.controller.get('time1Row');
+	this.stateRow =			this.controller.get('stateRow');
 	
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
@@ -96,7 +96,7 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.currRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'curr'));	
 	this.controller.listen(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
 	this.controller.listen(this.memRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'mem' ));
-	//this.controller.listen(this.time1Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'time1'));
+	//this.controller.listen(this.stateRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'state'));
 	
 	
 	this.visible = this.visible.bindAsEventListener(this);
