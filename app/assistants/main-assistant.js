@@ -6,11 +6,13 @@ function MainAssistant()
 		{weight: 30, text: $L('The Advanced CPU Controller')},
 		{weight: 30, text: $L('Take Control Of Your CPU')},
 		{weight: 15, text: $L('Turn It Up To 11')},
+		{weight: 15, text: $L('Ludicrous Speed')},
 		{weight:  6, text: $L("<a href=\"https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=L8ALFGFJ7VJVJ\">Donated</a> To WebOS Internals Lately?")},
 		{weight:  5, text: $L('Much Better Than Arnie')},
 		{weight:  2, text: $L('Random Taglines Are Awesome')},
 		{weight:  2, text: $L('I Would Like To Make Some Overclock')},
 		{weight:  2, text: $L('Now With More Cowbell')}
+		{weight:  2, text: $L('MOAR')}
 	];
 	
 	// setup list model
