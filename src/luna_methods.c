@@ -36,8 +36,38 @@ static char buffer[MAXBUFLEN];
 static char esc_buffer[MAXBUFLEN];
 static char run_command_buffer[MAXBUFLEN];
 
-static char *cpufreqdir = "/sys/devices/system/cpu/cpu0/cpufreq";
+static char *cpudir = "/sys/devices/system/cpu/cpu";
 static char *battdir    = "/sys/devices/w1_bus_master1";
+
+//
+// Is CPU online
+//
+bool is_cpu_online(cpu)
+{
+  bool status = false;
+  char filename[MAXLINLEN];
+  sprintf(filename, "/sys/devices/system/cpu/cpu%d/online", cpu);
+  FILE *fp = fopen(filename, "r");
+  if (!fp) return false;
+  if (fgetc(fp) == '1') status = true;
+  if (fclose(fp)) status = false;
+  return status;
+}
+
+//
+// Bring CPU online
+//
+bool bring_cpu_online(cpu)
+{
+  bool status = true;
+  char filename[MAXLINLEN];
+  sprintf(filename, "/sys/devices/system/cpu/cpu%d/online", cpu);
+  FILE *fp = fopen(filename, "w");
+  if (!fp) return false;
+  if (fputs("1", fp) < 0) status = false;
+  if (fclose(fp)) status = false;
+  return status;
+}
 
 //
 // Escape a string so that it can be used directly in a JSON response.
@@ -527,20 +557,6 @@ bool get_a6_current_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 }
 
 //
-// Is CPU 1 online
-//
-bool is_cpu1_online()
-{
-  bool status = false;
-  FILE *fp = fopen("/sys/devices/system/cpu/cpu1/online", "r");
-
-  if (!fp) return false;
-  if (fgetc(fp) == '1') status = true;
-  if (fclose(fp)) status = false;
-  return status;
-}
-
-//
 // Read scaling_cur_freq
 //
 bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -560,7 +576,7 @@ bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *c
   if (cpu == 0) {
     return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
   }
-  else if (is_cpu1_online()) {
+  else if (is_cpu_online(1)) {
     return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu1/cpufreq/scaling_cur_freq");
   }
   else {
@@ -598,23 +614,33 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   bool error = false;
   char *governor = NULL;
+  int cpu = 0;
 
   sprintf(buffer, "{\"returnValue\": true }");
   
   json_t *object = json_parse_document(LSMessageGetPayload(message));
 
+  // Extract the cpu argument from the message
+  json_t *param = json_find_first_label(object, "cpu");
+  if (param && ((param->child->type == JSON_STRING) || param->child->type == JSON_NUMBER)) {
+    cpu = atoi(param->child->text);
+  }
+
   // Extract the governor argument from the message
-  json_t *param = json_find_first_label(object, "governor");
+  param = json_find_first_label(object, "governor");
   if (param && (param->child->type == JSON_STRING)) {
     governor = param->child->text;
   }
 
   if (governor) {
-    sprintf(directory, "%s/%s", cpufreqdir, governor);
+    sprintf(directory, "%s%d/cpufreq/%s", cpudir, cpu, governor);
   }
   else {
-    sprintf(directory, "%s", cpufreqdir);
+    sprintf(directory, "%s%d/cpufreq", cpudir, cpu);
   }
+
+  // Bring the cpu online
+  if (cpu) bring_cpu_online(cpu);
 
   DIR *dp = opendir (directory);
   if (!dp) {
@@ -734,10 +760,18 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   bool error = false;
   char *governor = NULL;
+  int maxCpu = 0;
+  int i;
 
   sprintf(buffer, "{\"returnValue\": true }");
 
   json_t *object = json_parse_document(LSMessageGetPayload(message));
+
+  // Extract the maxCpu argument from the message
+  json_t *param = json_find_first_label(object, "maxCpu");
+  if (param && ((param->child->type == JSON_STRING) || param->child->type == JSON_NUMBER)) {
+    maxCpu = atoi(param->child->text);
+  }
 
   // Extract the genericParams argument from the message
   json_t *genericParams = json_find_first_label(object, "genericParams");
@@ -766,7 +800,13 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     return true;
   }
 
-  sprintf(directory, "%s", cpufreqdir);
+  if (maxCpu) {
+    // Bring the other CPUs online
+    for (i = 1; i <= maxCpu; i++) {
+      bring_cpu_online(maxCpu);
+    }
+  }
+
   json_t *genericEntry = genericParams->child->child;
   while (genericEntry) {
     if (genericEntry->type != JSON_OBJECT) {
@@ -796,30 +836,32 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
       governor = value->child->text;
     }
 
-    sprintf(filename, "%s/%s", directory, name->child->text);
+    for (i = 0; i <= maxCpu; i++) {
+      sprintf(filename, "%s%d/cpufreq/%s", cpudir, i, name->child->text);
 
-    // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+      // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
-    FILE *fp = fopen(filename, "w");
-    if (!fp) {
-      sprintf(errorText, "Unable to open %s", filename);
-      error = true;
-    }
-    else {
-      if (fputs(value->child->text, fp) < 0) {
-	sprintf(errorText, "Unable to write to %s", filename);
+      FILE *fp = fopen(filename, "w");
+      if (!fp) {
+	sprintf(errorText, "Unable to open %s", filename);
 	error = true;
       }
-      if (fclose(fp)) {
-	sprintf(errorText, "Unable to close %s", filename);
-	error = true;
+      else {
+	if (fputs(value->child->text, fp) < 0) {
+	  sprintf(errorText, "Unable to write to %s", filename);
+	  error = true;
+	}
+	if (fclose(fp)) {
+	  sprintf(errorText, "Unable to close %s", filename);
+	  error = true;
+	}
       }
-    }
       
-    if (error) {
-      sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
-	      errorText);
-      break;
+      if (error) {
+	sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+		errorText);
+	break;
+      }
     }
     
     genericEntry = genericEntry->next;
@@ -827,7 +869,6 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 
   if (governor != NULL) {
 
-    sprintf(directory, "%s/%s", cpufreqdir, governor);
     json_t *governorEntry = governorParams->child->child;
     while (governorEntry) {
       if (governorEntry->type != JSON_OBJECT) {
@@ -853,37 +894,38 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
 	return true;
       }
 
-      sprintf(filename, "%s/%s", directory, name->child->text);
+      for (i = 0; i <= maxCpu; i++) {
+	sprintf(filename, "%s%d/cpufreq/%s/%s", cpudir, i, governor, name->child->text);
 
-      // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+	// fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
-      FILE *fp = fopen(filename, "w");
-      if (!fp) {
-	sprintf(errorText, "Unable to open %s", filename);
-	error = true;
-      }
-      else {
-	if (fputs(value->child->text, fp) < 0) {
-	  sprintf(errorText, "Unable to write to %s", filename);
+	FILE *fp = fopen(filename, "w");
+	if (!fp) {
+	  sprintf(errorText, "Unable to open %s", filename);
 	  error = true;
 	}
-	if (fclose(fp)) {
-	  sprintf(errorText, "Unable to close %s", filename);
-	  error = true;
+	else {
+	  if (fputs(value->child->text, fp) < 0) {
+	    sprintf(errorText, "Unable to write to %s", filename);
+	    error = true;
+	  }
+	  if (fclose(fp)) {
+	    sprintf(errorText, "Unable to close %s", filename);
+	    error = true;
+	  }
 	}
-      }
       
-      if (error) {
-	sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
-		errorText);
-	break;
+	if (error) {
+	  sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+		  errorText);
+	  break;
+	}
       }
     
       governorEntry = governorEntry->next;
     }
   }
 
-  sprintf(directory, "%s/%s", cpufreqdir, "override");
   json_t *overrideEntry = overrideParams->child->child;
   while (overrideEntry) {
     if (overrideEntry->type != JSON_OBJECT) {
@@ -909,30 +951,32 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
       return true;
     }
 
-    sprintf(filename, "%s/%s", directory, name->child->text);
+    for (i = 0; i <= maxCpu; i++) {
+      sprintf(filename, "%s%d/cpufreq/override/%s", cpudir, i, name->child->text);
 
-    fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+      // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
-    FILE *fp = fopen(filename, "w");
-    if (!fp) {
-      sprintf(errorText, "Unable to open %s", filename);
-      error = true;
-    }
-    else {
-      if (fputs(value->child->text, fp) < 0) {
-	sprintf(errorText, "Unable to write to %s", filename);
+      FILE *fp = fopen(filename, "w");
+      if (!fp) {
+	sprintf(errorText, "Unable to open %s", filename);
 	error = true;
       }
-      if (fclose(fp)) {
-	sprintf(errorText, "Unable to close %s", filename);
-	error = true;
+      else {
+	if (fputs(value->child->text, fp) < 0) {
+	  sprintf(errorText, "Unable to write to %s", filename);
+	  error = true;
+	}
+	if (fclose(fp)) {
+	  sprintf(errorText, "Unable to close %s", filename);
+	  error = true;
+	}
       }
-    }
       
-    if (error) {
-      sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
-	      errorText);
-      break;
+      if (error) {
+	sprintf(buffer, "{\"errorText\": \"%s\", \"returnValue\": false, \"errorCode\": -1 }",
+		errorText);
+	break;
+      }
     }
     
     overrideEntry = overrideEntry->next;
@@ -956,16 +1000,23 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   LSError lserror;
   LSErrorInit(&lserror);
 
-  char directory[MAXLINLEN];
   char filename[MAXLINLEN];
   char line[MAXLINLEN];
 
   bool error = false;
   char *governor = NULL;
+  int maxCpu = 0;
+  int i;
 
   sprintf(buffer, "{\"returnValue\": true }");
 
   json_t *object = json_parse_document(LSMessageGetPayload(message));
+
+  // Extract the maxCpu argument from the message
+  json_t *param = json_find_first_label(object, "maxCpu");
+  if (param && ((param->child->type == JSON_STRING) || param->child->type == JSON_NUMBER)) {
+    maxCpu = atoi(param->child->text);
+  }
 
   // Extract the genericParams argument from the message
   json_t *genericParams = json_find_first_label(object, "genericParams");
@@ -1016,6 +1067,15 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   if (fputs("[ \"`/usr/bin/lunaprop -m -n com.palm.system last_umount_clean`\"  = \"true\" ] || exit 0\n", fp) < 0) error = true;
   if (fputs("\n", fp) < 0) error = true;
  
+  if (maxCpu) {
+    // Bring the other CPUs online
+    for (i = 1; i <= maxCpu; i++) {
+      sprintf(line, "echo -n '1' > %s%d/online\n", cpudir, i);
+      if (fputs(line, fp) < 0) error = true;
+    }
+    if (fputs("\n", fp) < 0) error = true;
+  }
+  
   if (error) {
     (void)fclose(fp);
     (void)unlink(filename);
@@ -1026,7 +1086,6 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
     return true;
   }
   
-  sprintf(directory, "%s", cpufreqdir);
   json_t *genericEntry = genericParams->child->child;
   while (genericEntry) {
     if (genericEntry->type != JSON_OBJECT) goto loop1;
@@ -1041,17 +1100,19 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       governor = value->child->text;
     }
 
-    // fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
-    sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
+    // fprintf(stderr, "echo %s > %s%d/cpufreq/%s\n", value->child->text, cpudir, 0, name->child->text);
+    for (i = 0; i <= maxCpu; i++) {
+      sprintf(line, "echo -n '%s' > %s%d/cpufreq/%s\n", value->child->text, cpudir, i, name->child->text);
 
-    if (fputs(line, fp) < 0) {
-      (void)fclose(fp);
-      (void)unlink(filename);
-      sprintf(buffer,
-	      "{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
-	      filename);
-      if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
-      return true;
+      if (fputs(line, fp) < 0) {
+	(void)fclose(fp);
+	(void)unlink(filename);
+	sprintf(buffer,
+		"{\"errorText\": \"Unable to open %s\", \"returnValue\": false, \"errorCode\": -1 }",
+		filename);
+	if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+	return true;
+      }
     }
       
   loop1:
@@ -1060,7 +1121,6 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
 
   if (governor != NULL) {
 
-    sprintf(directory, "%s/%s", cpufreqdir, governor);
     json_t *governorEntry = governorParams->child->child;
     while (governorEntry) {
       if (governorEntry->type != JSON_OBJECT) goto loop2;
@@ -1071,17 +1131,18 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       if (!value || (value->child->type != JSON_STRING) ||
 	  (strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) goto loop2;
 
-      // fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
-      sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
-
-      if (fputs(line, fp) < 0) {
-	(void)fclose(fp);
-	(void)unlink(filename);
-	sprintf(buffer,
-		"{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
-		filename);
+      // fprintf(stderr, "echo %s > %s%d/cpufreq/%s/%s\n", value->child->text, cpudir, 0, governor, name->child->text);
+      for (i = 0; i <= maxCpu; i++) {
+	sprintf(line, "echo -n '%s' > %s%d/cpufreq/%s/%s\n", value->child->text, cpudir, i, governor, name->child->text);
+	if (fputs(line, fp) < 0) {
+	  (void)fclose(fp);
+	  (void)unlink(filename);
+	  sprintf(buffer,
+		  "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+		  filename);
 	if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
 	return true;
+	}
       }
       
     loop2:
@@ -1089,7 +1150,6 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
     }
   }
 
-  sprintf(directory, "%s/%s", cpufreqdir, "override");
   json_t *overrideEntry = overrideParams->child->child;
   while (overrideEntry) {
     if (overrideEntry->type != JSON_OBJECT) goto loop3;
@@ -1100,17 +1160,18 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
     if (!value || (value->child->type != JSON_STRING) ||
 	(strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) goto loop3;
 
-    fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
-    sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
-
-    if (fputs(line, fp) < 0) {
-      (void)fclose(fp);
-      (void)unlink(filename);
-      sprintf(buffer,
-	      "{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
-	      filename);
-      if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
-      return true;
+    // fprintf(stderr, "echo %s > %s%d/cpufreq/override/%s\n", value->child->text, cpudir, 0, name->child->text);
+    for (i = 0; i <= maxCpu; i++) {
+      sprintf(line, "echo -n '%s' > %s%d/cpufreq/override/%s\n", value->child->text, cpudir, i, name->child->text);
+      if (fputs(line, fp) < 0) {
+	(void)fclose(fp);
+	(void)unlink(filename);
+	sprintf(buffer,
+		"{\"errorText\": \"Unable to write to %s\", \"returnValue\": false, \"errorCode\": -1 }",
+		filename);
+	if (!LSMessageReply(lshandle, message, buffer, &lserror)) goto error;
+	return true;
+      }
     }
       
   loop3:
@@ -1202,7 +1263,7 @@ bool get_time_in_state_method(LSHandle* lshandle, LSMessage *message, void *ctx)
     return simple_command(lshandle, message,
 			  "/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state 2>&1");
   }
-  else if (is_cpu1_online()) {
+  else if (is_cpu_online(1)) {
     return simple_command(lshandle, message,
 			  "/bin/cat /sys/devices/system/cpu/cpu1/cpufreq/stats/time_in_state 2>&1");
   }

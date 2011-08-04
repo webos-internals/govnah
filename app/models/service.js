@@ -109,21 +109,22 @@ service.get_scaling_governor = function(callback)
 	return request;
 };
 
-service.get_cpufreq_params = function(callback, governor)
+service.get_cpufreq_params = function(callback, governor, cpu)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'get_cpufreq_params',
 		parameters:
 		{
-			governor: governor
+			governor: governor,
+			cpu: cpu
 		},
 		onSuccess: callback,
 		onFailure: callback
 	});
 	return request;
 };
-service.set_cpufreq_params = function(callback, genericParams, governorParams, overrideParams)
+service.set_cpufreq_params = function(callback, genericParams, governorParams, overrideParams, maxCpu)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
@@ -132,14 +133,15 @@ service.set_cpufreq_params = function(callback, genericParams, governorParams, o
 		{
 			genericParams: genericParams,
 			governorParams: governorParams,
-			overrideParams: overrideParams
+			overrideParams: overrideParams,
+			maxCpu: maxCpu
 		},
 		onSuccess: callback,
 		onFailure: callback
 	});
 	return request;
 };
-service.stick_cpufreq_params = function(callback, genericParams, governorParams, overrideParams)
+service.stick_cpufreq_params = function(callback, genericParams, governorParams, overrideParams, maxCpu)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
@@ -148,7 +150,8 @@ service.stick_cpufreq_params = function(callback, genericParams, governorParams,
 		{
 			genericParams: genericParams,
 			governorParams: governorParams,
-			overrideParams: overrideParams
+			overrideParams: overrideParams,
+			maxCpu: maxCpu
 		},
 		onSuccess: callback,
 		onFailure: callback
