@@ -42,6 +42,10 @@ GraphAssistant.prototype.setup = function()
 	if (this.display == 'time2')
 		this.titleElement.innerHTML = $L('CPU 2 Time In State');
 	
+	// setup resize listener for tp
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad')
+		this.controller.window.onresize = this.handleOrientation.bind(this);
+	
     this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
     this.gestureChangeHandler =	this.gestureChangeHandler.bindAsEventListener(this);
     this.gestureEndHandler =	this.gestureEndHandler.bindAsEventListener(this);
@@ -94,6 +98,26 @@ GraphAssistant.prototype.dragEndHandler = function(event)
 {
 };
 
+GraphAssistant.prototype.handleOrientation = function() {
+	
+	if (this.controller) {
+		this.controller.get('graphCanvas').width = this.controller.window.innerWidth;
+		this.controller.get('graphCanvas').height = this.controller.window.innerHeight;
+		
+		dataHandler.fullGraph.options.renderWidth  = this.controller.window.innerWidth;
+		dataHandler.fullGraph.options.renderHeight = this.controller.window.innerHeight;
+		
+		if (this.controller.window.innerHeight == 1024)
+			dataHandler.fullGraph.options.yaxis.tics = 22;
+		else 
+			dataHandler.fullGraph.options.yaxis.tics = 18;
+			
+			
+		dataHandler.renderFullGraph();
+	}
+	
+};
+
 GraphAssistant.prototype.orientationChanged = function(orientation)
 {
 	switch (orientation)
@@ -119,6 +143,11 @@ GraphAssistant.prototype.activate = function(event)
 {
 	dataHandler.setGraphAssistant(this);
 	
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') {
+		this.controller.window.onresize = this.handleOrientation.bind(this);
+		this.handleOrientation();
+	}
+	
 	if (this.controller.stageController.setWindowOrientation)
 	{
     	this.controller.stageController.setWindowOrientation("free");
@@ -130,7 +159,6 @@ GraphAssistant.prototype.activate = function(event)
 	}
 	else
 	{
-		
 	}
 	this.firstActivate = true;
 	

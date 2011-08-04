@@ -136,6 +136,10 @@ body.palm-dark .palm-separator
 	z-index: -5;
 	top: 22px;
 }
+.main canvas#stateCanvas
+{
+	right: 0px;
+}
 
 
 
