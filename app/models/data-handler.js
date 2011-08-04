@@ -79,8 +79,7 @@ function dataHandlerModel()
     this.currHandler  = this.currHandler.bindAsEventListener(this);
     this.loadHandler  = this.loadHandler.bindAsEventListener(this);
     this.memHandler   = this.memHandler.bindAsEventListener(this);
-    this.state1Handler = this.stateHandler.bindAsEventListener(this, 1);
-    this.state2Handler = this.stateHandler.bindAsEventListener(this, 2);
+    this.stateHandler = this.stateHandler.bindAsEventListener(this, 1);
 	
 	this.graphs = $H();
 	this.graphs["freq1"] = false;
@@ -89,8 +88,7 @@ function dataHandlerModel()
 	this.graphs["curr"] = false;
 	this.graphs["load"] = false;
 	this.graphs["mem"] = false;
-	this.graphs["state1"] = false;
-	this.graphs["state2"] = false;
+	this.graphs["state"] = false;
 	
 	this.strokes = $H();
 	this.strokes["freq1"]  = "rgba(255, 153, 153, .4)";
@@ -100,8 +98,7 @@ function dataHandlerModel()
 	this.strokes["curr2"] = "rgba(255, 153, 153, .4)";
 	this.strokes["load"]  = "rgba(153, 153, 255, .4)";
 	this.strokes["mem"]   = "rgba(153, 153, 255, .4)";
-	this.strokes["state1"] = "rgba(153, 153, 153, .4)";
-	this.strokes["state2"] = "rgba(153, 153, 153, .4)";
+	this.strokes["state"] = "rgba(153, 153, 153, .4)";
 
 	this.fills = $H();
 	this.fills["freq1"]    = "rgba(255, 153, 153, .2)";
@@ -111,8 +108,7 @@ function dataHandlerModel()
 	this.fills["curr2"]   = "rgba(255, 153, 153, .2)";
 	this.fills["load"]    = "rgba(153, 153, 255, .2)";
 	this.fills["mem"]     = "rgba(153, 153, 255, .2)";
-	this.fills["state1"]   = "rgba(153, 153, 153, .2)";
-	this.fills["state2"]   = "rgba(153, 153, 153, .2)";
+	this.fills["state"]   = "rgba(153, 153, 153, .2)";
 
 	this.updateReq  = false;
 	this.freq1Req  = false;
@@ -121,8 +117,7 @@ function dataHandlerModel()
 	this.currReq = false;
 	this.loadReq  = false;
 	this.memReq   = false;
-	this.state1Req = false;
-	this.state2Req = false;
+	this.stateReq = false;
 	
 	this.fullGraph = false;
 	
@@ -207,24 +202,14 @@ dataHandlerModel.prototype.setMainAssistant = function(assistant)
 			padding: {top: 1}
 		}
 	);
-	this.graphs["state1"] = new barGraph
+	this.graphs["state"] = new barGraph
 	(
-		this.mainAssistant.controller.get('state1Canvas'),
+		this.mainAssistant.controller.get('stateCanvas'),
 		{
 			height: 27,
 			width: 320
 		}
 	);
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
-		this.graphs["state2"] = new barGraph
-			(
-			 this.mainAssistant.controller.get('state2Canvas'),
-			 {
-				 height: 27,
-				 width: 320
-			 }
-			 );
-	}
 };
 dataHandlerModel.prototype.setGraphAssistant = function(assistant)
 {
@@ -638,8 +623,7 @@ dataHandlerModel.prototype.timerFunction = function()
 	if (this.currReq)  this.currReq.cancel();
 	if (this.loadReq)  this.loadReq.cancel();
 	if (this.memReq)   this.memReq.cancel();
-	if (this.state1Req) this.state1Req.cancel();
-	if (this.state2Req) this.state2Req.cancel();
+	if (this.stateReq) this.stateReq.cancel();
 
 	var keys = this.lineData.keys();
 	if (keys.length > this.cutoff)
@@ -674,10 +658,7 @@ dataHandlerModel.prototype.timerFunction = function()
 		}
 		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
 		this.memReq   = service.get_proc_meminfo(this.memHandler);
-		this.state1Req = service.get_time_in_state(this.state1Handler, 0);
-		if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
-			this.state2Req = service.get_time_in_state(this.state2Handler, 1);
-		}
+		this.stateReq = service.get_time_in_state(this.stateHandler, 0);
 	}
 	
 	this.delayedTimer(this.rate);
@@ -897,7 +878,7 @@ dataHandlerModel.prototype.memHandler = function(payload)
 	this.renderMiniLine("mem");
 	this.renderFullGraph("mem");
 };
-dataHandlerModel.prototype.stateHandler = function(payload, cpu)
+dataHandlerModel.prototype.stateHandler = function(payload)
 {
 	if (payload.returnValue) 
 	{
@@ -929,22 +910,12 @@ dataHandlerModel.prototype.stateHandler = function(payload, cpu)
 				}
 			}
 		}
-		if (cpu == 1) {
-			this.barData.state1 = dataHash;
-		}
-		if (cpu == 2) {
-			this.barData.state2 = dataHash;
-		}
+
+		this.barData.state = dataHash;
 	}
 
-	if (cpu == 1) {
-		this.renderMiniBar("state1");
-		this.renderFullGraph("state1");
-	}
-	if (cpu == 2) {
-		this.renderMiniBar("state2");
-		this.renderFullGraph("state2");
-	}
+	this.renderMiniBar("state");
+	this.renderFullGraph("state");
 };
 dataHandlerModel.prototype.currHandler = function(payload)
 {
@@ -1134,20 +1105,11 @@ dataHandlerModel.prototype.renderMiniBar = function(item)
 
 		var data = [];
 		
-		if (item =="state1") {
-			if (this.barData.state1) {
-				var keys = this.barData.state1.keys();
+		if (item =="state") {
+			if (this.barData.state) {
+				var keys = this.barData.state.keys();
 				for (var k = 0; k < keys.length; k++) {
-					var value = this.barData.state1.get(keys[k]);
-					data.push({key: keys[k], value: value});
-				}
-			}
-		}
-		else if (item =="state2") {
-			if (this.barData.state2) {
-				var keys = this.barData.state2.keys();
-				for (var k = 0; k < keys.length; k++) {
-					var value = this.barData.state2.get(keys[k]);
+					var value = this.barData.state.get(keys[k]);
 					data.push({key: keys[k], value: value});
 				}
 			}

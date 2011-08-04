@@ -74,7 +74,6 @@ MainAssistant.prototype.setup = function()
 	this.memRow =			this.controller.get('memRow');
 	this.memCurrent =		this.controller.get('memCurrent');
 	this.time1Row =			this.controller.get('time1Row');
-	this.time2Row =			this.controller.get('time2Row');
 	
 	// set version string random subtitle
 	this.titleElement.innerHTML = Mojo.Controller.appInfo.title;
@@ -98,7 +97,6 @@ MainAssistant.prototype.setup = function()
 	this.controller.listen(this.loadRow, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'load'));
 	this.controller.listen(this.memRow,  Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'mem' ));
 	//this.controller.listen(this.time1Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'time1'));
-	//this.controller.listen(this.time2Row, Mojo.Event.tap, this.graphTap.bindAsEventListener(this, 'time2'));
 	
 	
 	this.visible = this.visible.bindAsEventListener(this);
@@ -126,16 +124,7 @@ MainAssistant.prototype.setup = function()
 	this.controller.get('main-scene-battery-current').innerHTML = $L("Battery Current");
 	this.controller.get('main-scene-load-average').innerHTML = $L("Load Average");
 	this.controller.get('main-scene-memory-swap').innerHTML = $L("Memory / Swap");
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
-		this.controller.get('main-scene-time-in-state1').innerHTML = $L("CPU 1 Time In State");
-		this.controller.get('main-scene-time-in-state2').innerHTML = $L("CPU 2 Time In State");
-	}
-	else {
-		this.controller.get('main-scene-time-in-state1').innerHTML = $L("CPU Time In State");
-		this.controller.get('main-scene-time-in-state2').innerHTML = $L("N/A");
-		this.time2Row.style.display = 'none';
-	}
-	
+	this.controller.get('main-scene-time-in-state').innerHTML = $L("CPU Time In State");
 };
 
 

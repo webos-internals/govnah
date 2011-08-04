@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 21
+ * 	Highest Version: 22
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -193,6 +193,18 @@ var f104a_default_pre2 = {
 	kernels: [ "F104A" ]
 };
 
+var ondemandtcl_1100 = {
+	version:	22,
+	name:		'OnDemandTcl 1100',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '150000'},
+{name:	'scaling_max_freq',	value: '1100000'},
+					   ],
+	kernels: [ "UberKernel" ]
+};
+
 var ondemandtcl_1400 = {
 	version:	12,
 	name:		'OnDemandTcl 1400',
@@ -215,6 +227,18 @@ var ondemandtcl_1512 = {
 {name:	'scaling_max_freq',	value: '1512000'},
 					   ],
 	kernels: [ "UberKernel", "F15C" ]
+};
+
+var screenstate3_150_1100 = {
+	version:	22,
+	name:		'Screenstate3 150/1100',
+	locked:		false,
+	governor:	'screenstate-v3',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'150000'},
+{name:	'scaling_max_freq',	value: '1100000'},
+					   ],
+	kernels: [ "UberKernel" ]
 };
 
 var screenstate3_300_1100 = {
@@ -474,7 +498,9 @@ profilesModel.populateDefaults = function()
 
 		profilesModel.defaultProfiles.push(ondemandtcl_1400);
 		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre2);
+		profilesModel.defaultProfiles.push(ondemandtcl_1100);
 		profilesModel.defaultProfiles.push(screenstate2_300_1200);
+		profilesModel.defaultProfiles.push(screenstate3_150_1100);
 		profilesModel.defaultProfiles.push(screenstate3_300_1100);
 		profilesModel.defaultProfiles.push(f104a_default_pre2);
 

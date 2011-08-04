@@ -527,6 +527,20 @@ bool get_a6_current_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 }
 
 //
+// Is CPU 1 online
+//
+bool is_cpu1_online()
+{
+  bool status = false;
+  FILE *fp = fopen("/sys/devices/system/cpu/cpu1/online", "r");
+
+  if (!fp) return false;
+  if (fgetc(fp) == '1') status = true;
+  if (fclose(fp)) status = false;
+  return status;
+}
+
+//
 // Read scaling_cur_freq
 //
 bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
@@ -546,8 +560,11 @@ bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *c
   if (cpu == 0) {
     return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
   }
+  else if (is_cpu1_online()) {
+    return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu1/cpufreq/scaling_cur_freq");
+  }
   else {
-    if (!LSMessageReply(lshandle, message, "{\"returnValue\": false}", &lserror)) goto error;
+    if (!LSMessageReply(lshandle, message, "{\"value\": 0, \"returnValue\": true}", &lserror)) goto error;
   }
 
   return true;
@@ -1184,6 +1201,10 @@ bool get_time_in_state_method(LSHandle* lshandle, LSMessage *message, void *ctx)
   if (cpu == 0) {
     return simple_command(lshandle, message,
 			  "/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state 2>&1");
+  }
+  else if (is_cpu1_online()) {
+    return simple_command(lshandle, message,
+			  "/bin/cat /sys/devices/system/cpu/cpu1/cpufreq/stats/time_in_state 2>&1");
   }
   else {
     if (!LSMessageReply(lshandle, message, "{\"returnValue\": false}", &lserror)) goto error;

@@ -130,8 +130,7 @@ body.palm-dark .palm-separator
 .main canvas#currCanvas,
 .main canvas#loadCanvas,
 .main canvas#memCanvas,
-.main canvas#state1Canvas,
-.main canvas#state2Canvas
+.main canvas#stateCanvas
 {
 	position: absolute;
 	z-index: -5;
@@ -168,8 +167,7 @@ body.dock
 .dock canvas#currCanvas,
 .dock canvas#loadCanvas,
 .dock canvas#memCanvas,
-.dock canvas#state1Canvas,
-.dock canvas#state2Canvas
+.dock canvas#stateCanvas
 {
 	position: absolute;
 	z-index: -5;
