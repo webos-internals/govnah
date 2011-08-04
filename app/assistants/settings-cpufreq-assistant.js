@@ -192,7 +192,7 @@ SettingsCpufreqAssistant.prototype.governorChange = function(event)
 	//alert(event.value);
 	this.governorModel.value = event.value;
 	if (this.setRequest) this.setRequest.cancel();
-	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], [], []);
+	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], [], [], (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") ? 1 : 0);
 };
 
 SettingsCpufreqAssistant.prototype.onSetParams = function(payload)
@@ -838,7 +838,8 @@ SettingsCpufreqAssistant.prototype.saveButtonPressed = function(event)
 	this.setRequest = service.set_cpufreq_params(this.saveCompleteCpufreq,
 												 standardParams,
 												 specificParams,
-												 overrideParams);
+												 overrideParams,
+												 (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") ? 1 : 0);
 };
 
 SettingsCpufreqAssistant.prototype.saveCompleteCpufreq = function(payload)
