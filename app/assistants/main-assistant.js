@@ -11,7 +11,7 @@ function MainAssistant()
 		{weight:  5, text: $L('Much Better Than Arnie')},
 		{weight:  2, text: $L('Random Taglines Are Awesome')},
 		{weight:  2, text: $L('I Would Like To Make Some Overclock')},
-		{weight:  2, text: $L('Now With More Cowbell')}
+		{weight:  2, text: $L('Now With More Cowbell')},
 		{weight:  2, text: $L('MOAR')}
 	];
 	
