@@ -44,8 +44,8 @@ function lineGraph(element, options, labels)
 			left:		0,
 			right:		0
 		},
-		clearWidth:		480,
-		clearHeight:	480
+		clearWidth:		1024,
+		clearHeight:	1024
 	});
 	
 	this.lines =		[];
