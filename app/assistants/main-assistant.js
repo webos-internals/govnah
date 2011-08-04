@@ -115,7 +115,7 @@ MainAssistant.prototype.setup = function()
 	}
 	else {
 		this.controller.get('main-scene-frequency1').innerHTML = $L("CPU Frequency");
-		this.controller.get('main-scene-frequency2').innerHTML = $L("N/A");
+		this.freq2Row.style.display = 'none';
 	}
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 		this.controller.get('main-scene-temperature').innerHTML = $L("Battery Temperature");
@@ -133,6 +133,7 @@ MainAssistant.prototype.setup = function()
 	else {
 		this.controller.get('main-scene-time-in-state1').innerHTML = $L("CPU Time In State");
 		this.controller.get('main-scene-time-in-state2').innerHTML = $L("N/A");
+		this.time2Row.style.display = 'none';
 	}
 	
 };
