@@ -66,10 +66,6 @@
         "source": "app/assistants/profiles-assistant.js"
     },
     {
-        "scenes": "dashboard",
-        "source": "app/assistants/dashboard-assistant.js"
-    },
-    {
         "scenes": "graph",
         "source": "app/assistants/graph-assistant.js"
     }

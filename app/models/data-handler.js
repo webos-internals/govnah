@@ -42,7 +42,6 @@ function dataHandlerModel()
 	this.graphAssistant = false;
 	this.settingsAssistant = false;
 	this.dockAssistant = false;
-	this.dashAssistant = false;
 	
 	this.currentMode = "card";
 	
@@ -309,12 +308,6 @@ dataHandlerModel.prototype.setDockAssistant = function(assistant)
 		}
 	);
 };
-dataHandlerModel.prototype.setDashAssistant = function(assistant)
-{
-	this.dashAssistant = assistant;
-	this.currentMode = "dash";
-	this.rate = parseInt(prefs.get().dashPollSpeed) * 1000;
-};
 
 dataHandlerModel.prototype.updateParams = function(num)
 {
@@ -541,73 +534,6 @@ dataHandlerModel.prototype.settingLabel = function(name)
 	return (this.settings[name].nice ? this.settings[name].nice : name.replace(/_/g, " "));
 }
 
-dataHandlerModel.prototype.openDash = function(skipBanner)
-{
-	try
-	{
-		Mojo.Controller.appController.removeBanner('govnahBanner');
-		if (!skipBanner)
-		{
-			Mojo.Controller.appController.showBanner
-			(
-				{
-					icon: 'icon.png',
-					messageText: "Govnah: Opening Dashboard",
-					soundClass: ""
-				},
-				{
-					type: 'dash-close'
-				},
-				'govnahBanner'
-			);
-		}
-		
-		this.dashController = Mojo.Controller.appController.getStageController(dashStageName);
-	    if (this.dashController) 
-		{
-			
-		}
-		else
-		{
-			Mojo.Controller.appController.createStageWithCallback({name: dashStageName, lightweight: true}, this.openDashCallback.bind(this), "dashboard");
-		}
-	}
-	catch (e)
-	{
-		Mojo.Log.logException(e, "dataHandlerModel#openDash");
-	}
-};
-dataHandlerModel.prototype.openDashCallback = function(controller)
-{
-	controller.pushScene('dashboard', this);
-};
-dataHandlerModel.prototype.closeDash = function(skipBanner)
-{
-	Mojo.Controller.appController.removeBanner('govnahBanner');
-	if (!skipBanner)
-	{
-		Mojo.Controller.appController.showBanner
-		(
-			{
-				icon: 'icon.png',
-				messageText: "Closing Dashboard - Tap To Cancel",
-				soundClass: ""
-			},
-			{
-				type: 'dash-open'
-			},
-			'govnahBanner'
-		);
-	}
-	else
-	{
-		if (this.dashAssistant && this.dashAssistant.controller)
-		{
-			this.dashAssistant.skipClose = true;
-		}
-	}
-	Mojo.Controller.appController.closeStage(dashStageName);
-};
 
 dataHandlerModel.prototype.delayedTimer = function(delay)
 {
@@ -680,10 +606,6 @@ dataHandlerModel.prototype.tempHandler = function(payload)
 		if (this.dockAssistant && this.dockAssistant.controller && this.dockAssistant.isVisible)
 		{
 			this.dockAssistant.tempCurrent.innerHTML = value + ' &deg;C';
-		}
-		if (this.dashAssistant && this.dashAssistant.controller && this.dashAssistant.isVisible)
-		{
-			this.dashAssistant.iconElement.className = 'palm-dashboard-icon temp-' + value;
 		}
 		
 		var dataObj = this.lineData.get(timestamp)
@@ -978,8 +900,7 @@ dataHandlerModel.currFormat = function(n)
 
 dataHandlerModel.prototype.updateIcon = function(temp)
 {
-	if ((this.currentMode == "card" && prefs.get().cardIconUpdate) ||
-		(this.currentMode == "dash" && prefs.get().dashIconUpdate))
+	if (this.currentMode == "card" && prefs.get().cardIconUpdate)
 	{
 		this.iconDirty = true;
 		var r = new Mojo.Service.Request

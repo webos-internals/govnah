@@ -5,7 +5,6 @@ var vers =  new versionCookie();
 // stage names
 var mainStageName = 'govnah-main';
 var dockStageName = 'govnah-dock';
-var dashStageName = 'govnah-dash';
 
 var dataHandler = new dataHandlerModel();
 var profiles = new profilesModel();
@@ -28,7 +27,6 @@ AppAssistant.prototype.handleLaunch = function(params)
 		// launch from launcher tap
 		if (!params) 
 		{
-			dataHandler.closeDash(true);
 			var mainStageController = this.controller.getStageController(mainStageName);
 	        if (mainStageController) 
 			{
@@ -48,11 +46,6 @@ AppAssistant.prototype.handleLaunch = function(params)
 			{
 				this.controller.createStageWithCallback({name: dockStageName, lightweight: true}, this.launchDockScene.bind(this), "dockMode");
 			}
-		}
-		// relaunch dash
-		else if (params.type == 'dash-open')
-		{
-			dataHandler.openDash(true);
 		}
 		// launch and return parameters
 		else if (params.type == 'get-profiles' && params.returnid != '')
