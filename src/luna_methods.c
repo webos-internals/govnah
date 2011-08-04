@@ -530,7 +530,32 @@ bool get_a6_current_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 // Read scaling_cur_freq
 //
 bool get_scaling_cur_freq_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  int cpu = 0;
+  
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
+
+  // Extract the governor argument from the message
+  json_t *param = json_find_first_label(object, "cpu");
+  if (param && ((param->child->type == JSON_STRING) || (param->child->type == JSON_NUMBER))) {
+    cpu = atoi(param->child->text);
+  }
+
+  if (cpu == 0) {
+    return read_single_integer(lshandle, message, "/sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq");
+  }
+  else {
+    if (!LSMessageReply(lshandle, message, "{\"returnValue\": false}", &lserror)) goto error;
+  }
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
 }
 
 //
@@ -1143,8 +1168,33 @@ bool get_cpufreq_file_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 // Read time_in_state
 //
 bool get_time_in_state_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
-  return simple_command(lshandle, message,
-			"/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state 2>&1");
+  LSError lserror;
+  LSErrorInit(&lserror);
+
+  int cpu = 0;
+  
+  json_t *object = json_parse_document(LSMessageGetPayload(message));
+
+  // Extract the governor argument from the message
+  json_t *param = json_find_first_label(object, "cpu");
+  if (param && ((param->child->type == JSON_STRING) || (param->child->type == JSON_NUMBER))) {
+    cpu = atoi(param->child->text);
+  }
+
+  if (cpu == 0) {
+    return simple_command(lshandle, message,
+			  "/bin/cat /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state 2>&1");
+  }
+  else {
+    if (!LSMessageReply(lshandle, message, "{\"returnValue\": false}", &lserror)) goto error;
+  }
+
+  return true;
+ error:
+  LSErrorPrint(&lserror, stderr);
+  LSErrorFree(&lserror);
+ end:
+  return false;
 }
 
 //

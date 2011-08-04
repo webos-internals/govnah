@@ -662,9 +662,9 @@ dataHandlerModel.prototype.timerFunction = function()
 
 	if (this.currentMode == "card" || this.currentMode == "dock")
 	{
-		this.freq1Req  = service.get_scaling_cur_freq(this.freq1Handler);
+		this.freq1Req  = service.get_scaling_cur_freq(this.freq1Handler, 0);
 		if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
-			this.freq2Req  = service.get_scaling_cur_freq(this.freq2Handler);
+			this.freq2Req  = service.get_scaling_cur_freq(this.freq2Handler, 1);
 		}
 		if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 			this.currReq  = service.get_a6_current(this.currHandler);
@@ -674,9 +674,9 @@ dataHandlerModel.prototype.timerFunction = function()
 		}
 		this.loadReq  = service.get_proc_loadavg(this.loadHandler);
 		this.memReq   = service.get_proc_meminfo(this.memHandler);
-		this.state1Req = service.get_time_in_state(this.state1Handler);
+		this.state1Req = service.get_time_in_state(this.state1Handler, 0);
 		if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
-			this.state2Req = service.get_time_in_state(this.state2Handler);
+			this.state2Req = service.get_time_in_state(this.state2Handler, 1);
 		}
 	}
 	

@@ -84,11 +84,15 @@ service.get_a6_temp = function(callback)
 	});
 	return request;
 };
-service.get_scaling_cur_freq = function(callback)
+service.get_scaling_cur_freq = function(callback, cpu)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'get_scaling_cur_freq',
+		parameters:
+		{
+			cpu: cpu
+		},
 		onSuccess: callback,
 		onFailure: callback
 	});
@@ -231,11 +235,15 @@ service.get_compcache_file = function(callback)
 	return request;
 };
 
-service.get_time_in_state = function(callback)
+service.get_time_in_state = function(callback, cpu)
 {
 	var request = new Mojo.Service.Request(service.identifier,
 	{
 		method: 'get_time_in_state',
+		parameters:
+		{
+			cpu: cpu
+		},
 		onSuccess: callback,
 		onFailure: callback
 	});
