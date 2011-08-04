@@ -90,60 +90,6 @@ PreferencesAssistant.prototype.setup = function()
 		this.controller.listen('cardIconUpdate', Mojo.Event.propertyChange, this.iconUpdateChanged.bindAsEventListener(this));
 		
 		
-		// Dash Group
-		this.controller.setupWidget
-		(
-			'useDash',
-			{
-	  			trueLabel:  $L("Yes"),
-	 			falseLabel: $L("No"),
-	  			fieldName:  'useDash'
-			},
-			{
-				value : this.prefs.useDash,
-	 			disabled: true
-			}
-		);
-		this.controller.setupWidget
-		(
-			'dashPollSpeed',
-			{
-				label: $L('Poll Speed'),
-				choices:
-				[
-					{label:$L('1 Second'),		value:1},
-					{label:$L('2 Seconds'),		value:2},
-					{label:$L('5 Seconds'),		value:5},
-					{label:$L('10 Seconds'),	value:10},
-					{label:$L('15 Seconds'),	value:15},
-					{label:$L('30 Seconds'),	value:30},
-					{label:$L('1 Minute'),		value:60}
-				],
-				modelProperty: 'dashPollSpeed'
-			},
-			this.prefs
-		);
-		this.controller.setupWidget
-		(
-			'dashIconUpdate',
-			{
-	  			trueLabel:  $L("Yes"),
-	 			falseLabel: $L("No"),
-	  			fieldName:  'dashIconUpdate'
-			},
-			{
-				value : this.prefs.dashIconUpdate,
-	 			disabled: false
-			}
-		);
-		
-		this.useDashChanged(false);
-		this.controller.listen('useDash', Mojo.Event.propertyChange, this.useDashChanged.bindAsEventListener(this));
-		this.controller.listen('dashPollSpeed', Mojo.Event.propertyChange, this.listChangedHandler);
-		this.controller.listen('dashIconUpdate', Mojo.Event.propertyChange, this.toggleChangeHandler);
-		
-		
-		
 		// Profiles Group
 		this.controller.setupWidget
 		(
@@ -240,24 +186,6 @@ PreferencesAssistant.prototype.iconUpdateChanged = function(event)
 		dataHandler.resetIcon();
 	}
 };
-PreferencesAssistant.prototype.useDashChanged = function(event)
-{
-	if (event) 
-	{
-		this.toggleChanged(event);
-	}
-	if (this.prefs['useDash'])
-	{
-		this.controller.get('useDashContainer').className = 'palm-row first';
-		this.controller.get('dashSettings').style.display = '';
-	}
-	else
-	{
-		this.controller.get('useDashContainer').className = 'palm-row single';
-		this.controller.get('dashSettings').style.display = 'none';
-		dataHandler.closeDash(true);
-	}	
-}
 PreferencesAssistant.prototype.toggleChanged = function(event)
 {
 	this.prefs[event.target.id] = event.value;
