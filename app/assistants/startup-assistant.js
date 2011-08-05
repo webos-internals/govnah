@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '0.9.8',log: [ 'Robustified the dual core handling on reset' ] },
  	 { version: '0.9.7',log: [ 'Fixed back button in preferences scene' ] },
  	 { version: '0.9.6',log: [ 'Added dual core support',
 							   'Removed unimplemented dashboard preference',

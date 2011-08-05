@@ -57,16 +57,15 @@ bool is_cpu_online(cpu)
 //
 // Bring CPU online
 //
-bool bring_cpu_online(cpu)
+void bring_cpu_online(cpu)
 {
-  bool status = true;
   char filename[MAXLINLEN];
   sprintf(filename, "/sys/devices/system/cpu/cpu%d/online", cpu);
   FILE *fp = fopen(filename, "w");
-  if (!fp) return false;
-  if (fputs("1", fp) < 0) status = false;
-  if (fclose(fp)) status = false;
-  return status;
+  if (!fp) return;
+  fputs("1", fp);
+  fclose(fp);
+  return;
 }
 
 //
@@ -1070,7 +1069,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   if (maxCpu) {
     // Bring the other CPUs online
     for (i = 1; i <= maxCpu; i++) {
-      sprintf(line, "echo -n '1' > %s%d/online\n", cpudir, i);
+      sprintf(line, "echo -n '1' > %s%d/online || true\n", cpudir, i);
       if (fputs(line, fp) < 0) error = true;
     }
     if (fputs("\n", fp) < 0) error = true;
