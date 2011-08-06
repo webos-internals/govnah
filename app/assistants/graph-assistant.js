@@ -67,7 +67,12 @@ GraphAssistant.prototype.setup = function()
 	this.invisible = this.invisible.bindAsEventListener(this);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
-	this.backElement = this.controller.get('header');
+	// setup back tap
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad' ||
+		Mojo.Environment.DeviceInfo.modelNameAscii == 'Emulator')
+		this.backElement = this.controller.get('back');
+	else
+		this.backElement = this.controller.get('title');
 	this.backTapHandler = this.backTap.bindAsEventListener(this);
 	this.controller.listen(this.backElement, Mojo.Event.tap, this.backTapHandler);
 };
