@@ -433,32 +433,39 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 							var samplingChoices = [];
 							if (this.samplingRates.max !== false && this.samplingRates.min !== false)
 							{
-								for (var s = this.samplingRates.min; s <= 2000000; s = s + 100000)
-								{
-									var sec = (s / 1000000);
-									var display = sec+' Sec';
-									samplingChoices.push({label:display, value:s});
-								}
-								for (var s = 3000000; s <= 10000000; s = s + 1000000)
-								{
-									var sec = (s / 1000000);
-									var display = sec+' Sec';
-									samplingChoices.push({label:display, value:s});
-								}
-								for (var s = 20000000; s <= this.samplingRates.max; s = s + 10000000)
-								{
-									var min = 0;
-									var sec = (s / 1000000);
-									if (sec / 60 >= 1)
-									{
-										min = Math.floor(sec / 60);
-										sec = (sec % 60);
+								for (var s = 10000; s <= 90000; s = s + 10000) {
+									if (s >= this.samplingRates.min) {
+										var sec = (s / 1000000);
+										var display = sec+' Sec';
+										samplingChoices.push({label:display, value:s});
 									}
-									var display = '';
-									if (min > 0) display += min+' Min';
-									display += ' ';
-									if (sec > 0) display += sec+' Sec';
+								}
+								for (var s = 100000; s <= 2000000; s = s + 100000) {
+									if (s >= this.samplingRates.min) {
+										var sec = (s / 1000000);
+										var display = sec+' Sec';
+										samplingChoices.push({label:display, value:s});
+									}
+								}
+								for (var s = 3000000; s <= 10000000; s = s + 1000000) {
+									var sec = (s / 1000000);
+									var display = sec+' Sec';
 									samplingChoices.push({label:display, value:s});
+								}
+								for (var s = 20000000; s <= 100000000; s = s + 10000000) {
+									if (s <= this.samplingRates.max) {
+										var min = 0;
+										var sec = (s / 1000000);
+										if (sec / 60 >= 1) {
+											min = Math.floor(sec / 60);
+											sec = (sec % 60);
+										}
+										var display = '';
+										if (min > 0) display += min+' Min';
+										display += ' ';
+										if (sec > 0) display += sec+' Sec';
+										samplingChoices.push({label:display, value:s});
+									}
 								}
 							}
 							else
