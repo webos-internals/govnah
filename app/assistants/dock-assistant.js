@@ -27,6 +27,11 @@ DockAssistant.prototype.activate = function(event)
 	dataHandler.setDockAssistant(this);
 	dataHandler.start();
 	
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') {
+		this.controller.window.onresize = this.handleOrientation.bind(this);
+		this.handleOrientation();
+	}
+	
 	if (this.controller.stageController.setWindowOrientation)
 	{
     	this.controller.stageController.setWindowOrientation("free");
@@ -42,6 +47,41 @@ DockAssistant.prototype.activate = function(event)
 	}
 	this.notFirstActivate = true;
 };
+
+DockAssistant.prototype.handleOrientation = function() {
+	
+	if (this.controller) {
+		this.controller.get('freq1Canvas').width = this.controller.window.innerWidth;
+		dataHandler.graphs['freq1'].options.renderWidth  = this.controller.window.innerWidth;
+		dataHandler.renderMiniLine('freq1');
+		
+		this.controller.get('freq2Canvas').width = this.controller.window.innerWidth;
+		dataHandler.graphs['freq2'].options.renderWidth  = this.controller.window.innerWidth;
+		dataHandler.renderMiniLine('freq2');
+		
+		this.controller.get('tempCanvas').width  = this.controller.window.innerWidth;
+		dataHandler.graphs['temp'].options.renderWidth  = this.controller.window.innerWidth;
+		dataHandler.renderMiniLine('temp');
+		
+		this.controller.get('currCanvas').width  = this.controller.window.innerWidth;
+		dataHandler.graphs['curr'].options.renderWidth  = this.controller.window.innerWidth;
+		dataHandler.renderMiniLine('curr');
+		
+		this.controller.get('loadCanvas').width  = this.controller.window.innerWidth;
+		dataHandler.graphs['load'].options.renderWidth  = this.controller.window.innerWidth;
+		dataHandler.renderMiniLine('load');
+		
+		this.controller.get('memCanvas').width   = this.controller.window.innerWidth;
+		dataHandler.graphs['mem'].options.renderWidth  = this.controller.window.innerWidth;
+		dataHandler.renderMiniLine('mem');
+		
+		//this.controller.get('stateCanvas').width = this.controller.window.innerWidth;
+		//dataHandler.graphs['state'].options.renderWidth  = this.controller.window.innerWidth;
+		//dataHandler.renderMiniBar('state');
+	}
+};
+
+
 DockAssistant.prototype.deactivate = function(event)
 {
 };
