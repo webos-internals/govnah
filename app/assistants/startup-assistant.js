@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.0.2',log: [ 'Fixed TouchPad exhibition mode graph width' ] },
  	 { version: '1.0.1',log: [ 'Improved the sampling rate quantisation' ] },
  	 { version: '1.0.0',log: [ 'Full support for all released webOS devices' ] },
  	 { version: '0.9.9',log: [ 'Added back button to graph scene for TouchPad' ] },
