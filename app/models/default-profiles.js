@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 22
+ * 	Highest Version: 23
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -230,7 +230,7 @@ var ondemandtcl_1512 = {
 };
 
 var screenstate3_150_1100 = {
-	version:	22,
+	version:	23,
 	name:		'Screenstate3 150/1100',
 	locked:		false,
 	governor:	'screenstate-v3',
@@ -238,7 +238,7 @@ var screenstate3_150_1100 = {
 {name:	'scaling_min_freq',	value:	'150000'},
 {name:	'scaling_max_freq',	value: '1100000'},
 					   ],
-	kernels: [ "UberKernel" ]
+	kernels: [ "Unused" ]
 };
 
 var screenstate3_300_1100 = {

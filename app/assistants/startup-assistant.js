@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.0.3',log: [ 'Removed the unused screenstate3 150/1100 profile' ] },
  	 { version: '1.0.2',log: [ 'Fixed TouchPad exhibition mode graph width' ] },
  	 { version: '1.0.1',log: [ 'Improved the sampling rate quantisation' ] },
  	 { version: '1.0.0',log: [ 'Full support for all released webOS devices' ] },
