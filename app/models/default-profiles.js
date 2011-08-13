@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 23
+ * 	Highest Version: 24
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -238,7 +238,7 @@ var screenstate3_150_1100 = {
 {name:	'scaling_min_freq',	value:	'150000'},
 {name:	'scaling_max_freq',	value: '1100000'},
 					   ],
-	kernels: [ "Unused" ]
+	kernels: [ "UberKernel" ]
 };
 
 var screenstate3_300_1100 = {
