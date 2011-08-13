@@ -230,8 +230,8 @@ var ondemandtcl_1512 = {
 };
 
 var screenstate3_150_1100 = {
-	version:	23,
-	name:		'Screenstate3 150/1100',
+	version:	24,
+	name:		'Screenstate3 1100',
 	locked:		false,
 	governor:	'screenstate-v3',
 	settingsStandard: [
