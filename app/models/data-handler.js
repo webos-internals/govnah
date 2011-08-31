@@ -563,7 +563,7 @@ dataHandlerModel.prototype.timerFunction = function()
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Pixi") {
 		this.tempReq = service.get_tmp105_temp(this.tempHandler);
 	}
-	else if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+	else if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 		this.tempReq = service.get_a6_temp(this.tempHandler);
 	}
 	else {
@@ -576,7 +576,7 @@ dataHandlerModel.prototype.timerFunction = function()
 		if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 			this.freq2Req  = service.get_scaling_cur_freq(this.freq2Handler, 1);
 		}
-		if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+		if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 			this.currReq  = service.get_a6_current(this.currHandler);
 		}
 		else {
