@@ -36,7 +36,7 @@ static char buffer[MAXBUFLEN];
 static char esc_buffer[MAXBUFLEN];
 static char run_command_buffer[MAXBUFLEN];
 
-static char *cpudir = "/sys/devices/system/cpu/cpu";
+static char *cpudir = "/sys/devices/system/cpu";
 static char *battdir    = "/sys/devices/w1_bus_master1";
 
 //
@@ -632,10 +632,10 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   }
 
   if (governor) {
-    sprintf(directory, "%s%d/cpufreq/%s", cpudir, cpu, governor);
+    sprintf(directory, "%s/cpu%d/cpufreq/%s", cpudir, cpu, governor);
   }
   else {
-    sprintf(directory, "%s%d/cpufreq", cpudir, cpu);
+    sprintf(directory, "%s/cpu%d/cpufreq", cpudir, cpu);
   }
 
   // Bring the cpu online
@@ -836,7 +836,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     }
 
     for (i = 0; i <= maxCpu; i++) {
-      sprintf(filename, "%s%d/cpufreq/%s", cpudir, i, name->child->text);
+      sprintf(filename, "%s/cpu%d/cpufreq/%s", cpudir, i, name->child->text);
 
       // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
@@ -894,7 +894,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
       }
 
       for (i = 0; i <= maxCpu; i++) {
-	sprintf(filename, "%s%d/cpufreq/%s/%s", cpudir, i, governor, name->child->text);
+	sprintf(filename, "%s/cpu%d/cpufreq/%s/%s", cpudir, i, governor, name->child->text);
 
 	// fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
@@ -951,7 +951,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     }
 
     for (i = 0; i <= maxCpu; i++) {
-      sprintf(filename, "%s%d/cpufreq/override/%s", cpudir, i, name->child->text);
+      sprintf(filename, "%s/cpu%d/cpufreq/override/%s", cpudir, i, name->child->text);
 
       // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
@@ -1069,7 +1069,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   if (maxCpu) {
     // Bring the other CPUs online
     for (i = 1; i <= maxCpu; i++) {
-      sprintf(line, "echo -n '1' > %s%d/online || true\n", cpudir, i);
+      sprintf(line, "echo -n '1' > %s/cpu%d/online || true\n", cpudir, i);
       if (fputs(line, fp) < 0) error = true;
     }
     if (fputs("\n", fp) < 0) error = true;
@@ -1099,9 +1099,9 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       governor = value->child->text;
     }
 
-    // fprintf(stderr, "echo %s > %s%d/cpufreq/%s\n", value->child->text, cpudir, 0, name->child->text);
+    // fprintf(stderr, "echo %s > %s/cpu%d/cpufreq/%s\n", value->child->text, cpudir, 0, name->child->text);
     for (i = 0; i <= maxCpu; i++) {
-      sprintf(line, "echo -n '%s' > %s%d/cpufreq/%s\n", value->child->text, cpudir, i, name->child->text);
+      sprintf(line, "echo -n '%s' > %s/cpu%d/cpufreq/%s\n", value->child->text, cpudir, i, name->child->text);
 
       if (fputs(line, fp) < 0) {
 	(void)fclose(fp);
@@ -1130,9 +1130,9 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       if (!value || (value->child->type != JSON_STRING) ||
 	  (strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) goto loop2;
 
-      // fprintf(stderr, "echo %s > %s%d/cpufreq/%s/%s\n", value->child->text, cpudir, 0, governor, name->child->text);
+      // fprintf(stderr, "echo %s > %s/cpu%d/cpufreq/%s/%s\n", value->child->text, cpudir, 0, governor, name->child->text);
       for (i = 0; i <= maxCpu; i++) {
-	sprintf(line, "echo -n '%s' > %s%d/cpufreq/%s/%s\n", value->child->text, cpudir, i, governor, name->child->text);
+	sprintf(line, "echo -n '%s' > %s/cpu%d/cpufreq/%s/%s\n", value->child->text, cpudir, i, governor, name->child->text);
 	if (fputs(line, fp) < 0) {
 	  (void)fclose(fp);
 	  (void)unlink(filename);
@@ -1159,9 +1159,9 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
     if (!value || (value->child->type != JSON_STRING) ||
 	(strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) goto loop3;
 
-    // fprintf(stderr, "echo %s > %s%d/cpufreq/override/%s\n", value->child->text, cpudir, 0, name->child->text);
+    // fprintf(stderr, "echo %s > %s/cpu%d/cpufreq/override/%s\n", value->child->text, cpudir, 0, name->child->text);
     for (i = 0; i <= maxCpu; i++) {
-      sprintf(line, "echo -n '%s' > %s%d/cpufreq/override/%s\n", value->child->text, cpudir, i, name->child->text);
+      sprintf(line, "echo -n '%s' > %s/cpu%d/cpufreq/override/%s\n", value->child->text, cpudir, i, name->child->text);
       if (fputs(line, fp) < 0) {
 	(void)fclose(fp);
 	(void)unlink(filename);
