@@ -117,7 +117,7 @@ MainAssistant.prototype.setup = function()
 		this.controller.get('main-scene-frequency1').innerHTML = $L("CPU Frequency");
 		this.freq2Row.style.display = 'none';
 	}
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
 		this.controller.get('main-scene-temperature').innerHTML = $L("Battery Temperature");
 	}
 	else {
