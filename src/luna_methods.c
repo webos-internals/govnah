@@ -459,7 +459,7 @@ bool get_proc_loadavg_method(LSHandle* lshandle, LSMessage *message, void *ctx) 
 }
 
 //
-// Read omap34xx_temp (Pre)
+// Read omap34xx_temp (Pre & Pre2)
 //
 bool get_omap34xx_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   return read_single_integer(lshandle, message, "/sys/devices/platform/omap34xx_temp/temp1_input");
@@ -473,7 +473,7 @@ bool get_tmp105_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
 }
 
 //
-// Read a6_temp (Veer & TouchPad)
+// Read a6_temp (Veer, Pre3 & TouchPad)
 //
 bool get_a6_temp_method(LSHandle* lshandle, LSMessage *message, void *ctx) {
   return read_single_integer(lshandle, message, "/sys/class/misc/a6_0/regs/gettemp");
