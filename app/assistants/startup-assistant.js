@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.0.8',log: [ 'Added support for System Voltage frequencies on the Pre/Pre+' ] },
  	 { version: '1.0.7',log: [ 'Added support for UberKernel on the Pre3' ] },
  	 { version: '1.0.6',log: [ 'Modifications for Pre3' ] },
  	 { version: '1.0.5',log: [ 'Reinstated screenstate3 1100 profile for UberKernel/Pre2' ] },

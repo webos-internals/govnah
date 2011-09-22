@@ -344,6 +344,23 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 					}
 					break;
 					
+					// Obsolete
+				case 'vdd2_freqs':
+					this.systemFrequencyChoices = [];
+					var data = tmpParam.value.split(" ");
+					if (data.length > 0) {
+						var tmpFreq = parseInt(trim(data[0]));
+						if (tmpFreq) {
+							if ((tmpFreq) >= 1000) {
+								this.systemFrequencyChoices.push({label:((tmpFreq)/1000) + ' GHz', value:tmpFreq});
+							}
+							else {
+								this.systemFrequencyChoices.push({label:(tmpFreq) + ' MHz', value:tmpFreq});
+							}
+						}
+					}
+					break;
+					
 				case 'vdd2_vsel_max':
 					this.sysVoltageLimits.max = parseInt(trim(tmpParam.value));
 					//alert(this.sysVoltageLimits.max);
