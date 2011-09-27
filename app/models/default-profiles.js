@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 25
+ * 	Highest Version: 26
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -65,6 +65,27 @@ var palm_default_pre2 = {
 	settingsSpecific: [
 {name:	'sampling_rate',		value:	'200000'},
 {name:	'up_threshold',			value:	'40'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'}
+					   ],
+	kernels: [ "Palm", "UberKernel" ]
+};
+
+var palm_default_veer = {
+	version:	26,
+	name:		'Palm Default',
+	locked:		true,			// don't lock any other profiles but this one
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'122880'},
+{name:	'scaling_max_freq',	value:	'806400'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'down_differential',	value:	'3'},
 {name:	'ignore_nice_load',		value:	'0'},
 {name:	'powersave_bias',		value:	'0'},
 {name:	'max_tickle_window',	value:	'3000'},
@@ -530,10 +551,9 @@ profilesModel.populateDefaults = function()
 		break;
 	};
 
-	case "TouchPad": {
+	case "Veer": {
 
-		profilesModel.defaultProfiles.push(ondemandtcl_1512);
-		profilesModel.defaultProfiles.push(palm_default_touchpad);
+		profilesModel.defaultProfiles.push(palm_default_veer);
 
 		break;
 	};
@@ -541,6 +561,14 @@ profilesModel.populateDefaults = function()
 	case "Pre3": {
 
 		profilesModel.defaultProfiles.push(palm_default_pre3);
+
+		break;
+	};
+
+	case "TouchPad": {
+
+		profilesModel.defaultProfiles.push(ondemandtcl_1512);
+		profilesModel.defaultProfiles.push(palm_default_touchpad);
 
 		break;
 	};
