@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 26
+ * 	Highest Version: 27
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -243,6 +243,18 @@ var ondemandtcl_1100 = {
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '150000'},
 {name:	'scaling_max_freq',	value: '1100000'},
+					   ],
+	kernels: [ "UberKernel" ]
+};
+
+var ondemandtcl_1200_veer = {
+	version:	27,
+	name:		'OnDemandTcl 1200',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '122880'},
+{name:	'scaling_max_freq',	value: '1209600'},
 					   ],
 	kernels: [ "UberKernel" ]
 };
@@ -552,6 +564,8 @@ profilesModel.populateDefaults = function()
 	};
 
 	case "Veer": {
+
+		profilesModel.defaultProfiles.push(ondemandtcl_1200_veer);
 
 		profilesModel.defaultProfiles.push(palm_default_veer);
 

@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.1.1',log: [ 'Added Veer 1.2GHz support' ] },
  	 { version: '1.1.0',log: [ 'Added recognition of the F4 kernel' ] },
  	 { version: '1.0.9',log: [ 'Added support for Veer' ] },
  	 { version: '1.0.8',log: [ 'Added support for System Voltage frequencies on the Pre/Pre+' ] },
