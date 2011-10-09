@@ -25,6 +25,7 @@ function SettingsCpufreqAssistant()
 	
 	this.scalingFrequencyChoices = dataHandler.scalingFrequencyChoices;
 	
+	this.cpuFrequencyChoices = dataHandler.cpuFrequencyChoices;
 	this.systemFrequencyChoices = dataHandler.systemFrequencyChoices;
 
 	this.samplingRates = {min:false, max:false}; 
@@ -317,16 +318,38 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 					//alert(this.samplingRates.min);
 					break;
 
+				case 'vdd_freqs':
+				case 'vdd1_freqs':
+					this.cpuFrequencyChoices = [];
+					var data = tmpParam.value.split(" ");
+					if (data.length > 0) {
+						for (d = 0; d < data.length; d++) {
+							var tmpFreq = parseInt(trim(data[d]));
+							if (tmpFreq) {
+								if ((tmpFreq) >= 1000) {
+									this.cpuFrequencyChoices.push({label:((tmpFreq)/1000) + ' GHz', value:tmpFreq});
+								}
+								else {
+									this.cpuFrequencyChoices.push({label:(tmpFreq) + ' MHz', value:tmpFreq});
+								}
+							}
+						}
+					}
+					break;
+					
+				case 'vdd_max':
 				case 'vdd1_vsel_max':
 					this.cpuVoltageLimits.max = parseInt(trim(tmpParam.value));
 					//alert(this.cpuVoltageLimits.max);
 					break;
+
+				case 'vdd_min':
 				case 'vdd1_vsel_min':
 					this.cpuVoltageLimits.min = parseInt(trim(tmpParam.value));
 					//alert(this.cpuVoltageLimits.min);
 					break;
 
-				case 'vdd2_freq':
+				case 'vdd2_freq': // yes, reverse of what you would expect for singular name
 					this.systemFrequencyChoices = [];
 					var data = tmpParam.value.split(" ");
 					if (data.length > 0) {
@@ -344,8 +367,7 @@ SettingsCpufreqAssistant.prototype.onGetParams = function(payload, location)
 					}
 					break;
 					
-					// Obsolete
-				case 'vdd2_freqs':
+				case 'vdd2_freqs': // yes, reverse of what you would expect for plural name
 					this.systemFrequencyChoices = [];
 					var data = tmpParam.value.split(" ");
 					if (data.length > 0) {

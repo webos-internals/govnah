@@ -16,10 +16,14 @@ function dataHandlerModel()
 		'sampling_down_factor':			{ type: 'listSampDown'		},
 		'powersave_bias':				{ type: 'listPowr'			},
 		'ignore_nice_load':				{ type: 'toggleTF'			},
+		'io_is_busy':					{ type: 'toggleTF'			},
+		'power_saver':					{ type: 'toggleTF'			},
+		'turbo_mode':					{ type: 'toggleTF'			},
 		'max_tickle_window':			{ type: 'listWindow'		},
 		'max_floor_window':				{ type: 'listWindow'		},
 		'compcache_enabled':			{ type: 'toggleTF'			},
 		'compcache_memlimit':			{ type: 'listMem',			status: 'compcache_enabled' },
+		'vdd':							{ type: 'sceneVoltsCpuFreq',nice: $L("CPU Voltage")	},
 		'vdd1_vsel':					{ type: 'sceneVoltsCpuFreq',nice: $L("CPU Voltage")	},
 		'vdd2_vsel':					{ type: 'sceneVoltsSysFreq',nice: $L("System Voltage")	},
 		'cpu_hightemp_reset':			{ type: 'listTemp',			nice: $L("temp reset")		},
@@ -58,6 +62,7 @@ function dataHandlerModel()
 	this.congestion = false;
 	
 	this.scalingFrequencyChoices = [];
+	this.cpuFrequencyChoices = [];
 	this.systemFrequencyChoices = [];
 	this.currentLimits = {min:false, max:false}; 
 	

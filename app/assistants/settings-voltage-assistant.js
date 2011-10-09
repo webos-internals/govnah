@@ -43,27 +43,44 @@ SettingsVoltageAssistant.prototype.setup = function()
 		if (this.param.limits.max !== false && this.param.limits.min !== false)
 		{
 			var voltMin = parseInt(this.voltages[num])-2;
-			var voltMax = parseInt(this.voltages[num])+2
+			var voltMax = parseInt(this.voltages[num])+2;
+			if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+				voltMin = parseInt(this.voltages[num])-1000;
+				voltMax = parseInt(this.voltages[num])+1000;
+			}
 			if (voltMin < this.param.limits.min) voltMin = this.param.limits.min;
 			if (voltMax > this.param.limits.max) voltMax = this.param.limits.max;
 			for (var s = voltMax; s >= voltMin; s--)
 			{
 				var display = ((s * 12.5) + 600) +' mV ('+s+')';
+				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+					display = s/1000 +' mV ('+s+')';
+				}
 				voltageChoices.push({label: display, value: s});
+				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+					s -= 499;
+				}
 			}
 		}
 		else
 		{
 			var voltMin = parseInt(this.voltages[num])-2;
-			var voltMax = parseInt(this.voltages[num])+2
+			var voltMax = parseInt(this.voltages[num])+2;
+			if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+				voltMin = parseInt(this.voltages[num])-1000;
+				voltMax = parseInt(this.voltages[num])+1000;
+			}
 			for (var s = voltMax; s >= voltMin; s--)
 			{
 				var display = ((s * 12.5) + 600) +' mV ('+s+')';
+				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+					display = s/1000 +' mV ('+s+')';
+				}
 				voltageChoices.push({label: display, value: s});
+				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+					s -= 499;
+				}
 			}
-			
-			//var display = ((this.voltages[num] * 12.5) + 600) +' mV';
-			//voltageChoices.push({label: display, value: this.voltages[num]});
 		}
 		
 		this.controller.setupWidget

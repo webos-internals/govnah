@@ -610,6 +610,7 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   char errorText[MAXLINLEN];
 
   struct stat statbuf;
+  DIR *dp;
 
   bool error = false;
   char *governor = NULL;
@@ -632,7 +633,14 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   }
 
   if (governor) {
-    sprintf(directory, "%s/cpu%d/cpufreq/%s", cpudir, cpu, governor);
+    sprintf(directory, "%s/cpufreq/%s", cpudir, governor);
+    dp = opendir (directory);
+    if (!dp) {
+      sprintf(directory, "%s/cpu%d/cpufreq/%s", cpudir, cpu, governor);
+    }
+    else {
+      closedir(dp);
+    }
   }
   else {
     sprintf(directory, "%s/cpu%d/cpufreq", cpudir, cpu);
@@ -641,7 +649,7 @@ bool get_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   // Bring the cpu online
   if (cpu) bring_cpu_online(cpu);
 
-  DIR *dp = opendir (directory);
+  dp = opendir (directory);
   if (!dp) {
     // Don't report an error, since some governors do not have specific parameters.
     sprintf(buffer, "{\"errorText\": \"Unable to open %s\", \"returnValue\": true }", directory);
@@ -761,6 +769,7 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
   char *governor = NULL;
   int maxCpu = 0;
   int i;
+  DIR *dp;
 
   sprintf(buffer, "{\"returnValue\": true }");
 
@@ -836,9 +845,10 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     }
 
     for (i = 0; i <= maxCpu; i++) {
-      sprintf(filename, "%s/cpu%d/cpufreq/%s", cpudir, i, name->child->text);
+      sprintf(directory, "%s/cpu%d/cpufreq", cpudir, i);
+      sprintf(filename, "%s/%s", directory, name->child->text);
 
-      // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+      fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
       FILE *fp = fopen(filename, "w");
       if (!fp) {
@@ -894,9 +904,18 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
       }
 
       for (i = 0; i <= maxCpu; i++) {
-	sprintf(filename, "%s/cpu%d/cpufreq/%s/%s", cpudir, i, governor, name->child->text);
+	sprintf(directory, "%s/cpufreq/%s", cpudir, governor);
+	dp = opendir (directory);
+	if (!dp) {
+	  sprintf(directory, "%s/cpu%d/cpufreq/%s", cpudir, i, governor);
+	}
+	else {
+	  i = maxCpu;
+	  closedir(dp);
+	}
+	sprintf(filename, "%s/%s", directory, name->child->text);
 
-	// fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+	fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
 	FILE *fp = fopen(filename, "w");
 	if (!fp) {
@@ -951,9 +970,18 @@ bool set_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *ctx
     }
 
     for (i = 0; i <= maxCpu; i++) {
-      sprintf(filename, "%s/cpu%d/cpufreq/override/%s", cpudir, i, name->child->text);
+      sprintf(directory, "%s/cpufreq/override", cpudir);
+      dp = opendir (directory);
+      if (!dp) {
+	sprintf(directory, "%s/cpu%d/cpufreq/override", cpudir, i);
+      }
+      else {
+	i = maxCpu;
+	closedir(dp);
+      }
+      sprintf(filename, "%s/%s", directory, name->child->text);
 
-      // fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
+      fprintf(stderr, "Writing %s to %s\n", value->child->text, filename);
 
       FILE *fp = fopen(filename, "w");
       if (!fp) {
@@ -999,6 +1027,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   LSError lserror;
   LSErrorInit(&lserror);
 
+  char directory[MAXLINLEN];
   char filename[MAXLINLEN];
   char line[MAXLINLEN];
 
@@ -1006,6 +1035,7 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
   char *governor = NULL;
   int maxCpu = 0;
   int i;
+  DIR *dp;
 
   sprintf(buffer, "{\"returnValue\": true }");
 
@@ -1099,9 +1129,10 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       governor = value->child->text;
     }
 
-    // fprintf(stderr, "echo %s > %s/cpu%d/cpufreq/%s\n", value->child->text, cpudir, 0, name->child->text);
     for (i = 0; i <= maxCpu; i++) {
-      sprintf(line, "echo -n '%s' > %s/cpu%d/cpufreq/%s\n", value->child->text, cpudir, i, name->child->text);
+      sprintf(directory, "%s/cpu%d/cpufreq", cpudir, i);
+      fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+      sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
 
       if (fputs(line, fp) < 0) {
 	(void)fclose(fp);
@@ -1130,9 +1161,18 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
       if (!value || (value->child->type != JSON_STRING) ||
 	  (strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) goto loop2;
 
-      // fprintf(stderr, "echo %s > %s/cpu%d/cpufreq/%s/%s\n", value->child->text, cpudir, 0, governor, name->child->text);
       for (i = 0; i <= maxCpu; i++) {
-	sprintf(line, "echo -n '%s' > %s/cpu%d/cpufreq/%s/%s\n", value->child->text, cpudir, i, governor, name->child->text);
+	sprintf(directory, "%s/cpufreq/%s", cpudir, governor);
+	dp = opendir (directory);
+	if (!dp) {
+	  sprintf(directory, "%s/cpu%d/cpufreq/%s", cpudir, i, governor);
+	}
+	else {
+	  i = maxCpu;
+	  closedir(dp);
+	}
+	fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+	sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
 	if (fputs(line, fp) < 0) {
 	  (void)fclose(fp);
 	  (void)unlink(filename);
@@ -1159,9 +1199,18 @@ bool stick_cpufreq_params_method(LSHandle* lshandle, LSMessage *message, void *c
     if (!value || (value->child->type != JSON_STRING) ||
 	(strspn(value->child->text, ALLOWED_CHARS" ") != strlen(value->child->text))) goto loop3;
 
-    // fprintf(stderr, "echo %s > %s/cpu%d/cpufreq/override/%s\n", value->child->text, cpudir, 0, name->child->text);
     for (i = 0; i <= maxCpu; i++) {
-      sprintf(line, "echo -n '%s' > %s/cpu%d/cpufreq/override/%s\n", value->child->text, cpudir, i, name->child->text);
+      sprintf(directory, "%s/cpufreq/override", cpudir);
+      dp = opendir (directory);
+      if (!dp) {
+	sprintf(directory, "%s/cpu%d/cpufreq/override", cpudir, i);
+      }
+      else {
+	i = maxCpu;
+	closedir(dp);
+      }
+      fprintf(stderr, "echo %s > %s/%s\n", value->child->text, directory, name->child->text);
+      sprintf(line, "echo -n '%s' > %s/%s\n", value->child->text, directory, name->child->text);
       if (fputs(line, fp) < 0) {
 	(void)fclose(fp);
 	(void)unlink(filename);

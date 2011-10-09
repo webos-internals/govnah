@@ -97,6 +97,24 @@ helpData.lookup =
 		data: $L('This parameter only has two values which are 0 and 1. By default it is set to 0 which means that all processes are calculated in CPU usage samples. If this value is set to 1 then all processes that hold a "nice" value will be ignored in the CPU usage samples.')
 	},
 	
+	'io_is_busy':
+	{
+		title: $L('I/O Is Busy'),
+		data: $L('This parameter determines whether waiting for I/O is considered equivalent to CPU load.')
+	},
+	
+	'turbo_mode':
+	{
+		title: $L('Turbo Mode'),
+		data: $L('This toggles full-time dual-core support or default webOS power saving profile.')
+	},
+	
+	'power_saver':
+	{
+		title: $L('Power Saver'),
+		data: $L('This toggles extra power savings features by either turning off dual-core in idle load or reverting to webOS power saving profile.')
+	},
+	
 	'max_tickle_window':
 	{
 		title: $L('Max Tickle Window'),
@@ -119,6 +137,12 @@ helpData.lookup =
 	{
 		title: $L('Compcache Memlimit'),
 		data: $L('This value is how much of your physical memory that you would like to use for compressed memory. Thus a higher compcache_memlimit will give you the ability to open more cards. However, due to the slow access of the compressed memory you could miss things like phone calls if the compcache_memlimit is set too high as the device can not open the phone app quick enough to catch the call. The value of this parameter is dependent on device platform. Do not set this value high if you do not have enough free available real RAM.')
+	},
+	
+	'vdd':
+	{
+		title: $L('CPU Voltages'),
+		data: $L('These values represent the various voltage levels for each CPU frequency supported by the kernel. Setting this too low can result in a RSOD.')
 	},
 	
 	'vdd1_vsel':
