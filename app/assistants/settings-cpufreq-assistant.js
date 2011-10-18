@@ -193,7 +193,7 @@ SettingsCpufreqAssistant.prototype.governorChange = function(event)
 	//alert(event.value);
 	this.governorModel.value = event.value;
 	if (this.setRequest) this.setRequest.cancel();
-	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], [], [], (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") ? 1 : 0);
+	this.setRequest = service.set_cpufreq_params(this.onSetParams, [{name:'scaling_governor', value:this.governorModel.value}], [], [], (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) ? 1 : 0);
 };
 
 SettingsCpufreqAssistant.prototype.onSetParams = function(payload)
@@ -885,7 +885,7 @@ SettingsCpufreqAssistant.prototype.saveButtonPressed = function(event)
 												 standardParams,
 												 specificParams,
 												 overrideParams,
-												 (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") ? 1 : 0);
+												 (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) ? 1 : 0);
 };
 
 SettingsCpufreqAssistant.prototype.saveCompleteCpufreq = function(payload)
@@ -925,7 +925,7 @@ SettingsCpufreqAssistant.prototype.activate = function(event)
 {
 	if (this.controller.stageController.setWindowOrientation)
 	{
-		if (Mojo.Environment.DeviceInfo.modelNameAscii != 'TouchPad' &&
+		if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') != 0 &&
 			Mojo.Environment.DeviceInfo.modelNameAscii != 'Emulator')
 			this.controller.stageController.setWindowOrientation("up");
 	}

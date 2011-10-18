@@ -26,7 +26,7 @@ HelpDataAssistant.prototype.activate = function(event)
 {
 	if (this.controller.stageController.setWindowOrientation)
 	{
-		if (Mojo.Environment.DeviceInfo.modelNameAscii != 'TouchPad' &&
+		if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') != 0 &&
 			Mojo.Environment.DeviceInfo.modelNameAscii != 'Emulator')
 			this.controller.stageController.setWindowOrientation("up");
 	}

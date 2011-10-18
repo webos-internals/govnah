@@ -44,7 +44,9 @@ SettingsVoltageAssistant.prototype.setup = function()
 		{
 			var voltMin = parseInt(this.voltages[num])-2;
 			var voltMax = parseInt(this.voltages[num])+2;
-			if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+			if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
+				Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
+				Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
 				voltMin = parseInt(this.voltages[num])-1000;
 				voltMax = parseInt(this.voltages[num])+1000;
 			}
@@ -53,11 +55,15 @@ SettingsVoltageAssistant.prototype.setup = function()
 			for (var s = voltMax; s >= voltMin; s--)
 			{
 				var display = ((s * 12.5) + 600) +' mV ('+s+')';
-				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
+					Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
+					Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
 					display = s/1000 +' mV ('+s+')';
 				}
 				voltageChoices.push({label: display, value: s});
-				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
+					Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
+					Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
 					s -= 499;
 				}
 			}
@@ -66,18 +72,24 @@ SettingsVoltageAssistant.prototype.setup = function()
 		{
 			var voltMin = parseInt(this.voltages[num])-2;
 			var voltMax = parseInt(this.voltages[num])+2;
-			if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+			if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
+				Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
+				Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
 				voltMin = parseInt(this.voltages[num])-1000;
 				voltMax = parseInt(this.voltages[num])+1000;
 			}
 			for (var s = voltMax; s >= voltMin; s--)
 			{
 				var display = ((s * 12.5) + 600) +' mV ('+s+')';
-				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
+					Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
+					Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
 					display = s/1000 +' mV ('+s+')';
 				}
 				voltageChoices.push({label: display, value: s});
-				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
+					Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
+					Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
 					s -= 499;
 				}
 			}

@@ -49,7 +49,7 @@ MainAssistant.prototype.setup = function()
 	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'Pixi' ||
 		Mojo.Environment.DeviceInfo.modelNameAscii == 'Veer')
 		deviceTheme += ' small-device';
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad' ||
+	if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') == 0 ||
 		Mojo.Environment.DeviceInfo.modelNameAscii == 'Emulator')
 		deviceTheme += ' no-gesture';
 	this.controller.document.body.className = prefs.get().theme + deviceTheme;
@@ -109,7 +109,7 @@ MainAssistant.prototype.setup = function()
 	this.visible();
 	
 	this.controller.get('main-scene-profile').innerHTML = $L("Profile");
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+	if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
 		this.controller.get('main-scene-frequency1').innerHTML = $L("CPU 1 Frequency");
 		this.controller.get('main-scene-frequency2').innerHTML = $L("CPU 2 Frequency");
 	}
@@ -117,7 +117,9 @@ MainAssistant.prototype.setup = function()
 		this.controller.get('main-scene-frequency1').innerHTML = $L("CPU Frequency");
 		this.freq2Row.style.display = 'none';
 	}
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" || Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" || Mojo.Environment.DeviceInfo.modelNameAscii == "TouchPad") {
+	if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
+		Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
+		Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
 		this.controller.get('main-scene-temperature').innerHTML = $L("Battery Temperature");
 	}
 	else {
@@ -144,14 +146,14 @@ MainAssistant.prototype.activate = function(event)
 	dataHandler.setMainAssistant(this);
 	dataHandler.start();
 	
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') {
+	if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') == 0) {
 		this.controller.window.onresize = this.handleOrientation.bind(this);
 		this.handleOrientation();
 	}
 	
 	if (this.controller.stageController.setWindowOrientation)
 	{
-		if (Mojo.Environment.DeviceInfo.modelNameAscii != 'TouchPad' &&
+		if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') != 0 &&
 			Mojo.Environment.DeviceInfo.modelNameAscii != 'Emulator') {
 			this.controller.stageController.setWindowOrientation("up");
 		}

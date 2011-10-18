@@ -27,7 +27,7 @@ DockAssistant.prototype.activate = function(event)
 	dataHandler.setDockAssistant(this);
 	dataHandler.start();
 	
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') {
+	if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') == 0) {
 		this.controller.window.onresize = this.handleOrientation.bind(this);
 		this.handleOrientation();
 	}

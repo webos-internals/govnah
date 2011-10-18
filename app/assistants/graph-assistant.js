@@ -43,7 +43,7 @@ GraphAssistant.prototype.setup = function()
 		this.titleElement.innerHTML = $L('CPU 2 Time In State');
 	
 	// setup resize listener for tp
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad')
+	if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') == 0)
 		this.controller.window.onresize = this.handleOrientation.bind(this);
 	
     this.gestureStartHandler =	this.gestureStartHandler.bindAsEventListener(this);
@@ -68,7 +68,7 @@ GraphAssistant.prototype.setup = function()
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageActivate,   this.visible);
 	this.controller.listen(this.controller.stageController.document, Mojo.Event.stageDeactivate, this.invisible);
 	// setup back tap
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad' ||
+	if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') == 0 ||
 		Mojo.Environment.DeviceInfo.modelNameAscii == 'Emulator')
 		this.backElement = this.controller.get('back');
 	else
@@ -148,7 +148,7 @@ GraphAssistant.prototype.activate = function(event)
 {
 	dataHandler.setGraphAssistant(this);
 	
-	if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad') {
+	if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') == 0) {
 		this.controller.window.onresize = this.handleOrientation.bind(this);
 		this.handleOrientation();
 	}

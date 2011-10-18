@@ -63,7 +63,7 @@ ProfilesAssistant.prototype.setup = function()
 		
 		this.controller.listen(this.advancedRow, Mojo.Event.tap, this.advancedTapHandler);
 
-		if (Mojo.Environment.DeviceInfo.modelNameAscii == 'TouchPad' ||
+		if (Mojo.Environment.DeviceInfo.modelNameAscii.indexOf('TouchPad') == 0 ||
 		    Mojo.Environment.DeviceInfo.modelNameAscii == 'Emulator')
 		    this.backElement = this.controller.get('back');
 		else
