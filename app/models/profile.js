@@ -40,13 +40,13 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 			if (this.profiles[p]) 
 			{
 
-				//alert("Profile: "+JSON.stringify(this.profiles[p]));
-				//alert("governor: "+governor);
-				//alert("settingsStandard: "+JSON.stringify(settingsStandard));
-				//alert("settingsSpecific: "+JSON.stringify(settingsSpecific));
-				//alert("settingsOverride: "+JSON.stringify(settingsOverride));
-				//alert("settingsCompcache: "+JSON.stringify(settingsCompcache));
-				//alert("ioScheduler: "+ioScheduler);
+				alert("Profile: "+JSON.stringify(this.profiles[p]));
+				alert("governor: "+governor);
+				alert("settingsStandard: "+JSON.stringify(settingsStandard));
+				alert("settingsSpecific: "+JSON.stringify(settingsSpecific));
+				alert("settingsOverride: "+JSON.stringify(settingsOverride));
+				alert("settingsCompcache: "+JSON.stringify(settingsCompcache));
+				alert("ioScheduler: "+ioScheduler);
 
 				// look for exact match
 				if (this.profiles[p].governor == governor &&
@@ -62,11 +62,11 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 				{
 					var match = true;
 					
-					//alert("Checking exact match");
+					alert("Checking exact match");
 					
 					if (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length > 0)
 					{
-						//alert("Checking settingsStandard");
+						alert("Checking settingsStandard");
 
 						for (var s = 0; s < this.profiles[p].settingsStandard.length; s++)
 						{
@@ -79,7 +79,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsSpecific && this.profiles[p].settingsSpecific.length > 0)
 					{
-						//alert("Checking settingsSpecific");
+						alert("Checking settingsSpecific");
 
 						for (var s = 0; s < this.profiles[p].settingsSpecific.length; s++)
 						{
@@ -92,7 +92,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsOverride && this.profiles[p].settingsOverride.length > 0)
 					{
-						//alert("Checking settingsOverride");
+						alert("Checking settingsOverride");
 
 						for (var s = 0; s < this.profiles[p].settingsOverride.length; s++)
 						{
@@ -105,7 +105,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length > 0)
 					{
-						//alert("Checking settingsCompcache");
+						alert("Checking settingsCompcache");
 
 						for (var s = 0; s < this.profiles[p].settingsCompcache.length; s++)
 						{
@@ -129,7 +129,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 		{
 			if (this.profiles[p]) 
 			{
-				//alert(this.profiles[p].governor);
+				alert(this.profiles[p].governor);
 
 				// look for fuzzy match
 				if (this.profiles[p].governor == governor &&
@@ -145,11 +145,11 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 				{
 					var match = true;
 					
-					//alert("Checking fuzzy match");
+					alert("Checking fuzzy match");
 					
 					if (this.profiles[p].settingsStandard && this.profiles[p].settingsStandard.length > 0)
 					{
-						//alert("Checking settingsStandard");
+						alert("Checking settingsStandard");
 
 						for (var s = 0; s < this.profiles[p].settingsStandard.length; s++)
 						{
@@ -162,7 +162,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsSpecific && this.profiles[p].settingsSpecific.length > 0)
 					{
-						//alert("Checking settingsSpecific");
+						alert("Checking settingsSpecific");
 
 						for (var s = 0; s < this.profiles[p].settingsSpecific.length; s++)
 						{
@@ -175,7 +175,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsOverride && this.profiles[p].settingsOverride.length > 0)
 					{
-						//alert("Checking settingsOverride");
+						alert("Checking settingsOverride");
 
 						for (var s = 0; s < this.profiles[p].settingsOverride.length; s++)
 						{
@@ -188,7 +188,7 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 					}
 					if (this.profiles[p].settingsCompcache && this.profiles[p].settingsCompcache.length > 0)
 					{
-						//alert("Checking settingsCompcache");
+						alert("Checking settingsCompcache");
 
 						for (var s = 0; s < this.profiles[p].settingsCompcache.length; s++)
 						{
