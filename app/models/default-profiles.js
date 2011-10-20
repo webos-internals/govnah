@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 29
+ * 	Highest Version: 30
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -116,7 +116,7 @@ var palm_default_pre3 = {
 };
 
 var palm_default_touchpad = {
-	version:	29,
+	version:	30,
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -134,29 +134,7 @@ var palm_default_touchpad = {
 {name:	'io_is_busy',			value:	'0'},
 {name:	'max_tickle_window',	value:	'3000'}
 					   ],
-	kernels: [ "Palm" ]
-};
-
-var uberkernel_default_touchpad = {
-	version:	29,
-	name:		'UberKernel Default',
-	locked:		true,			// don't lock any other profiles but this one
-	governor:	'ondemandtcl',
-	settingsStandard: [
-{name:	'scaling_min_freq',	value:	'192000'},
-{name:	'scaling_max_freq',	value:	'1188000'}
-					   ],
-	settingsSpecific: [
-{name:	'sampling_rate',		value:	'200000'},
-{name:	'up_threshold',			value:	'95'},
-{name:	'down_differential',	value:	'3'},
-{name:	'sampling_down_factor',	value:	'1'},
-{name:	'ignore_nice_load',		value:	'0'},
-{name:	'powersave_bias',		value:	'0'},
-{name:	'io_is_busy',			value:	'0'},
-{name:	'max_tickle_window',	value:	'3000'}
-					   ],
-	kernels: [ "UberKernel" ]
+	kernels: [ "Palm", "UberKernel" ]
 };
 
 var uberkernel_default_pre = {
@@ -295,7 +273,7 @@ var ondemandtcl_1400 = {
 };
 
 var ondemandtcl_1512 = {
-	version:	21,
+	version:	30,
 	name:		'OnDemandTcl 1512',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -303,7 +281,19 @@ var ondemandtcl_1512 = {
 {name:	'scaling_min_freq',	value:  '192000'},
 {name:	'scaling_max_freq',	value: '1512000'},
 					   ],
-	kernels: [ "UberKernel", "F15C" ]
+	kernels: [ "UberKernel", "F15C", "F4" ]
+};
+
+var ondemandtcl_1728 = {
+	version:	30,
+	name:		'OnDemandTcl 1728',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_max_freq',	value: '1728000'},
+					   ],
+	kernels: [ "UberKernel", "F15C", "F4" ]
 };
 
 var screenstate3_150_1100 = {
@@ -604,8 +594,8 @@ profilesModel.populateDefaults = function()
 
 	case "TouchPad": {
 
+		profilesModel.defaultProfiles.push(ondemandtcl_1728);
 		profilesModel.defaultProfiles.push(ondemandtcl_1512);
-		profilesModel.defaultProfiles.push(uberkernel_default_touchpad);
 		profilesModel.defaultProfiles.push(palm_default_touchpad);
 
 		break;
