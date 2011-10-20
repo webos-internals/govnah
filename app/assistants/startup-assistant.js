@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.2.3',log: [ 'Added support for TouchPad webOS 3.0.4 Warthog kernel' ] },
  	 { version: '1.2.2',log: [ 'Added support for TouchPad webOS 3.0.4 F15C and F4 kernels' ] },
  	 { version: '1.2.1',log: [ 'Added support for TouchPad webOS 3.0.4 kernel defaults' ] },
  	 { version: '1.2.0',log: [ 'Added support for the new TouchPad governors' ] },

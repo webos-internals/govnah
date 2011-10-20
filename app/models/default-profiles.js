@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 30
+ * 	Highest Version: 31
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -273,7 +273,7 @@ var ondemandtcl_1400 = {
 };
 
 var ondemandtcl_1512 = {
-	version:	30,
+	version:	31,
 	name:		'OnDemandTcl 1512',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -281,11 +281,11 @@ var ondemandtcl_1512 = {
 {name:	'scaling_min_freq',	value:  '192000'},
 {name:	'scaling_max_freq',	value: '1512000'},
 					   ],
-	kernels: [ "UberKernel", "F15C", "F4" ]
+	kernels: [ "UberKernel", "Warthog", "F15C", "F4" ]
 };
 
 var ondemandtcl_1728 = {
-	version:	30,
+	version:	31,
 	name:		'OnDemandTcl 1728',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -293,7 +293,7 @@ var ondemandtcl_1728 = {
 {name:	'scaling_min_freq',	value:  '192000'},
 {name:	'scaling_max_freq',	value: '1728000'},
 					   ],
-	kernels: [ "UberKernel", "F15C", "F4" ]
+	kernels: [ "Warthog", "F15C", "F4" ]
 };
 
 var screenstate3_150_1100 = {
