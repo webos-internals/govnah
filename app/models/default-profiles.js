@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 31
+ * 	Highest Version: 32
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -284,6 +284,30 @@ var ondemandtcl_1512 = {
 	kernels: [ "UberKernel", "Warthog", "F15C", "F4" ]
 };
 
+var ondemandtcl_1537 = {
+	version:	32,
+	name:		'OnDemandTcl 1537',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_max_freq',	value: '1536600'},
+					   ],
+	kernels: [ "A1" ]
+};
+
+var ondemandtcl_1690 = {
+	version:	32,
+	name:		'OnDemandTcl 1690',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_max_freq',	value: '1689600'},
+					   ],
+	kernels: [ "A1" ]
+};
+
 var ondemandtcl_1728 = {
 	version:	31,
 	name:		'OnDemandTcl 1728',
@@ -294,6 +318,30 @@ var ondemandtcl_1728 = {
 {name:	'scaling_max_freq',	value: '1728000'},
 					   ],
 	kernels: [ "Warthog", "F15C", "F4" ]
+};
+
+var ondemandtcl_1805 = {
+	version:	32,
+	name:		'OnDemandTcl 1805',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_max_freq',	value: '1804800'},
+					   ],
+	kernels: [ "A1" ]
+};
+
+var ondemandtcl_1901 = {
+	version:	32,
+	name:		'OnDemandTcl 1901',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_max_freq',	value: '1900800'},
+					   ],
+	kernels: [ "A1" ]
 };
 
 var screenstate3_150_1100 = {
@@ -587,6 +635,11 @@ profilesModel.populateDefaults = function()
 
 	case "Pre3": {
 
+		profilesModel.defaultProfiles.push(ondemandtcl_1901);
+		profilesModel.defaultProfiles.push(ondemandtcl_1805);
+		profilesModel.defaultProfiles.push(ondemandtcl_1728);
+		profilesModel.defaultProfiles.push(ondemandtcl_1690);
+		profilesModel.defaultProfiles.push(ondemandtcl_1537);
 		profilesModel.defaultProfiles.push(palm_default_pre3);
 
 		break;

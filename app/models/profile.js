@@ -312,6 +312,9 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 					case "f102a":
 						this.kernel = "F102A";
 						break;
+					case "psycho-a1":
+						this.kernel = "A1";
+						break;
 					case "psycho-f102a":
 					case "psycho-f102b":
 						this.kernel = "F102B";
