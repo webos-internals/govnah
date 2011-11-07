@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 36
+ * 	Highest Version: 37
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -285,7 +285,7 @@ var ondemandtcl_1512 = {
 };
 
 var ondemandtcl_1537 = {
-	version:	36,
+	version:	37,
 	name:		'OnDemandTcl 1537',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -293,11 +293,11 @@ var ondemandtcl_1537 = {
 {name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1536600'},
 					   ],
-	kernels: [ "UberKernel", "A1", "Warthog" ]
+	kernels: [ "UberKernel", "A1"" ]
 };
 
 var ondemandtcl_1690 = {
-	version:	36,
+	version:	37,
 	name:		'OnDemandTcl 1690',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -305,7 +305,7 @@ var ondemandtcl_1690 = {
 {name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1689600'},
 					   ],
-	kernels: [ "UberKernel", "A1", "Warthog" ]
+	kernels: [ "UberKernel", "A1" ]
 };
 
 var ondemandtcl_1728 = {
@@ -321,7 +321,7 @@ var ondemandtcl_1728 = {
 };
 
 var ondemandtcl_1805 = {
-	version:	36,
+	version:	37,
 	name:		'OnDemandTcl 1805',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -329,11 +329,11 @@ var ondemandtcl_1805 = {
 {name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1804800'},
 					   ],
-	kernels: [ "UberKernel", "A1", "Warthog" ]
+	kernels: [ "UberKernel", "A1" ]
 };
 
 var ondemandtcl_1901 = {
-	version:	36,
+	version:	37,
 	name:		'OnDemandTcl 1901',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -341,7 +341,7 @@ var ondemandtcl_1901 = {
 {name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1900800'},
 					   ],
-	kernels: [ "UberKernel", "A1", "Warthog" ]
+	kernels: [ "UberKernel", "A1" ]
 };
 
 var screenstate3_150_1100 = {
