@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 32
+ * 	Highest Version: 36
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -95,7 +95,7 @@ var palm_default_veer = {
 };
 
 var palm_default_pre3 = {
-	version:	25,
+	version:	36,
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -112,7 +112,7 @@ var palm_default_pre3 = {
 {name:	'max_tickle_window',	value:	'3000'},
 {name:	'max_floor_window',		value:	'3000'}
 					   ],
-	kernels: [ "Palm", "UberKernel" ]
+		kernels: [ "Palm", "UberKernel", "A1", "Warthog" ]
 };
 
 var palm_default_touchpad = {
@@ -285,27 +285,27 @@ var ondemandtcl_1512 = {
 };
 
 var ondemandtcl_1537 = {
-	version:	32,
+	version:	36,
 	name:		'OnDemandTcl 1537',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
-{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1536600'},
 					   ],
-	kernels: [ "A1" ]
+	kernels: [ "UberKernel", "A1", "Warthog" ]
 };
 
 var ondemandtcl_1690 = {
-	version:	32,
+	version:	36,
 	name:		'OnDemandTcl 1690',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
-{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1689600'},
 					   ],
-	kernels: [ "A1" ]
+	kernels: [ "UberKernel", "A1", "Warthog" ]
 };
 
 var ondemandtcl_1728 = {
@@ -321,27 +321,27 @@ var ondemandtcl_1728 = {
 };
 
 var ondemandtcl_1805 = {
-	version:	32,
+	version:	36,
 	name:		'OnDemandTcl 1805',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
-{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1804800'},
 					   ],
-	kernels: [ "A1" ]
+	kernels: [ "UberKernel", "A1", "Warthog" ]
 };
 
 var ondemandtcl_1901 = {
-	version:	32,
+	version:	36,
 	name:		'OnDemandTcl 1901',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
-{name:	'scaling_min_freq',	value:  '192000'},
+{name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1900800'},
 					   ],
-	kernels: [ "A1" ]
+	kernels: [ "UberKernel", "A1", "Warthog" ]
 };
 
 var screenstate3_150_1100 = {
