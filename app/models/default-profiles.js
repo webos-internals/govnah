@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 40
+ * 	Highest Version: 41
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -99,10 +99,10 @@ var palm_default_veer = {
 };
 
 var a4_default_veer = {
-	version:	40,
+	version:	41,
 	id:			'a4_default_veer',
 	name:		'A4 Default',
-	locked:		true,			// don't lock any other profiles but this one
+	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'245760'},
