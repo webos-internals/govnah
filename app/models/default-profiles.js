@@ -98,28 +98,6 @@ var palm_default_veer = {
 	kernels: [ "Palm", "UberKernel" ]
 };
 
-var a4_default_veer = {
-	version:	41,
-	id:			'a4_default_veer',
-	name:		'A4 Default',
-	locked:		false,
-	governor:	'ondemandtcl',
-	settingsStandard: [
-{name:	'scaling_min_freq',	value:	'245760'},
-{name:	'scaling_max_freq',	value:	'806400'}
-					   ],
-	settingsSpecific: [
-{name:	'sampling_rate',		value:	'200000'},
-{name:	'up_threshold',			value:	'95'},
-{name:	'down_differential',	value:	'3'},
-{name:	'ignore_nice_load',		value:	'0'},
-{name:	'powersave_bias',		value:	'0'},
-{name:	'max_tickle_window',	value:	'3000'},
-{name:	'max_floor_window',		value:	'3000'}
-					   ],
-	kernels: [ "A4" ]
-};
-
 var palm_default_pre3 = {
 	version:	36,
 	id:			'palm_default_pre3',
@@ -177,6 +155,28 @@ var uberkernel_default_pre = {
 {name:	'scaling_setspeed',	value:	'500000'}
 					   ],
 	kernels: [ "UberKernel" ]
+};
+
+var a4_default_veer = {
+	version:	41,
+	id:			'a4_default_veer',
+	name:		'A4 Default',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'245760'},
+{name:	'scaling_max_freq',	value:	'806400'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'down_differential',	value:	'3'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'}
+					   ],
+	kernels: [ "A4" ]
 };
 
 var screenstate2_500_800 = {
@@ -306,19 +306,6 @@ var ondemandtcl_1100 = {
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '150000'},
 {name:	'scaling_max_freq',	value: '1100000'},
-					   ],
-	kernels: [ "UberKernel" ]
-};
-
-var ondemandtcl_1200_veer = {
-	version:	27,
-	id:			'ondemandtcl_1200_veer',
-	name:		'OnDemandTcl 1200',
-	locked:		false,
-	governor:	'ondemandtcl',
-	settingsStandard: [
-{name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1209600'},
 					   ],
 	kernels: [ "UberKernel" ]
 };
