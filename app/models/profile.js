@@ -255,6 +255,20 @@ profilesModel.prototype.getProfileFromName = function(name)
 	}
 	return false;
 };
+profilesModel.prototype.deleteProfilesByName = function(name)
+{
+	if (this.profiles.length > 0)
+	{
+		for (var p = 0; p < this.profiles.length; p++)
+		{
+			if (this.profiles[p].name == name)
+			{
+				this.deleteProfile(this.profiles[p].id);
+			}
+		}
+	}
+	return;
+};
 profilesModel.prototype.getListObjects = function()
 {
 	var returnArray = [];
@@ -314,6 +328,9 @@ profilesModel.prototype.getKernelTypeResponse = function(response)
 						break;
 					case "psycho-a1":
 						this.kernel = "A1";
+						break;
+					case "psycho-a4":
+						this.kernel = "A4";
 						break;
 					case "psycho-f102a":
 					case "psycho-f102b":
@@ -377,7 +394,7 @@ profilesModel.prototype.loadDefaults = function()
 		{
 			if (profilesModel.defaultProfiles[d].version > prefs.get().defaultProfileVersion)
 			{
-				var dup = this.getProfileFromName(profilesModel.defaultProfiles[d].name);
+				var dup = this.getProfileFromId(profilesModel.defaultProfiles[d].id);
 
 				if (dup) {
 					this.deleteProfile(dup.id);

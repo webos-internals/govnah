@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.2.6',log: [ 'Added support for the Veer A-4 Skyhawk kernel' ] },
  	 { version: '1.2.5',log: [ 'Added support for the Pre 3 UberKernel and Warthog kernel' ] },
  	 { version: '1.2.4',log: [ 'Added support for the Pre 3 A-1 Skyraider kernel' ] },
  	 { version: '1.2.3',log: [ 'Added support for TouchPad webOS 3.0.4 Warthog kernel' ] },

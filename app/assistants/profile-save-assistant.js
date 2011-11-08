@@ -194,12 +194,8 @@ ProfileSaveAssistant.prototype.saveAsProfileButtonPressed = function(event)
 		}
 	}
 	
-	var dup = profiles.getProfileFromName(params.name);
+	profiles.deleteProfilesByName(params.name);
 	
-	if (dup) {
-		profiles.deleteProfile(dup.id);
-	}
-
 	profiles.newProfile(params);
 	
 	this.saveAsProfileButtonElement.mojo.deactivate();

@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 37
+ * 	Highest Version: 40
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -22,6 +22,7 @@
 
 var palm_default_pre = {
 	version:	12,
+	id:			'palm_default_pre',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'userspace',
@@ -35,6 +36,7 @@ var palm_default_pre = {
 
 var palm_default_pixi = {
 	version:	12,
+	id:			'palm_default_pixi',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -55,6 +57,7 @@ var palm_default_pixi = {
 
 var palm_default_pre2 = {
 	version:	12,
+	id:			'palm_default_pre2',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -74,7 +77,8 @@ var palm_default_pre2 = {
 };
 
 var palm_default_veer = {
-	version:	26,
+	version:	40,
+	id:			'palm_default_veer',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -94,8 +98,31 @@ var palm_default_veer = {
 	kernels: [ "Palm", "UberKernel" ]
 };
 
+var a4_default_veer = {
+	version:	40,
+	id:			'a4_default_veer',
+	name:		'A4 Default',
+	locked:		true,			// don't lock any other profiles but this one
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'245760'},
+{name:	'scaling_max_freq',	value:	'806400'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'down_differential',	value:	'3'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'}
+					   ],
+	kernels: [ "A4" ]
+};
+
 var palm_default_pre3 = {
 	version:	36,
+	id:			'palm_default_pre3',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -117,6 +144,7 @@ var palm_default_pre3 = {
 
 var palm_default_touchpad = {
 	version:	30,
+	id:			'palm_default_touchpad',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
 	governor:	'ondemandtcl',
@@ -139,6 +167,7 @@ var palm_default_touchpad = {
 
 var uberkernel_default_pre = {
 	version:	12,
+	id:			'uberkernel_default_pre',
 	name:		'UberKernel Default',
 	locked:		false,
 	governor:	'userspace',
@@ -152,6 +181,7 @@ var uberkernel_default_pre = {
 
 var screenstate2_500_800 = {
 	version:	12,
+	id:			'screenstate2_500_800',
 	name:		'Screenstate2 500/800',
 	locked:		false,
 	governor:	'screenstate-v2',
@@ -164,6 +194,7 @@ var screenstate2_500_800 = {
 
 var screenstate2_500_1100 = {
 	version:	15,
+	id:			'screenstate2_500_1100',
 	name:		'Screenstate2 500/1100',
 	locked:		false,
 	governor:	'screenstate-v2',
@@ -176,6 +207,7 @@ var screenstate2_500_1100 = {
 
 var vdemand_1005 = {
 	version:	19,
+	id:			'vdemand_1005',
 	name:		'VDemand 1005',
 	locked:		false,
 	governor:	'vdemand',
@@ -188,6 +220,7 @@ var vdemand_1005 = {
 
 var screenstate2_500_1005 = {
 	version:	12,
+	id:			'screenstate2_500_1005',
 	name:		'Screenstate2 500/1005',
 	locked:		false,
 	governor:	'screenstate-v2',
@@ -200,6 +233,7 @@ var screenstate2_500_1005 = {
 
 var f104a_default_pre = {
 	version:	15,
+	id:			'f104a_default_pre',
 	name:		'F104A Default',
 	locked:		false,
 	governor:	'ondemand',
@@ -218,6 +252,7 @@ var f104a_default_pre = {
 
 var f104a_default_pre2 = {
 	version:	17,
+	id:			'f104a_default_pre2',
 	name:		'F104A Default',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -236,8 +271,35 @@ var f104a_default_pre2 = {
 	kernels: [ "F104A" ]
 };
 
+var ondemandtcl_1024 = {
+	version:	40,
+	id:			'ondemandtcl_1024',
+	name:		'OnDemandTcl 1024',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '122880'},
+{name:	'scaling_max_freq',	value: '1024000'},
+					   ],
+	kernels: [ "UberKernel" ]
+};
+
+var ondemandtcl_1024_a4 = {
+	version:	40,
+	id:			'ondemandtcl_1024_a4',
+	name:		'OnDemandTcl 1024',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '245760'},
+{name:	'scaling_max_freq',	value: '1024000'},
+					   ],
+	kernels: [ "A4" ]
+};
+
 var ondemandtcl_1100 = {
 	version:	22,
+	id:			'ondemandtcl_1100',
 	name:		'OnDemandTcl 1100',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -250,6 +312,7 @@ var ondemandtcl_1100 = {
 
 var ondemandtcl_1200_veer = {
 	version:	27,
+	id:			'ondemandtcl_1200_veer',
 	name:		'OnDemandTcl 1200',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -260,8 +323,61 @@ var ondemandtcl_1200_veer = {
 	kernels: [ "UberKernel" ]
 };
 
+var ondemandtcl_1248 = {
+	version:	40,
+	id:			'ondemandtcl_1248',
+	name:		'OnDemandTcl 1248',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '122880'},
+{name:	'scaling_max_freq',	value: '1248000'},
+					   ],
+	kernels: [ "UberKernel" ]
+};
+
+var ondemandtcl_1248_a4 = {
+	version:	40,
+	id:			'ondemandtcl_1248_a4',
+	name:		'OnDemandTcl 1248',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '122880'},
+{name:	'scaling_max_freq',	value: '1248000'},
+					   ],
+	kernels: [ "A4" ]
+};
+
+var ondemandtcl_1344 = {
+	version:	40,
+	id:			'ondemandtcl_1344',
+	name:		'OnDemandTcl 1344',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '122880'},
+{name:	'scaling_max_freq',	value: '1344000'},
+					   ],
+	kernels: [ "UberKernel" ]
+};
+
+var ondemandtcl_1344_a4 = {
+	version:	40,
+	id:			'ondemandtcl_1344_a4',
+	name:		'OnDemandTcl 1344',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '245760'},
+{name:	'scaling_max_freq',	value: '1344000'},
+					   ],
+	kernels: [ "A4" ]
+};
+
 var ondemandtcl_1400 = {
 	version:	12,
+	id:			'ondemandtcl_1400',
 	name:		'OnDemandTcl 1400',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -272,8 +388,35 @@ var ondemandtcl_1400 = {
 	kernels: [ "F14" ]
 };
 
+var ondemandtcl_1402 = {
+	version:	40,
+	id:			'ondemandtcl_1402',
+	name:		'OnDemandTcl 1402',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '122880'},
+{name:	'scaling_max_freq',	value: '1401600'},
+					   ],
+	kernels: [ "UberKernel" ]
+};
+
+var ondemandtcl_1402_a4 = {
+	version:	40,
+	id:			'ondemandtcl_1402_a4',
+	name:		'OnDemandTcl 1402',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:  '245760'},
+{name:	'scaling_max_freq',	value: '1401600'},
+					   ],
+	kernels: [ "A4" ]
+};
+
 var ondemandtcl_1512 = {
 	version:	31,
+	id:			'ondemandtcl_1512',
 	name:		'OnDemandTcl 1512',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -286,6 +429,7 @@ var ondemandtcl_1512 = {
 
 var ondemandtcl_1537 = {
 	version:	37,
+	id:			'ondemandtcl_1537',
 	name:		'OnDemandTcl 1537',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -293,11 +437,12 @@ var ondemandtcl_1537 = {
 {name:	'scaling_min_freq',	value:  '122880'},
 {name:	'scaling_max_freq',	value: '1536600'},
 					   ],
-	kernels: [ "UberKernel", "A1"" ]
+	kernels: [ "UberKernel", "A1" ]
 };
 
 var ondemandtcl_1690 = {
 	version:	37,
+	id:			'ondemandtcl_1690',
 	name:		'OnDemandTcl 1690',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -310,6 +455,7 @@ var ondemandtcl_1690 = {
 
 var ondemandtcl_1728 = {
 	version:	31,
+	id:			'ondemandtcl_1728',
 	name:		'OnDemandTcl 1728',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -322,6 +468,7 @@ var ondemandtcl_1728 = {
 
 var ondemandtcl_1805 = {
 	version:	37,
+	id:			'ondemandtcl_1805',
 	name:		'OnDemandTcl 1805',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -334,6 +481,7 @@ var ondemandtcl_1805 = {
 
 var ondemandtcl_1901 = {
 	version:	37,
+	id:			'ondemandtcl_1901',
 	name:		'OnDemandTcl 1901',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -346,6 +494,7 @@ var ondemandtcl_1901 = {
 
 var screenstate3_150_1100 = {
 	version:	24,
+	id:			'screenstate3_150_1100',
 	name:		'Screenstate3 1100',
 	locked:		false,
 	governor:	'screenstate-v3',
@@ -358,6 +507,7 @@ var screenstate3_150_1100 = {
 
 var screenstate3_300_1100 = {
 	version:	17,
+	id:			'screenstate3_300_1100',
 	name:		'Screenstate3 300/1100',
 	locked:		false,
 	governor:	'screenstate-v3',
@@ -370,6 +520,7 @@ var screenstate3_300_1100 = {
 
 var ondemandtcl_1200_pre = {
 	version:	13,
+	id:			'ondemandtcl_1200_pre',
 	name:		'OnDemandTcl 1200',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -382,6 +533,7 @@ var ondemandtcl_1200_pre = {
 
 var ondemandtcl_1200_pre2 = {
 	version:	13,
+	id:			'ondemandtcl_1200_pre2',
 	name:		'OnDemandTcl 1200',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -394,6 +546,7 @@ var ondemandtcl_1200_pre2 = {
 
 var warthog_default_pre = {
 	version:	12,
+	id:			'warthog_default_pre',
 	name:		'Warthog Default',
 	locked:		false,
 	governor:	'userspace',
@@ -407,6 +560,7 @@ var warthog_default_pre = {
 
 var screenstate_500_800 = {
 	version:	12,
+	id:			'screenstate_500_800',
 	name:		'Screenstate 500/800',
 	locked:		false,
 	governor:	'screenstate',
@@ -419,6 +573,7 @@ var screenstate_500_800 = {
 
 var screenstate_500_1000 = {
 	version:	12,
+	id:			'screenstate_500_1000',
 	name:		'Screenstate 500/1000',
 	locked:		false,
 	governor:	'screenstate',
@@ -431,6 +586,7 @@ var screenstate_500_1000 = {
 
 var screenstate_500_1050 = {
 	version:	12,
+	id:			'screenstate_500_1050',
 	name:		'Screenstate 500/1050',
 	locked:		false,
 	governor:	'screenstate',
@@ -443,6 +599,7 @@ var screenstate_500_1050 = {
 
 var screenstate2_300_1200 = {
 	version:	18,
+	id:			'screenstate2_300_1200',
 	name:		'Screenstate2 300/1200',
 	locked:		false,
 	governor:	'screenstate-v2',
@@ -455,6 +612,7 @@ var screenstate2_300_1200 = {
 
 var fixed_speed_600 = {
 	version:	12,
+	id:			'fixed_speed_600',
 	name:		'Fixed Speed 600',
 	locked:		false,
 	governor:	'performance',
@@ -467,6 +625,7 @@ var fixed_speed_600 = {
 
 var fixed_speed_720 = {
 	version:	12,
+	id:			'fixed_speed_720',
 	name:		'Fixed Speed 720',
 	locked:		false,
 	governor:	'performance',
@@ -479,6 +638,7 @@ var fixed_speed_720 = {
 
 var fixed_speed_800 = {
 	version:	12,
+	id:			'fixed_speed_800',
 	name:		'Fixed Speed 800',
 	locked:		false,
 	governor:	'performance',
@@ -491,6 +651,7 @@ var fixed_speed_800 = {
 
 var ondemandtcl_749 = {
 	version:	12,
+	id:			'ondemandtcl_749',
 	name:		'OnDemandTcl 749',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -511,6 +672,7 @@ var ondemandtcl_749 = {
 
 var ondemandtcl_768 = {
 	version:	12,
+	id:			'ondemandtcl_768',
 	name:		'OnDemandTcl 768',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -531,6 +693,7 @@ var ondemandtcl_768 = {
 
 var ondemandtcl_787 = {
 	version:	12,
+	id:			'ondemandtcl_787',
 	name:		'OnDemandTcl 787',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -551,6 +714,7 @@ var ondemandtcl_787 = {
 
 var ondemandtcl_806 = {
 	version:    12,
+	id:			'ondemandtcl_806',
 	name:		'OnDemandTcl 806',
 	locked:		false,
 	governor:	'ondemandtcl',
@@ -626,8 +790,16 @@ profilesModel.populateDefaults = function()
 
 	case "Veer": {
 
+		profilesModel.defaultProfiles.push(ondemandtcl_1402_a4);
+		profilesModel.defaultProfiles.push(ondemandtcl_1402);
+		profilesModel.defaultProfiles.push(ondemandtcl_1344_a4);
+		profilesModel.defaultProfiles.push(ondemandtcl_1344);
+		profilesModel.defaultProfiles.push(ondemandtcl_1248_a4);
+		profilesModel.defaultProfiles.push(ondemandtcl_1248);
 		profilesModel.defaultProfiles.push(ondemandtcl_1200_veer);
-
+		profilesModel.defaultProfiles.push(ondemandtcl_1024_a4);
+		profilesModel.defaultProfiles.push(ondemandtcl_1024);
+		profilesModel.defaultProfiles.push(a4_default_veer);
 		profilesModel.defaultProfiles.push(palm_default_veer);
 
 		break;
