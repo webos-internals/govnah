@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 41
+ * 	Highest Version: 42
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -99,7 +99,7 @@ var palm_default_veer = {
 };
 
 var palm_default_pre3 = {
-	version:	36,
+	version:	42,
 	id:			'palm_default_pre3',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
@@ -117,7 +117,7 @@ var palm_default_pre3 = {
 {name:	'max_tickle_window',	value:	'3000'},
 {name:	'max_floor_window',		value:	'3000'}
 					   ],
-		kernels: [ "Palm", "UberKernel", "A1", "Warthog" ]
+		kernels: [ "Palm" ]
 };
 
 var palm_default_touchpad = {
@@ -155,6 +155,54 @@ var uberkernel_default_pre = {
 {name:	'scaling_setspeed',	value:	'500000'}
 					   ],
 	kernels: [ "UberKernel" ]
+};
+
+var uberkernel_default_pre3 = {
+	version:	42,
+	id:			'uberkernel_default_pre3',
+	name:		'UberKernel Default',
+	locked:		true,			// don't lock any other profiles but this one
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'122880'},
+{name:	'scaling_max_freq',	value:	'1401600'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'down_differential',	value:	'3'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'},
+{name:	'screen_off_max_freq',	value:	'368640'},
+{name:	'screenstate_enable',	value:	'0'}
+					   ],
+		kernels: [ "UberKernel" ]
+};
+
+var a1_default_pre3 = {
+	version:	42,
+	id:			'a1_default_pre3',
+	name:		'A1 Default',
+	locked:		true,			// don't lock any other profiles but this one
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'122880'},
+{name:	'scaling_max_freq',	value:	'1401600'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'down_differential',	value:	'3'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'},
+{name:	'screen_off_max_freq',	value:	'368640'},
+{name:	'screenstate_enable',	value:	'0'}
+					   ],
+		kernels: [ "A1" ]
 };
 
 var a4_default_veer = {
@@ -799,6 +847,9 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(ondemandtcl_1728);
 		profilesModel.defaultProfiles.push(ondemandtcl_1690);
 		profilesModel.defaultProfiles.push(ondemandtcl_1537);
+
+		profilesModel.defaultProfiles.push(a1_default_pre3);
+		profilesModel.defaultProfiles.push(uberkernel_default_pre3);
 		profilesModel.defaultProfiles.push(palm_default_pre3);
 
 		break;

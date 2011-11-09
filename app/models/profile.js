@@ -37,7 +37,9 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 	{
 		for (var p = 0; p < this.profiles.length; p++)
 		{
-			if (this.profiles[p]) 
+			if (this.profiles[p] &&
+				this.profiles[p].kernels &&
+				(this.profiles[p].kernels.indexOf(profiles.kernel) != -1))
 			{
 
 				alert("Profile: "+JSON.stringify(this.profiles[p]));
@@ -127,7 +129,9 @@ profilesModel.prototype.findProfile = function(governor, settingsStandard, setti
 		
 		for (var p = 0; p < this.profiles.length; p++)
 		{
-			if (this.profiles[p]) 
+			if (this.profiles[p] &&
+				this.profiles[p].kernels &&
+				(this.profiles[p].kernels.indexOf(profiles.kernel) != -1)) 
 			{
 				alert(this.profiles[p].governor);
 
