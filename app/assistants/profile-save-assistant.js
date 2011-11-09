@@ -171,7 +171,8 @@ ProfileSaveAssistant.prototype.saveAsProfileButtonPressed = function(event)
 		settingsSpecific: [],
 		settingsOverride: [],
 		settingsCompcache: [],
-		ioScheduler: this.ioScheduler
+		ioScheduler: this.ioScheduler,
+		kernels: [ profiles.kernel ]
 	};
 	
 	for (var m in this.settingsModel)
