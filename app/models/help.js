@@ -227,5 +227,17 @@ helpData.lookup =
 	{
 		title: $L('Enable Ondemand'),
 		data: $L('Enable or disable CPU frequency scaling in the Screenstate-v3 governor. This option also disables vdemand when screen is on, but resumes vdemand when screen is off.')
+	},
+
+	'screenstate_enable':
+	{
+		title: $L('Enable Screenstate'),
+		data: $L('Enable or disable Screenstate CPU frequency limiting when screen is off.')
+	},
+
+	'screen_off_max_freq':
+	{
+		title: $L('Screen Off Max Freq'),
+		data: $L('This sets the highest CPU clock speed to which your CPU is allowed to scale when Screenstate functionality is enabled and the screen is off.')
 	}
 };

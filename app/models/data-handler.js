@@ -41,7 +41,7 @@ function dataHandlerModel()
 		'vdemand_vsel_vdd2':			{ type: 'sceneVoltsLoad',	nice: $L("System Voltage")},
 		'ondemand_enable':				{ type: 'toggleTF'			},
 		'screenstate_enable':			{ type: 'toggleTF'			},
-		'screen_off_max_freq':			{ type: 'listFreq',			nice: $L("SS max freq")		},
+		'screen_off_max_freq':			{ type: 'listFreq',			nice: $L("screen off max freq")		},
 	};
 	
 	this.mainAssistant = false;

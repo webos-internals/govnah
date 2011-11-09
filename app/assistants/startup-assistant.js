@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.2.9',log: [ 'Added help text for ondemand-ng parameters' ] },
  	 { version: '1.2.8',log: [ 'Added support for ondemandtcl with screenstate (known as ondemand-ng)' ] },
  	 { version: '1.2.7',log: [ 'Added support for the new Veer 1.4GHz UberKernel' ] },
  	 { version: '1.2.6',log: [ 'Added support for the Veer A-4 Skyhawk kernel' ] },
