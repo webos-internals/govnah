@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 42
+ * 	Highest Version: 44
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -161,7 +161,7 @@ var uberkernel_default_pre3 = {
 	version:	42,
 	id:			'uberkernel_default_pre3',
 	name:		'UberKernel Default',
-	locked:		true,			// don't lock any other profiles but this one
+	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'122880'},
@@ -185,7 +185,7 @@ var a1_default_pre3 = {
 	version:	42,
 	id:			'a1_default_pre3',
 	name:		'A1 Default',
-	locked:		true,			// don't lock any other profiles but this one
+	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'122880'},
@@ -205,8 +205,32 @@ var a1_default_pre3 = {
 		kernels: [ "A1" ]
 };
 
+var uberkernel_default_veer = {
+	version:	44,
+	id:			'uberkernel_default_veer',
+	name:		'UberKernel Default',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'122880'},
+{name:	'scaling_max_freq',	value:	'806400'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'down_differential',	value:	'3'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'},
+{name:	'screen_off_max_freq',	value:	'368640'},
+{name:	'screenstate_enable',	value:	'0'}
+					   ],
+	kernels: [ "UberKernel" ]
+};
+
 var a4_default_veer = {
-	version:	41,
+	version:	44,
 	id:			'a4_default_veer',
 	name:		'A4 Default',
 	locked:		false,
@@ -222,7 +246,9 @@ var a4_default_veer = {
 {name:	'ignore_nice_load',		value:	'0'},
 {name:	'powersave_bias',		value:	'0'},
 {name:	'max_tickle_window',	value:	'3000'},
-{name:	'max_floor_window',		value:	'3000'}
+{name:	'max_floor_window',		value:	'3000'},
+{name:	'screen_off_max_freq',	value:	'368640'},
+{name:	'screenstate_enable',	value:	'0'}
 					   ],
 	kernels: [ "A4" ]
 };
@@ -831,10 +857,11 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(ondemandtcl_1344);
 		profilesModel.defaultProfiles.push(ondemandtcl_1248_a4);
 		profilesModel.defaultProfiles.push(ondemandtcl_1248);
-		profilesModel.defaultProfiles.push(ondemandtcl_1200_veer);
 		profilesModel.defaultProfiles.push(ondemandtcl_1024_a4);
 		profilesModel.defaultProfiles.push(ondemandtcl_1024);
+
 		profilesModel.defaultProfiles.push(a4_default_veer);
+		profilesModel.defaultProfiles.push(uberkernel_default_veer);
 		profilesModel.defaultProfiles.push(palm_default_veer);
 
 		break;
