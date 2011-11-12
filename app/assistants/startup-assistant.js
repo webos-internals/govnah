@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.3.4',log: [ 'Fixed voltage adjustment on Veer, Pre 3, TouchPad' ] },
  	 { version: '1.3.3',log: [ 'Reverted an incorrect voltage settings change' ] },
  	 { version: '1.3.2',log: [ 'Added support for the ondemand-ng TouchPad kernels' ] },
  	 { version: '1.3.1',log: [ 'Added support for the ondemand-ng Veer kernels' ] },
