@@ -64,7 +64,7 @@ SettingsVoltageAssistant.prototype.setup = function()
 				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
 					Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
 					Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
-					s -= 2499;
+					s -= 24999;
 				}
 			}
 		}
@@ -90,7 +90,7 @@ SettingsVoltageAssistant.prototype.setup = function()
 				if (Mojo.Environment.DeviceInfo.modelNameAscii == "Veer" ||
 					Mojo.Environment.DeviceInfo.modelNameAscii == "Pre3" ||
 					Mojo.Environment.DeviceInfo.modelNameAscii.indexOf("TouchPad") == 0) {
-					s -= 2499;
+					s -= 24999;
 				}
 			}
 		}
