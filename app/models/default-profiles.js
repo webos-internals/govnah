@@ -896,7 +896,6 @@ profilesModel.populateDefaults = function()
 
 		profilesModel.defaultProfiles.push(ondemandtcl_1901);
 		profilesModel.defaultProfiles.push(ondemandtcl_1805);
-		profilesModel.defaultProfiles.push(ondemandtcl_1728);
 		profilesModel.defaultProfiles.push(ondemandtcl_1690);
 		profilesModel.defaultProfiles.push(ondemandtcl_1537);
 
