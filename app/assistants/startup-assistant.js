@@ -11,6 +11,7 @@ function StartupAssistant(changelog)
     this.newMessages =
 	[
 	 // Don't forget the comma on all but the last entry
+ 	 { version: '1.3.2',log: [ 'Added support for the ondemand-ng TouchPad kernels' ] },
  	 { version: '1.3.1',log: [ 'Added support for the ondemand-ng Veer kernels' ] },
  	 { version: '1.3.0',log: [ 'Fixed a major bug in profile saving' ] },
  	 { version: '1.2.9',log: [ 'Added help text for ondemand-ng parameters' ] },

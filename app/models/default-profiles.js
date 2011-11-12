@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 44
+ * 	Highest Version: 45
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -121,7 +121,7 @@ var palm_default_pre3 = {
 };
 
 var palm_default_touchpad = {
-	version:	30,
+	version:	45,
 	id:			'palm_default_touchpad',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
@@ -140,7 +140,7 @@ var palm_default_touchpad = {
 {name:	'io_is_busy',			value:	'0'},
 {name:	'max_tickle_window',	value:	'3000'}
 					   ],
-	kernels: [ "Palm", "UberKernel" ]
+	kernels: [ "Palm" ]
 };
 
 var uberkernel_default_pre = {
@@ -251,6 +251,31 @@ var a4_default_veer = {
 {name:	'screenstate_enable',	value:	'0'}
 					   ],
 	kernels: [ "A4" ]
+};
+
+var uberkernel_default_touchpad = {
+	version:	45,
+	id:			'uberkernel_default_touchpad',
+	name:		'UberKernel Default',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'192000'},
+{name:	'scaling_max_freq',	value:	'1188000'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'down_differential',	value:	'3'},
+{name:	'sampling_down_factor',	value:	'1'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'io_is_busy',			value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'screen_off_max_freq',	value:	'432000'},
+{name:	'screenstate_enable',	value:	'0'}
+					   ],
+	kernels: [ "UberKernel" ]
 };
 
 var screenstate2_500_800 = {
@@ -515,7 +540,7 @@ var ondemandtcl_1690 = {
 };
 
 var ondemandtcl_1728 = {
-	version:	31,
+	version:	45,
 	id:			'ondemandtcl_1728',
 	name:		'OnDemandTcl 1728',
 	locked:		false,
@@ -524,7 +549,7 @@ var ondemandtcl_1728 = {
 {name:	'scaling_min_freq',	value:  '192000'},
 {name:	'scaling_max_freq',	value: '1728000'},
 					   ],
-	kernels: [ "Warthog", "F15C", "F4" ]
+	kernels: [ "UberKernel", "Warthog", "F15C", "F4" ]
 };
 
 var ondemandtcl_1805 = {
@@ -886,6 +911,7 @@ profilesModel.populateDefaults = function()
 
 		profilesModel.defaultProfiles.push(ondemandtcl_1728);
 		profilesModel.defaultProfiles.push(ondemandtcl_1512);
+		profilesModel.defaultProfiles.push(uberkernel_default_touchpad);
 		profilesModel.defaultProfiles.push(palm_default_touchpad);
 
 		break;
