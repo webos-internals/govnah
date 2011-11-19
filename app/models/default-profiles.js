@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 45
+ * 	Highest Version: 46
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -204,6 +204,31 @@ var a1_default_pre3 = {
 					   ],
 		kernels: [ "A1" ]
 };
+
+var warthog_default_pre3 = {
+	version:	46,
+	id:			'warthog_default_pre3',
+	name:		'Warthog Default',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'122880'},
+{name:	'scaling_max_freq',	value:	'1401600'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'95'},
+{name:	'down_differential',	value:	'3'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'},
+{name:	'screen_off_max_freq',	value:	'768000'},
+{name:	'screenstate_enable',	value:	'1'}
+					   ],
+		kernels: [ "Warthog" ]
+};
+
 
 var uberkernel_default_veer = {
 	version:	44,
@@ -899,6 +924,7 @@ profilesModel.populateDefaults = function()
 		profilesModel.defaultProfiles.push(ondemandtcl_1690);
 		profilesModel.defaultProfiles.push(ondemandtcl_1537);
 
+		profilesModel.defaultProfiles.push(warthog_default_pre3);
 		profilesModel.defaultProfiles.push(a1_default_pre3);
 		profilesModel.defaultProfiles.push(uberkernel_default_pre3);
 		profilesModel.defaultProfiles.push(palm_default_pre3);
