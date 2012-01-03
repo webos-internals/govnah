@@ -13,7 +13,7 @@
  * 
  ********
  * 
- * 	Highest Version: 46
+ * 	Highest Version: 47
  * 	Be sure to update the above number if you use a higher number, so
  * 	we don't have to look through the entire list if we add a new one.
  * 
@@ -56,7 +56,7 @@ var palm_default_pixi = {
 };
 
 var palm_default_pre2 = {
-	version:	12,
+	version:	47,
 	id:			'palm_default_pre2',
 	name:		'Palm Default',
 	locked:		true,			// don't lock any other profiles but this one
@@ -73,7 +73,7 @@ var palm_default_pre2 = {
 {name:	'max_tickle_window',	value:	'3000'},
 {name:	'max_floor_window',		value:	'3000'}
 					   ],
-	kernels: [ "Palm", "UberKernel" ]
+	kernels: [ "Palm" ]
 };
 
 var palm_default_veer = {
@@ -153,6 +153,29 @@ var uberkernel_default_pre = {
 {name:	'scaling_min_freq',	value:	'125000'},
 {name:	'scaling_max_freq',	value: '1000000'},
 {name:	'scaling_setspeed',	value:	'500000'}
+					   ],
+	kernels: [ "UberKernel" ]
+};
+
+var uberkernel_default_pre2 = {
+	version:	47,
+	id:			'uberkernel_default_pre2',
+	name:		'UberKernel Default',
+	locked:		false,
+	governor:	'ondemandtcl',
+	settingsStandard: [
+{name:	'scaling_min_freq',	value:	'150000'},
+{name:	'scaling_max_freq',	value:	'1000000'}
+					   ],
+	settingsSpecific: [
+{name:	'sampling_rate',		value:	'200000'},
+{name:	'up_threshold',			value:	'40'},
+{name:	'ignore_nice_load',		value:	'0'},
+{name:	'powersave_bias',		value:	'0'},
+{name:	'max_tickle_window',	value:	'3000'},
+{name:	'max_floor_window',		value:	'3000'},
+{name:	'screen_off_max_freq',	value:	'300000'},
+{name:	'screenstate_enable',	value:	'0'}
 					   ],
 	kernels: [ "UberKernel" ]
 };
@@ -311,7 +334,7 @@ var screenstate2_500_800 = {
 	governor:	'screenstate-v2',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'500000'},
-{name:	'scaling_max_freq',	value:  '800000'},
+{name:	'scaling_max_freq',	value:  '800000'}
 					   ],
 	kernels: [ "F102A", "F102B" ]
 };
@@ -324,7 +347,7 @@ var screenstate2_500_1100 = {
 	governor:	'screenstate-v2',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'500000'},
-{name:	'scaling_max_freq',	value: '1100000'},
+{name:	'scaling_max_freq',	value: '1100000'}
 					   ],
 	kernels: [ "F104A" ]
 };
@@ -337,7 +360,7 @@ var vdemand_1005 = {
 	governor:	'vdemand',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '500000'},
-{name:	'scaling_max_freq',	value: '1005000'},
+{name:	'scaling_max_freq',	value: '1005000'}
 					   ],
 	kernels: [ "AV8B" ]
 };
@@ -350,7 +373,7 @@ var screenstate2_500_1005 = {
 	governor:	'screenstate-v2',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '500000'},
-{name:	'scaling_max_freq',	value: '1005000'},
+{name:	'scaling_max_freq',	value: '1005000'}
 					   ],
 	kernels: [ "F105" ]
 };
@@ -363,7 +386,7 @@ var f104a_default_pre = {
 	governor:	'ondemand',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'500000'},
-{name:	'scaling_max_freq',	value: '1100000'},
+{name:	'scaling_max_freq',	value: '1100000'}
 					   ],
 	settingsSpecific: [
 {name:	'sampling_rate',		value:	'200000'},
@@ -375,14 +398,14 @@ var f104a_default_pre = {
 };
 
 var f104a_default_pre2 = {
-	version:	17,
+	version:	47,
 	id:			'f104a_default_pre2',
 	name:		'F104A Default',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'300000'},
-{name:	'scaling_max_freq',	value: '1100000'},
+{name:	'scaling_max_freq',	value: '1200000'}
 					   ],
 	settingsSpecific: [
 {name:	'sampling_rate',		value:	'200000'},
@@ -390,7 +413,9 @@ var f104a_default_pre2 = {
 {name:	'ignore_nice_load',		value:	'0'},
 {name:	'powersave_bias',		value:	'0'},
 {name:	'max_tickle_window',	value:	'3000'},
-{name:	'max_floor_window',		value:	'3000'}
+{name:	'max_floor_window',		value:	'3000'},
+{name:	'screen_off_max_freq',	value:	'300000'},
+{name:	'screenstate_enable',	value:	'0'}
 					   ],
 	kernels: [ "F104A" ]
 };
@@ -403,7 +428,7 @@ var ondemandtcl_1024 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1024000'},
+{name:	'scaling_max_freq',	value: '1024000'}
 					   ],
 	kernels: [ "UberKernel" ]
 };
@@ -416,20 +441,20 @@ var ondemandtcl_1024_a4 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '245760'},
-{name:	'scaling_max_freq',	value: '1024000'},
+{name:	'scaling_max_freq',	value: '1024000'}
 					   ],
 	kernels: [ "A4" ]
 };
 
-var ondemandtcl_1100 = {
-	version:	22,
-	id:			'ondemandtcl_1100',
-	name:		'OnDemandTcl 1100',
+var ondemandtcl_1200 = {
+	version:	47,
+	id:			'ondemandtcl_1200',
+	name:		'OnDemandTcl 1200',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '150000'},
-{name:	'scaling_max_freq',	value: '1100000'},
+{name:	'scaling_max_freq',	value: '1200000'}
 					   ],
 	kernels: [ "UberKernel" ]
 };
@@ -442,7 +467,7 @@ var ondemandtcl_1248 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1248000'},
+{name:	'scaling_max_freq',	value: '1248000'}
 					   ],
 	kernels: [ "UberKernel" ]
 };
@@ -455,7 +480,7 @@ var ondemandtcl_1248_a4 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1248000'},
+{name:	'scaling_max_freq',	value: '1248000'}
 					   ],
 	kernels: [ "A4" ]
 };
@@ -468,7 +493,7 @@ var ondemandtcl_1344 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1344000'},
+{name:	'scaling_max_freq',	value: '1344000'}
 					   ],
 	kernels: [ "UberKernel" ]
 };
@@ -481,7 +506,7 @@ var ondemandtcl_1344_a4 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '245760'},
-{name:	'scaling_max_freq',	value: '1344000'},
+{name:	'scaling_max_freq',	value: '1344000'}
 					   ],
 	kernels: [ "A4" ]
 };
@@ -494,7 +519,7 @@ var ondemandtcl_1400 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '150000'},
-{name:	'scaling_max_freq',	value: '1400000'},
+{name:	'scaling_max_freq',	value: '1400000'}
 					   ],
 	kernels: [ "F14" ]
 };
@@ -507,7 +532,7 @@ var ondemandtcl_1402 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1401600'},
+{name:	'scaling_max_freq',	value: '1401600'}
 					   ],
 	kernels: [ "UberKernel" ]
 };
@@ -520,7 +545,7 @@ var ondemandtcl_1402_a4 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '245760'},
-{name:	'scaling_max_freq',	value: '1401600'},
+{name:	'scaling_max_freq',	value: '1401600'}
 					   ],
 	kernels: [ "A4" ]
 };
@@ -533,7 +558,7 @@ var ondemandtcl_1512 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '192000'},
-{name:	'scaling_max_freq',	value: '1512000'},
+{name:	'scaling_max_freq',	value: '1512000'}
 					   ],
 	kernels: [ "UberKernel", "Warthog", "F15C", "F4" ]
 };
@@ -546,7 +571,7 @@ var ondemandtcl_1537 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1536600'},
+{name:	'scaling_max_freq',	value: '1536600'}
 					   ],
 	kernels: [ "UberKernel", "A1" ]
 };
@@ -559,7 +584,7 @@ var ondemandtcl_1690 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1689600'},
+{name:	'scaling_max_freq',	value: '1689600'}
 					   ],
 	kernels: [ "UberKernel", "A1" ]
 };
@@ -572,7 +597,7 @@ var ondemandtcl_1728 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '192000'},
-{name:	'scaling_max_freq',	value: '1728000'},
+{name:	'scaling_max_freq',	value: '1728000'}
 					   ],
 	kernels: [ "UberKernel", "Warthog", "F15C", "F4" ]
 };
@@ -585,7 +610,7 @@ var ondemandtcl_1805 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1804800'},
+{name:	'scaling_max_freq',	value: '1804800'}
 					   ],
 	kernels: [ "UberKernel", "A1" ]
 };
@@ -598,33 +623,33 @@ var ondemandtcl_1901 = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '122880'},
-{name:	'scaling_max_freq',	value: '1900800'},
+{name:	'scaling_max_freq',	value: '1900800'}
 					   ],
 	kernels: [ "UberKernel", "A1" ]
 };
 
-var screenstate3_150_1100 = {
-	version:	24,
-	id:			'screenstate3_150_1100',
-	name:		'Screenstate3 1100',
+var screenstate3_150_1200 = {
+	version:	47,
+	id:			'screenstate3_150_1200',
+	name:		'Screenstate3 1200',
 	locked:		false,
 	governor:	'screenstate-v3',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'150000'},
-{name:	'scaling_max_freq',	value: '1100000'},
+{name:	'scaling_max_freq',	value: '1200000'}
 					   ],
 	kernels: [ "UberKernel" ]
 };
 
-var screenstate3_300_1100 = {
-	version:	17,
-	id:			'screenstate3_300_1100',
-	name:		'Screenstate3 300/1100',
+var screenstate3_300_1200 = {
+	version:	47,
+	id:			'screenstate3_300_1200',
+	name:		'Screenstate3 300/1200',
 	locked:		false,
 	governor:	'screenstate-v3',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'300000'},
-{name:	'scaling_max_freq',	value: '1100000'},
+{name:	'scaling_max_freq',	value: '1200000'}
 					   ],
 	kernels: [ "F104A" ]
 };
@@ -637,20 +662,20 @@ var ondemandtcl_1200_pre = {
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '500000'},
-{name:	'scaling_max_freq',	value: '1200000'},
+{name:	'scaling_max_freq',	value: '1200000'}
 					   ],
 	kernels: [ "SR71" ]
 };
 
-var ondemandtcl_1200_pre2 = {
-	version:	13,
-	id:			'ondemandtcl_1200_pre2',
+var ondemandtcl_1200_sr71 = {
+	version:	47,
+	id:			'ondemandtcl_1200_sr71',
 	name:		'OnDemandTcl 1200',
 	locked:		false,
 	governor:	'ondemandtcl',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:  '300000'},
-{name:	'scaling_max_freq',	value: '1200000'},
+{name:	'scaling_max_freq',	value: '1200000'}
 					   ],
 	kernels: [ "SR71" ]
 };
@@ -716,7 +741,7 @@ var screenstate2_300_1200 = {
 	governor:	'screenstate-v2',
 	settingsStandard: [
 {name:	'scaling_min_freq',	value:	'300000'},
-{name:	'scaling_max_freq',	value: '1200000'},
+{name:	'scaling_max_freq',	value: '1200000'}
 					   ],
 	kernels: [ "SR71" ]
 };
@@ -887,13 +912,14 @@ profilesModel.populateDefaults = function()
 	case "Pre2": {
 
 		profilesModel.defaultProfiles.push(ondemandtcl_1400);
-		profilesModel.defaultProfiles.push(ondemandtcl_1200_pre2);
-		profilesModel.defaultProfiles.push(ondemandtcl_1100);
+		profilesModel.defaultProfiles.push(ondemandtcl_1200_sr71);
+		profilesModel.defaultProfiles.push(ondemandtcl_1200);
 		profilesModel.defaultProfiles.push(screenstate2_300_1200);
-		profilesModel.defaultProfiles.push(screenstate3_150_1100);
-		profilesModel.defaultProfiles.push(screenstate3_300_1100);
+		profilesModel.defaultProfiles.push(screenstate3_150_1200);
+		profilesModel.defaultProfiles.push(screenstate3_300_1200);
 		profilesModel.defaultProfiles.push(f104a_default_pre2);
 
+		profilesModel.defaultProfiles.push(uberkernel_default_pre2);
 		profilesModel.defaultProfiles.push(palm_default_pre2);
 
 		break;
